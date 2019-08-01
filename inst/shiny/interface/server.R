@@ -20,11 +20,13 @@ function(input, output) {
         
         myin <- input$edges
         if(length(myin) > 0) {
-            j <- seq(1, length(myin) - 4, by = 5)
+            j <- seq(1, length(myin) - 7, by = 8)
             
             data.frame(id = paste0("e", myin[j]), source = myin[j+1], target = myin[j+2], 
                        leftside = ifelse(myin[j+3] == "FALSE", 0, 1), 
-                       lrconnect = ifelse(myin[j+4] == "FALSE", 0, 1))
+                       lrconnect = ifelse(myin[j+4] == "FALSE", 0, 1), 
+                       source.latent = as.numeric(myin[j + 5]), target.latent = as.numeric(myin[j + 6]), 
+                       target.outcome = as.numeric(myin[j + 7]))
             
             
         } else {

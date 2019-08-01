@@ -13,6 +13,9 @@ igraph_to_response_function <- function(graph) {
     if(is.null(lrconnect)) stop("Graph object must have an edge attribute named 'leftside'")
     if(sum(lrconnect) > 1) stop("Only one edge must originate from the leftside")
     
+    cond.vars <- V(graph)[leftind]
+    right.vars <- V(graph)[!leftind]
     
+    do.call(expand.grid, lapply(1:length(cond.vars), function(i) c("0", "1")))
     
 }

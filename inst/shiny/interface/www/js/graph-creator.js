@@ -350,6 +350,8 @@
           })
           .on("blur", function(d){
             d.title = this.textContent;
+            d.latent = 0;
+            d.outcome = 0;
             thisGraph.insertTitleLinebreaks(d3node, d.title);
             d3.select(this.parentElement).remove();
           });
@@ -460,7 +462,7 @@
     state.lastKeyDown = d3.event.keyCode;
     var selectedNode = state.selectedNode,
         selectedEdge = state.selectedEdge;
-
+    
     switch(d3.event.keyCode) {
     case consts.BACKSPACE_KEY:
     case consts.DELETE_KEY:
@@ -476,6 +478,27 @@
         thisGraph.updateGraph();
       }
       break;
+    case 85: // u key for unobserved
+        if (selectedNode) {
+            state.selectedNode.latent = 1 - state.selectedNode.latent;
+            if(state.selectedNode.latent == 1) {
+                state.selectedNode.outcome = 0;
+            }
+            thisGraph.updateGraph();
+        }
+      break;
+    case 89: // y key for outcome
+        if (selectedNode) {
+            console.log(d3.event.keyCode);
+            var i;
+            for (i = 0; i < thisGraph.nodes.length; i++) { 
+                thisGraph.nodes[i].outcome = 0;
+            }
+            state.selectedNode.outcome = 1;
+            state.selectedNode.latent = 0;
+            thisGraph.updateGraph();
+        }
+        break;
     }
   };
 
@@ -547,12 +570,32 @@
         thisGraph.circleMouseUp.call(thisGraph, d3.select(this), d);
       })
       .call(thisGraph.drag);
-
+    
+   
     newGs.append("circle")
       .attr("r", String(consts.nodeRadius));
 
     newGs.each(function(d){
       thisGraph.insertTitleLinebreaks(d3.select(this), d.title);
+      
+    });
+    
+    thisGraph.circles.each(function(d){ 
+        if(d.latent == 1) {
+            this.classList.add("latent");
+        }
+        if(d.latent == 0) {
+            this.classList.remove("latent");
+        }
+    });
+    
+    thisGraph.circles.each(function(d){ 
+        if(d.outcome == 1) {
+            this.classList.add("outcome");
+        }
+        if(d.outcome == 0) {
+            this.classList.remove("outcome");
+        }
     });
 
     // remove old nodes
@@ -562,7 +605,8 @@
       thisGraph.edges.forEach(function(val, i){
           var width = svg.attr("width");
         saveEdges.push({id: val.source.id + '.' + val.target.id, source: val.source.title, target: val.target.title, 
-            leftside: val.source.x < width / 2, lrconnect: val.source.x < width / 2 && val.target.x > width / 2   });
+            leftside: val.source.x < width / 2, lrconnect: val.source.x < width / 2 && val.target.x > width / 2, 
+            sourceLatent: val.source.latent, targetLatent: val.target.latent, targetOutcome: val.target.outcome});
       });
     
     Shiny.setInputValue("edges", saveEdges)

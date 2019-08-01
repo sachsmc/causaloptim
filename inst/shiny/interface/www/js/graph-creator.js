@@ -605,7 +605,8 @@
       thisGraph.edges.forEach(function(val, i){
           var width = svg.attr("width");
         saveEdges.push({id: val.source.id + '.' + val.target.id, source: val.source.title, target: val.target.title, 
-            leftside: val.source.x < width / 2, lrconnect: val.source.x < width / 2 && val.target.x > width / 2, 
+            sourceLeftside: val.source.x < width / 2, targetLeftside: val.target.x < width / 2,
+            lrconnect: (val.source.x < width / 2 && val.target.x > width / 2) || (val.target.x < width / 2 && val.source.x > width / 2), 
             sourceLatent: val.source.latent, targetLatent: val.target.latent, targetOutcome: val.target.outcome});
       });
     

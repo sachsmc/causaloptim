@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="stylesheet" href="css/graph-creator.css" />
+    <link rel="stylesheet" href="css/shiny.css" />
+     <script src="js/jquery.js" type="text/javascript"></script>
+  <script src="js/shiny.js" type="text/javascript"></script>
+  
+  </head>
+
+  <body>
+    <div id="graph" style="height:640px">
+    <div id="toolbox">
+      <input type="file" id="hidden-file-upload"><input id="upload-input" type="image" title="upload graph" src="upload-icon.png" alt="upload graph"> <input type="image" id="download-input" title="download graph" src="download-icon.png" alt="download graph"> <input type="image" id="delete-graph" title="delete graph" src="trash-icon.png" alt="delete graph">
+    </div>
+    </div>
+    
+    <div id="results">
+    
+    <h3>Code output:</h3>
+  <pre id="outcode" class="shiny-text-output"></pre>
+</div>
+    <script src="js/d3.v3.min.js" charset="utf-8"></script>
+    <script src="js/FileSaver.min.js"></script>
+    <script src="js/graph-creator.js"></script>
+  </body>
+
+</html>

@@ -1,0 +1,25 @@
+VARIABLES
+	r0
+	r1
+	r2
+	r3
+
+PARAMETERS
+	p0_0
+	p1_0
+	p0_1
+	p1_1
+
+CONSTRAINTS
+	p0_0 = r0 + r1
+	p1_0 = r2 + r3
+	p0_1 = r0 + r2
+	p1_1 = r1 + r3
+	r0 + r1 + r2 + r3 = 1
+
+MINIMIZE
+
+OBJECTIVE
+	r1
+
+END

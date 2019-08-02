@@ -79,6 +79,9 @@ g.conceptG.latent circle{
 g.conceptG.outcome circle{
     fill: rgb(220, 155, 155);
 }
+g.conceptG.exposure circle{
+    fill: rgb(22, 22, 210);
+}
 
 path.link {
     fill: none;
@@ -101,4 +104,8 @@ path.link.hidden{
 
 path.link.selected {
     stroke: rgb(229, 172, 247);
+}
+
+path.link.monotone {
+    stroke: rgb(16, 17, 247);
 }

@@ -115,58 +115,6 @@
     // listen for resize
     window.onresize = function(){thisGraph.updateWindow(svg);};
 
-    // handle download data
-    d3.select("#download-input").on("click", function(){
-      var saveEdges = [];
-      thisGraph.edges.forEach(function(val, i){
-        saveEdges.push({source: val.source.id, target: val.target.id});
-      });
-      var blob = new Blob([window.JSON.stringify({"nodes": thisGraph.nodes, "edges": saveEdges})], {type: "text/plain;charset=utf-8"});
-      saveAs(blob, "mydag.json");
-    });
-
-
-    // handle uploaded data
-    d3.select("#upload-input").on("click", function(){
-      document.getElementById("hidden-file-upload").click();
-    });
-    d3.select("#hidden-file-upload").on("change", function(){
-      if (window.File && window.FileReader && window.FileList && window.Blob) {
-        var uploadFile = this.files[0];
-        var filereader = new window.FileReader();
-
-        filereader.onload = function(){
-          var txtRes = filereader.result;
-          // TODO better error handling
-          try{
-            var jsonObj = JSON.parse(txtRes);
-            thisGraph.deleteGraph(true);
-            thisGraph.nodes = jsonObj.nodes;
-            thisGraph.setIdCt(jsonObj.nodes.length + 1);
-            var newEdges = jsonObj.edges;
-            newEdges.forEach(function(e, i){
-              newEdges[i] = {source: thisGraph.nodes.filter(function(n){return n.id == e.source;})[0],
-                          target: thisGraph.nodes.filter(function(n){return n.id == e.target;})[0]};
-            });
-            thisGraph.edges = newEdges;
-            thisGraph.updateGraph();
-          }catch(err){
-            window.alert("Error parsing uploaded file\nerror message: " + err.message);
-            return;
-          }
-        };
-        filereader.readAsText(uploadFile);
-
-      } else {
-        alert("Your browser won't let you save this graph -- try upgrading your browser to IE 10+ or Chrome or Firefox.");
-      }
-
-    });
-
-    // handle delete graph
-    d3.select("#delete-graph").on("click", function(){
-      thisGraph.deleteGraph(false);
-    });
   };
 
   GraphCreator.prototype.setIdCt = function(idct){
@@ -352,6 +300,7 @@
             d.title = this.textContent;
             d.latent = 0;
             d.outcome = 0;
+            d.exposure = 0;
             thisGraph.insertTitleLinebreaks(d3node, d.title);
             d3.select(this.parentElement).remove();
           });
@@ -375,7 +324,7 @@
 
     if (mouseDownNode !== d){
       // we're in a different node: create new edge for mousedown edge and add to graph
-      var newEdge = {source: mouseDownNode, target: d};
+      var newEdge = {source: mouseDownNode, target: d, monotone: 0};
       var filtRes = thisGraph.paths.filter(function(d){
         if (d.source === newEdge.target && d.target === newEdge.source){
           thisGraph.edges.splice(thisGraph.edges.indexOf(d), 1);
@@ -494,8 +443,26 @@
             for (i = 0; i < thisGraph.nodes.length; i++) { 
                 thisGraph.nodes[i].outcome = 0;
             }
-            state.selectedNode.outcome = 1;
+            state.selectedNode.outcome = 1 - state.selectedNode.outcome;
             state.selectedNode.latent = 0;
+            thisGraph.updateGraph();
+        }
+        break;
+    case 69: // e key for outcome
+        if (selectedNode) {
+            console.log(d3.event.keyCode);
+            var i;
+            for (i = 0; i < thisGraph.nodes.length; i++) { 
+                thisGraph.nodes[i].exposure = 0;
+            }
+            state.selectedNode.exposure = 1 - state.selectedNode.exposure;
+            state.selectedNode.latent = 0;
+            thisGraph.updateGraph();
+        }
+        break;
+     case 77: // monotone edge
+        if (selectedEdge) {
+            state.selectedEdge.monotone =  1 - state.selectedEdge.monotone;
             thisGraph.updateGraph();
         }
         break;
@@ -544,6 +511,15 @@
 
     // remove old links
     paths.exit().remove();
+    
+    paths.each(function(d){ 
+        if(d.monotone == 1) {
+            this.classList.add("monotone");
+        }
+        if(d.monotone == 0) {
+            this.classList.remove("monotone");
+        }
+    });
 
     // update existing nodes
     thisGraph.circles = thisGraph.circles.data(thisGraph.nodes, function(d){ return d.id;});
@@ -606,8 +582,11 @@
           var width = svg.attr("width");
         saveEdges.push({id: val.source.id + '.' + val.target.id, source: val.source.title, target: val.target.title, 
             sourceLeftside: val.source.x < width / 2, targetLeftside: val.target.x < width / 2,
-            lrconnect: (val.source.x < width / 2 && val.target.x > width / 2) || (val.target.x < width / 2 && val.source.x > width / 2), 
-            sourceLatent: val.source.latent, targetLatent: val.target.latent, targetOutcome: val.target.outcome});
+            rlconnect: (val.target.x < width / 2 && val.source.x > width / 2), 
+            sourceLatent: val.source.latent, targetLatent: val.target.latent, targetOutcome: val.target.outcome, 
+            sourceExposure: val.source.exposure, targetExposure: val.target.exposure,
+            edgeMonotone: val.monotone
+        });
       });
     
     Shiny.setInputValue("edges", saveEdges)

@@ -20,7 +20,7 @@ igraph_to_response_function <- function(graph) {
     
     p.vals <- do.call(expand.grid, var.values)
     
-    jd <- do.call(paste0, p.vals[, names(right.vars)])
+    jd <- do.call(paste0, p.vals[, names(right.vars), drop = FALSE])
     cond <- do.call(paste0, p.vals[, names(cond.vars), drop = FALSE])
     
     parameters <- paste0("p", paste(jd, cond, sep = "_"))
@@ -42,10 +42,21 @@ igraph_to_response_function <- function(graph) {
         arglist <- vector(mode = "list", length = length(parents))
         names(arglist) <- parents
         
-        ifs <- expand.grid(lapply(parents, function(x) c(paste0("(", x, ")"), paste0("(1 - ", x, ")"))))
-        values <- c("0", do.call(pastestar, ifs), "1")
+        if(length(parents) == 0) {
+            values <- c("0", "1")
+        } else {
+            
+            bigboy <- lapply(1:length(parents), function(x) combn(parents, x, simplify = FALSE))
+            
+            bigifs <- lapply(bigboy, function(rents) {
+                ifs <- expand.grid(lapply(rents, function(x) c(paste0("(", x, ")"), paste0("(1 - ", x, ")"))))
+                do.call(pastestar, ifs)
+            })
+            
+            values <- c("0", unlist(bigifs), "1")
+        }
         
-        respvars[[ini]] <- list(index = 0:(nstart - 1), values = values)
+        respvars[[ini]] <- list(index = 0:(length(values) - 1), values = values)
         
     }
     
@@ -78,76 +89,109 @@ igraph_to_response_function <- function(graph) {
     p.constraints <- c(p.constraints, paste(paste(variables, collapse= " + "), " = 1"))
     
     ## determine objective based on exposure and outcome in terms of qs 
-    
     expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
     outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
-    
-    response.paths <- all_simple_paths(graph, from = expo.var, to = outcome)
-    
-    var.eff <- list(NULL, NULL) 
-    for(do.x in 1:0){
-        path.env1 <- new.env()
-        assign(names(expo.var), do.x, path.env1)
-        
-        cur.env <- list(path.env1)
-        track.path <- data.frame(dex= 1)
-        i <- 2
-        while(TRUE) {
-            targ.tmp <- names(response.paths[[1]])[i]
-            targ.poss <- lapply(cur.env, function(penv) {
-                unlist(lapply(respvars[[targ.tmp]]$values, function(x) {
-                    eval(parse(text = x), envir=penv, enclos = parent.frame())
-                }))
-            })
+    var.eff <- list(NULL, NULL)
+    for(do.x in 0:1) {
+        intervene <- list(do.x)
+        names(intervene) <- names(expo.var)
+        gee_r <- function(r, i) {
             
-            track.path.in <- data.frame(respvars[[targ.tmp]]$index, unlist(targ.poss))
-            colnames(track.path.in) <- c(paste0("R_", targ.tmp), targ.tmp)
-            track.path <- cbind(as.data.frame(lapply(track.path, function(col) rep(col,  each = length(cur.env)))), 
-                  track.path.in)
+            parents <- adjacent_vertices(graph, right.vars[i], "in")[[1]]
+            parents <- parents[vertex_attr(graph, name="latent", index = parents) == 0 & 
+                                   vertex_attr(graph, name="leftside", index = parents) == 0]
             
-            i <- i + 1
-            if(targ.tmp == names(outcome)) break
-            
-            cur.env <- lapply(unlist(targ.poss), function(x) {
-                env.in <- new.env()
-                assign(targ.tmp, x, env.in)
-                env.in
-            })
+            if(names(right.vars)[i] %in% names(intervene)) {
+                as.numeric(intervene[[names(right.vars[i])]])
+            } else if (length(parents) == 0){
+                as.numeric(respvars[[names(right.vars[[i]])]]$values[which(respvars[[names(right.vars[[i]])]]$index == r[i])])
+            } else {
+                
+                lookin <- lapply(names(parents), function(gu) {
+                    
+                    as.numeric(gee_r(r, which(names(right.vars) == gu)))
+                    
+                })
+                names(lookin) <- names(parents)
+                inres <- respvars[[names(right.vars[[i]])]]$values[which(respvars[[names(right.vars[[i]])]]$index == r[i])]
+                with(lookin, eval(parse(text = inres)))
+                
+            }
         }
         
-        rout.dex <- track.path[, names(outcome)] == 1
-        tomatch <- track.path[rout.dex, paste0("R_", names(response.paths[[1]])[-1]) , drop = FALSE]
-        names(tomatch) <- names(response.paths[[1]])[-1]
         
-        var.dex <- merge(cbind(q.vals, .index = 1:nrow(q.vals)), tomatch)$.index
-        
+        res.mat <- matrix(NA, ncol = ncol(q.vals), nrow = nrow(q.vals))
+        for(k in 1:nrow(q.vals)) {
+            for(j in 1:ncol(q.vals)) {
+                res.mat[k, j] <- gee_r(r = unlist(q.vals[k, ]), i = j)
+                
+            }
+        }
+        colnames(res.mat) <- names(right.vars)
+        var.dex <- res.mat[, names(outcome)] == 1
         var.eff[[(1 - do.x) + 1]] <- variables[var.dex]
+        
     }
-    
     
     objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
     objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
     
     objective <- paste(paste(objterm1, collapse = " + "), " - ", paste(objterm2, collapse = " - "))
     
+    list(variables = variables, parameters = parameters, constraints = p.constraints, 
+         objective = objective)
+    
+    
 }
 
 pastestar <- function(...) paste(..., sep = "*")
 
-make_function <- function(args, body, env = parent.frame()) {
+
+
+balke_optimize <- function(obj) {
     
-    args <- as.pairlist(args)
-    eval(call("function", args, body), env)
+    tbl.file <- tempfile(pattern = c("max", "min"))
+    cat("VARIABLES\n", file = tbl.file[1])
+    cat(obj$variables, file = tbl.file[1], append = TRUE, sep = "\n")
+    cat("\nPARAMETERS\n", file = tbl.file[1], append = TRUE)
+    cat(obj$parameters, file = tbl.file[1], append = TRUE, sep = "\n")
+    cat("\nCONSTRAINTS\n", file = tbl.file[1], append = TRUE)
+    cat(obj$constraints, file= tbl.file[1], append = TRUE, sep = "\n")
+    cat("\nMAXIMIZE\n", file = tbl.file[1], append = TRUE)
+    cat("\nOBJECTIVE\n", file =tbl.file[1], append = TRUE)
+    cat(obj$objective, file = tbl.file[1], append = TRUE)
+    cat("\nEND\n", file = tbl.file[1], append = TRUE)
+    
+    
+    test <- COptimization_$new()
+    test$ParseFileWrap(tbl.file[1])
+    test$CategorizeConstraints()
+    test$GaussianElimination()
+    test$EnumerateVertices()
+    test$OutputOptimum()
+    test$Display()
+    
+    cat("VARIABLES\n", file = tbl.file[2])
+    cat(obj$variables, file = tbl.file[2], append = TRUE, sep = "\n")
+    cat("\nPARAMETERS\n", file = tbl.file[2], append = TRUE)
+    cat(obj$parameters, file = tbl.file[2], append = TRUE, sep = "\n")
+    cat("\nCONSTRAINTS\n", file = tbl.file[2], append = TRUE)
+    cat(obj$constraints, file= tbl.file[2], append = TRUE, sep = "\n")
+    cat("\nMINIMIZE\n", file = tbl.file[2], append = TRUE)
+    cat("\nOBJECTIVE\n", file =tbl.file[2], append = TRUE)
+    cat(obj$objective, file = tbl.file[2], append = TRUE)
+    cat("\nEND\n", file = tbl.file[2], append = TRUE)
+    
+    
+    test2 <- COptimization_$new()
+    test2$ParseFileWrap(tbl.file[2])
+    test2$CategorizeConstraints()
+    test2$GaussianElimination()
+    test2$EnumerateVertices()
+    test2$OutputOptimum()
+    test2$Display()
+    
     
 }
 
-do_var1 <- function(var, envir = ) {
-    
-    if(all(graph[from = rep(var, length(right.vars)), to = right.vars] == 0)) {
-        
-        respvars[[paste0("R_", names(var))]]
-        
-    }
-    
-}
 

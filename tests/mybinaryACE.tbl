@@ -1,0 +1,28 @@
+VARIABLES
+q00
+q10
+q01
+q11
+q02
+q12
+q03
+q13
+
+PARAMETERS
+p00_
+p10_
+p01_
+p11_
+
+CONSTRAINTS
+p00_ = q00 + q01
+p10_ = q10 + q12
+p01_ = q02 + q03
+p11_ = q11 + q13
+q00 + q10 + q01 + q11 + q02 + q12 + q03 + q13  = 1
+
+MAXIMIZE
+
+OBJECTIVE
+q01 + q11  -  q02 - q12
+END

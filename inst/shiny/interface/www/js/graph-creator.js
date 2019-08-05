@@ -573,6 +573,15 @@
             this.classList.remove("outcome");
         }
     });
+    
+      thisGraph.circles.each(function(d){ 
+        if(d.exposure == 1) {
+            this.classList.add("exposure");
+        }
+        if(d.exposure == 0) {
+            this.classList.remove("exposure");
+        }
+    });
 
     // remove old nodes
     thisGraph.circles.exit().remove();
@@ -583,7 +592,8 @@
         saveEdges.push({id: val.source.id + '.' + val.target.id, source: val.source.title, target: val.target.title, 
             sourceLeftside: val.source.x < width / 2, targetLeftside: val.target.x < width / 2,
             rlconnect: (val.target.x < width / 2 && val.source.x > width / 2), 
-            sourceLatent: val.source.latent, targetLatent: val.target.latent, targetOutcome: val.target.outcome, 
+            sourceLatent: val.source.latent, targetLatent: val.target.latent, 
+            sourceOutcome: val.source.outcome, targetOutcome: val.target.outcome, 
             sourceExposure: val.source.exposure, targetExposure: val.target.exposure,
             edgeMonotone: val.monotone
         });

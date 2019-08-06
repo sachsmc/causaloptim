@@ -10,10 +10,10 @@ optimize_effect <- function(obj) {
     cat("\nPARAMETERS\n", file = tbl.file[1], append = TRUE)
     cat(obj$parameters, file = tbl.file[1], append = TRUE, sep = "\n")
     cat("\nCONSTRAINTS\n", file = tbl.file[1], append = TRUE)
-    cat(obj$constraints, file= tbl.file[1], append = TRUE, sep = "\n")
+    cat(sapply(obj$constraints, shortentxt), file= tbl.file[1], append = TRUE, sep = "\n")
     cat("\nMAXIMIZE\n", file = tbl.file[1], append = TRUE)
     cat("\nOBJECTIVE\n", file =tbl.file[1], append = TRUE)
-    cat(obj$objective, file = tbl.file[1], append = TRUE)
+    cat(shortentxt(obj$objective), file = tbl.file[1], append = TRUE)
     cat("\nEND\n", file = tbl.file[1], append = TRUE)
     
     
@@ -34,10 +34,10 @@ optimize_effect <- function(obj) {
     cat("\nPARAMETERS\n", file = tbl.file[2], append = TRUE)
     cat(obj$parameters, file = tbl.file[2], append = TRUE, sep = "\n")
     cat("\nCONSTRAINTS\n", file = tbl.file[2], append = TRUE)
-    cat(obj$constraints, file= tbl.file[2], append = TRUE, sep = "\n")
+    cat(sapply(obj$constraints, shortentxt), file= tbl.file[2], append = TRUE, sep = "\n")
     cat("\nMINIMIZE\n", file = tbl.file[2], append = TRUE)
     cat("\nOBJECTIVE\n", file =tbl.file[2], append = TRUE)
-    cat(obj$objective, file = tbl.file[2], append = TRUE)
+    cat(shortentxt(obj$objective), file = tbl.file[2], append = TRUE)
     cat("\nEND\n", file = tbl.file[2], append = TRUE)
     
     
@@ -106,3 +106,25 @@ interpret_bounds <- function(bounds, parameters) {
 }
 
 
+shortentxt <- function(x) {
+    
+    vex <- strsplit(x, " ")[[1]]
+    ccount <- 0
+    res <- ""
+    vin <- vex
+    while(length(vin) > 0) {
+        
+        res <- paste0(res, vin[1])
+        ccount <- ccount + nchar(vin[1])
+        
+        if(ccount > 80 & vin[1] %in% c("+", "-")){ 
+            res <- paste0(res, "\\ \n")
+            ccount <- 0
+        }
+        vin <- vin[-1]
+    }
+    
+    res
+    
+    
+}

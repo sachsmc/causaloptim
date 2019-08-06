@@ -12,3 +12,4 @@ Depends: shiny,
     igraph,
     markdown
 LinkingTo: Rcpp
+RoxygenNote: 6.1.1

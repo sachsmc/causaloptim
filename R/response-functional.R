@@ -30,11 +30,11 @@ analyze_graph <- function(graph) {
     ## response variable for each observed variable
     
     obsvars <- c(right.vars, cond.vars)
-    respvars <- vector(mode = "list", length = length(right.vars))
-    names(respvars) <- names(right.vars)
-    for(ini in 1:length(right.vars)) {
+    respvars <- vector(mode = "list", length = length(obsvars))
+    names(respvars) <- names(obsvars)
+    for(ini in 1:length(obsvars)) {
         
-        i <- right.vars[ini]
+        i <- obsvars[ini]
         intoi <- graph[from = obsvars, to = rep(i, length(obsvars))]
         nstart <- prod(c(2 , 2 ^ intoi))
         
@@ -60,9 +60,13 @@ analyze_graph <- function(graph) {
         
     }
     
-    q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1))
+    q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
+    q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1)[which(obsvars %in% right.vars)])
+    
     variables <- paste0("q", do.call(paste0, q.vals))
     
+    q.vals.tmp <- cbind(q.vals, vars = variables)
+    q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp, by = names(right.vars), sort = TRUE)
     ## constraints 
     
     p.constraints <- rep(NA, nrow(p.vals))
@@ -116,39 +120,38 @@ analyze_graph <- function(graph) {
         names(intervene) <- names(expo.var)
         gee_r <- function(r, i) {
             
-            parents <- adjacent_vertices(graph, right.vars[i], "in")[[1]]
-            parents <- parents[vertex_attr(graph, name="latent", index = parents) == 0 & 
-                                   vertex_attr(graph, name="leftside", index = parents) == 0]
+            parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+            parents <- parents[vertex_attr(graph, name="latent", index = parents) == 0 ]
             
-            if(names(right.vars)[i] %in% names(intervene)) {
+            if(names(obsvars)[i] %in% names(intervene)) {
                 as.numeric(intervene[[names(right.vars[i])]])
             } else if (length(parents) == 0){
-                as.numeric(respvars[[names(right.vars[[i]])]]$values[which(respvars[[names(right.vars[[i]])]]$index == r[i])])
+                as.numeric(respvars[[names(obsvars[[i]])]]$values[which(respvars[[names(obsvars[[i]])]]$index == r[i])])
             } else {
                 
                 lookin <- lapply(names(parents), function(gu) {
                     
-                    as.numeric(gee_r(r, which(names(right.vars) == gu)))
+                    as.numeric(gee_r(r, which(names(obsvars) == gu)))
                     
                 })
                 names(lookin) <- names(parents)
-                inres <- respvars[[names(right.vars[[i]])]]$values[which(respvars[[names(right.vars[[i]])]]$index == r[i])]
+                inres <- respvars[[names(obsvars[[i]])]]$values[which(respvars[[names(obsvars[[i]])]]$index == r[i])]
                 with(lookin, eval(parse(text = inres)))
                 
             }
         }
         
         
-        res.mat <- matrix(NA, ncol = ncol(q.vals), nrow = nrow(q.vals))
-        for(k in 1:nrow(q.vals)) {
-            for(j in 1:ncol(q.vals)) {
-                res.mat[k, j] <- gee_r(r = unlist(q.vals[k, ]), i = j)
+        res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
+        for(k in 1:nrow(q.vals.all)) {
+            for(j in 1:ncol(q.vals.all)) {
+                res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
                 
             }
         }
-        colnames(res.mat) <- names(right.vars)
+        colnames(res.mat) <- names(obsvars)
         var.dex <- res.mat[, names(outcome)] == 1
-        var.eff[[(1 - do.x) + 1]] <- variables[var.dex]
+        var.eff[[(1 - do.x) + 1]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
         
     }
     

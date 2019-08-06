@@ -88,6 +88,23 @@ igraph_to_response_function <- function(graph) {
     
     p.constraints <- c(p.constraints, paste(paste(variables, collapse= " + "), " = 1"))
     
+    ## check for any monotonicity assumptions
+    if(any(E(graph)$edge.monotone == 1)) {
+        which.monotone <- which(E(graph)$edge.monotone == 1)
+        for(j in which.monotone) {
+            
+            head.mono <- names(head_of(graph, j))
+            tail.mono <- names(tail_of(graph, j))
+            
+            settozeroindex <- respvars[[head.mono]]$index[grepl(paste0("(1 - ", tail.mono, ")"), respvars[[head.mono]]$values)]
+            
+            p.constraints <- c(p.constraints, 
+                               paste0(variables[q.vals[, head.mono] %in% settozeroindex],  " = 0"))
+            
+        }
+    }
+    
+    
     ## determine objective based on exposure and outcome in terms of qs 
     expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
     outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]

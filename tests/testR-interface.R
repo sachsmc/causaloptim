@@ -11,8 +11,7 @@ test$Display()
 
 
 
-
-    graph <- readRDS("tests/test-graphs/instrument.RData")
+graph <- readRDS("tests/test-graphs/instrument.RData")
 obj <- igraph_to_response_function(graph)
 
 balke_optimize(obj)

@@ -3,6 +3,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <string>
 #include "SymConst.h"
 
 
@@ -129,7 +130,7 @@ public:
 
 	void DetermineSwap (int & p_Basis, int & p_Var);
 	void TradeBasis (int p_nBasis, int p_nVar);
-	void DecisionDisplay ();
+	std::string DecisionDisplay ();
 //	void EvaluateNet ();
 	double GetSolution (char * p_szVarName);
 	void SetSolution (int p_nBasis, double p_Solution);
@@ -144,14 +145,14 @@ public:
 	void WorkToOrig ();
 	void AddUnique (double p_Value, WORD * p_pNonBasics);
 	WORD * PopFirst ();
-	void VertexEnumerate ();
+	std::string VertexEnumerate ();
 	void GenerateTableau (WORD * p_pNonBasics);
 	void DivideRow (int p_Basis, double p_Divisor);
 	void FactorAddRows (int p_SrcRow, int p_TgtRow, double p_Factor);
 	void AddEnumRcd (int * p_pBasisVars, double p_Value);
 	void DisplayEnumRcds ();
 	void AddVertex (int * p_pBasisVars, double * p_pSolution);
-	void DisplayVertices ();
+	std::string DisplayVertices ();
 	BOOL  GetVertex (int p_nVertex, double * p_pVertex, int p_VertexLength);
 	int	VertexCount ()
 	{

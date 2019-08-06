@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 #include <math.h>
 #include "MyUtils.h"
 #include "Tableau.h"
@@ -562,17 +562,20 @@ void CTableau :: TradeBasis (int p_Basis, int p_Var)
 }  /* CTableau :: TradeBasis () */
 
 
-void CTableau :: DecisionDisplay ()
+std::string CTableau :: DecisionDisplay ()
 {
 	int		nBasis;
 	int		nVar;
-
-	printf ("%7s", "Basis");
+	char buffer[100];
+	std::string result;
+	
+	result.append ("Basis");
 	for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 	{
-		printf ("%7s", m_pVarLabels [m_pBasisVars [nBasis]]);
+		sprintf (buffer, "%7s", m_pVarLabels [m_pBasisVars [nBasis]]);
+	    result.append (buffer);
 	}
-	printf ("\n");
+	result.append ("\n");
 
 	for (nVar = 0; nVar < m_VarCnt; nVar++)
 	{
@@ -584,21 +587,24 @@ void CTableau :: DecisionDisplay ()
 		if (nBasis < m_BasisCnt)
 			continue;
 
-		printf ("%7s", m_pVarLabels [nVar]);
+		sprintf (buffer, "%7s", m_pVarLabels [nVar]);
+		result.append(buffer); 
 		for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 		{
-			printf ("%7.3lf", m_pTable [nBasis][nVar]);
+			sprintf (buffer, "%7.3lf", m_pTable [nBasis][nVar]);
+		    result.append(buffer);
 		}
-		printf ("\n");
+		result.append ("\n");
 	}
 	
-	printf ("%7s", "Sol");
+	result.append ( "Sol");
 	for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 	{
-		printf ("%7.3lf", m_pSolution [nBasis]);
+		sprintf (buffer, "%7.3lf", m_pSolution [nBasis]);
+	    result.append(buffer); 
 	}
-	printf ("\n\n");
-	
+	result.append ("\n\n");
+	return result;
 }  /* CTableau :: DecisionDisplay () */
 
 
@@ -938,7 +944,7 @@ void CTableau :: DisplayEnumRcds ()
 
 
 
-void CTableau :: VertexEnumerate ()
+std::string CTableau :: VertexEnumerate ()
 {
 	int			nBasis;
 	int			nNonBasis;
@@ -953,14 +959,16 @@ void CTableau :: VertexEnumerate ()
 	double		Factor;
 	double		Pivot;
 	char		szResponse[100];
+	char        buffer[1024];
+	std::string result;
 
-	printf ("Table before optimizing Y.\n");
-	printf ("--------------------------\n");
+	result.append ("Table before optimizing Y.\n");
+	result.append ("--------------------------\n");
 
 	pNewSol = new double [m_BasisCnt];
 	pBasisVars = new int [m_BasisCnt];
 
-	DecisionDisplay ();
+	result.append(DecisionDisplay ());
 
 	Optimize ();
 	DropVars ();
@@ -1105,19 +1113,20 @@ void CTableau :: VertexEnumerate ()
 		}
 	}
 
-	DisplayVertices ();
+	result.append(DisplayVertices ());
 
-	printf ("Irrelevant contraints:\n");
+	result.append ("Irrelevant contraints:\n");
 	for (nSlack = 0; nSlack < m_BasisCnt - 1; nSlack++)
 	{
 		if (m_pSlackFlag [nSlack] == 0)
 		{
-			printf ("\t%d\n", nSlack);
+			sprintf (buffer, "\t%d\n", nSlack);
+		    result.append(buffer);
 		}
 	}
 
 	delete pNewSol;
-
+    return result;
 }  /* CTableau :: VertexEnumerate () */
 
 
@@ -1253,7 +1262,7 @@ void CTableau :: AddEnumRcd (int * p_pBasisVars, double p_Value)
 
 	AddUnique (p_Value, pNonBasis);
 
-	printf (":%d", m_EnumListLen);
+	//printf (":%d", m_EnumListLen);
 
 	delete pbBasis;
 
@@ -1306,7 +1315,7 @@ void CTableau :: AddVertex (int * p_pBasisVars, double * p_pSolution)
 		if (pVertex [nVertex] > MAX_SOL)
 		{
 			delete pVertex;
-			printf ("-");
+			//printf ("-");
 			return;
 		}
 	}
@@ -1335,7 +1344,7 @@ void CTableau :: AddVertex (int * p_pBasisVars, double * p_pSolution)
 		m_pVertices [m_VertexCnt] = pVertex;
 		m_VertexCnt++;
 
-		printf ("\nADDED Unique Vertex!\n");
+		//printf ("\nADDED Unique Vertex!\n");
 //		DisplayVertices ();
 //		DecisionDisplay ();
 
@@ -1343,32 +1352,37 @@ void CTableau :: AddVertex (int * p_pBasisVars, double * p_pSolution)
 	else
 	{
 		delete pVertex;
-		printf ("\n+");
+		//printf ("\n+");
 	}
 
 }  /* CTableau :: AddVertex () */
 
 
-void CTableau :: DisplayVertices ()
+std::string CTableau :: DisplayVertices ()
 {
 	int		nVertex;
 	int		nParam;
-
-	printf ("\n\n");
+    char buffer[1024];
+    std::string result;
+    
+	result.append ("\n\n");
 	for (nParam = 0; nParam < m_ParamCnt; nParam++)
 	{
-		printf ("%6s ", m_pVarLabels [nParam + 1]);
+		sprintf (buffer, "%6s ", m_pVarLabels [nParam + 1]);
+	    result.append(buffer);
 	}
-	printf ("\n\n");
+	result.append ("\n\n");
 
 	for (nVertex = 0; nVertex < m_VertexCnt; nVertex++)
 	{
 		for (nParam = 0; nParam < m_ParamCnt; nParam++)
 		{
-			printf ("%6.3lf ", m_pVertices [nVertex][nParam]);
+			sprintf (buffer, "%6.3lf ", m_pVertices [nVertex][nParam]);
+		    result.append(buffer);
 		}
-		printf ("\n");
+		result.append ("\n");
 	}
+	return result;
 }  /* CTableau :: DisplayVertices () */
 
 

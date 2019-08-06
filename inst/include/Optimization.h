@@ -4,6 +4,7 @@
 
 #include <windows.h>
 #include <stdio.h>
+#include <string.h>
 #include <Rcpp.h>
 #include "SymbolSet.h"
 #include "Equation.h"
@@ -98,15 +99,15 @@ public:
 
 	void GaussianElimination ();
 
-	void EnumerateVertices ();
+	std::string EnumerateVertices ();
 
 	void Optimize ();
 
 	CEquation_ * GetSolution (WORD & p_SolutionID);
 
-	void OutputOptimum ();
+	std::string OutputOptimum ();
 
-	void Display ();
+	std::string Display ();
 
 };  /* class Optimization_ */
 

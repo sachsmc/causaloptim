@@ -1,4 +1,4 @@
-#' Convert an igraph object to the response functional
+#' Analyze the causal graph to determine constraints and objective
 #' 
 #' The graph must contain edge attributes named "leftside" and "lrconnect"
 #' that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
@@ -6,7 +6,7 @@
 #' 
 #' @export
 
-igraph_to_response_function <- function(graph) {
+analyze_graph <- function(graph) {
     
     leftind <- vertex_attr(graph)$leftside
     
@@ -104,7 +104,9 @@ igraph_to_response_function <- function(graph) {
         }
     }
     
-    
+    baseind <- rep(FALSE, length(p.constraints))
+    baseind[1:nrow(p.vals)] <- TRUE
+    attr(p.constraints, "baseconstr") <- baseind
     ## determine objective based on exposure and outcome in terms of qs 
     expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
     outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
@@ -155,60 +157,14 @@ igraph_to_response_function <- function(graph) {
     
     objective <- paste(paste(objterm1, collapse = " + "), " - ", paste(objterm2, collapse = " - "))
     
+    attr(parameters, "key") <- parameters.key
+    
     list(variables = variables, parameters = parameters, constraints = p.constraints, 
-         objective = objective)
+         objective = objective, p.vals = p.vals, q.vals = q.vals)
     
     
 }
 
 pastestar <- function(...) paste(..., sep = "*")
-
-
-
-balke_optimize <- function(obj) {
-    
-    tbl.file <- tempfile(pattern = c("max", "min"))
-    cat("VARIABLES\n", file = tbl.file[1])
-    cat(obj$variables, file = tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nPARAMETERS\n", file = tbl.file[1], append = TRUE)
-    cat(obj$parameters, file = tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nCONSTRAINTS\n", file = tbl.file[1], append = TRUE)
-    cat(obj$constraints, file= tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nMAXIMIZE\n", file = tbl.file[1], append = TRUE)
-    cat("\nOBJECTIVE\n", file =tbl.file[1], append = TRUE)
-    cat(obj$objective, file = tbl.file[1], append = TRUE)
-    cat("\nEND\n", file = tbl.file[1], append = TRUE)
-    
-    
-    test <- COptimization_$new()
-    test$ParseFileWrap(tbl.file[1])
-    test$CategorizeConstraints()
-    test$GaussianElimination()
-    test$EnumerateVertices()
-    test$OutputOptimum()
-    test$Display()
-    
-    cat("VARIABLES\n", file = tbl.file[2])
-    cat(obj$variables, file = tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nPARAMETERS\n", file = tbl.file[2], append = TRUE)
-    cat(obj$parameters, file = tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nCONSTRAINTS\n", file = tbl.file[2], append = TRUE)
-    cat(obj$constraints, file= tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nMINIMIZE\n", file = tbl.file[2], append = TRUE)
-    cat("\nOBJECTIVE\n", file =tbl.file[2], append = TRUE)
-    cat(obj$objective, file = tbl.file[2], append = TRUE)
-    cat("\nEND\n", file = tbl.file[2], append = TRUE)
-    
-    
-    test2 <- COptimization_$new()
-    test2$ParseFileWrap(tbl.file[2])
-    test2$CategorizeConstraints()
-    test2$GaussianElimination()
-    test2$EnumerateVertices()
-    test2$OutputOptimum()
-    test2$Display()
-    
-    
-}
 
 

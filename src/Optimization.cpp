@@ -1,6 +1,7 @@
 //#include <afx.h>
 #include <windows.h>
 #include <stdio.h>
+#include <string>
 #include <math.h>
 #include <Rcpp.h>
 #include "LinkedList.h"
@@ -482,24 +483,27 @@ CEquation_ * COptimization_ :: GetSolution (WORD & p_SolutionID)
 }  /* COptimization_ :: GetSolution () */
 
 
-void COptimization_ :: Display ()
+std::string COptimization_ :: Display ()
 {
 	char			szString [2048];
 					// Memory in which to format the display strings.
 
 	WORD			nConst;
 					// Index into the array of constraints.
-
+    char buffer[2048];
+    std::string result;
+    
 	/*
 	 * Display all the optimization constraints.
 	 */
 	if (m_pOrigConstraints)
 	{
-		printf ("Constraints:\n");
+		result.append ("Constraints:\n");
 		for (nConst = 0; nConst < m_pOrigConstraints-> m_Count; nConst++)
 		{
 			m_pOrigConstraints-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			printf ("\t%s\n", szString);
+			sprintf (buffer, "\t%s\n", szString);
+			result.append(buffer);
 		}
 	}
 	 
@@ -508,11 +512,12 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pOrigEqualities)
 	{
-		printf ("Equalities:\n");
+		result.append ("Equalities:\n");
 		for (nConst = 0; nConst < m_pOrigEqualities-> m_Count; nConst++)
 		{
 			m_pOrigEqualities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			printf ("\t%s\n", szString);
+			sprintf (buffer, "\t%s\n", szString);
+			result.append(buffer);
 		}
 	}
 	 
@@ -521,11 +526,12 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pOrigInequalities)
 	{
-		printf ("Inequalities:\n");
+		result.append ("Inequalities:\n");
 		for (nConst = 0; nConst < m_pOrigInequalities-> m_Count; nConst++)
 		{
 			m_pOrigInequalities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			printf ("\t%s\n", szString);
+			sprintf (buffer, "\t%s\n", szString);
+			result.append(buffer);
 		}
 	}
 	 
@@ -534,9 +540,10 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pOrigObjective)
 	{
-		printf ("Objective:\n");
+		result.append ("Objective:\n");
 		m_pOrigObjective-> BuildOutput (szString, 3, TRUE);
-		printf ("\t%s\n", szString);
+		sprintf (buffer, "\t%s\n", szString);
+		result.append(buffer);
 	}
 
 	/*
@@ -544,11 +551,12 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pReducedInequalities)
 	{
-		printf ("Reduced Inequalities:\n");
+		result.append ("Reduced Inequalities:\n");
 		for (nConst = 0; nConst < m_pReducedInequalities-> m_Count; nConst++)
 		{
 			m_pReducedInequalities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			printf ("\t%s\n", szString);
+			sprintf (buffer, "\t%s\n", szString);
+			result.append(buffer);
 		}
 	}
 	 
@@ -557,9 +565,10 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pReducedObjective)
 	{
-		printf ("Reduced Objective:\n");
+		result.append ("Reduced Objective:\n");
 		m_pReducedObjective-> BuildOutput (szString, 3, TRUE);
-		printf ("\t%s\n", szString);
+		sprintf (buffer, "\t%s\n", szString);
+		result.append(buffer);
 	}
 
 	/*
@@ -567,9 +576,10 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pObjectiveExcessTerm)
 	{
-		printf ("Reduced Objective's Excess Terms:\n");
+		result.append ("Reduced Objective's Excess Terms:\n");
 		m_pObjectiveExcessTerm-> BuildOutput (szString, 3, TRUE);
-		printf ("\t%s\n", szString);
+		sprintf (buffer, "\t%s\n", szString);
+		result.append(buffer);
 	}
 
 	/*
@@ -577,14 +587,16 @@ void COptimization_ :: Display ()
 	 */
 	if (m_pBValues)
 	{
-		printf ("Right-hand side of Reduced Inequalities:\n");
+		result.append ("Right-hand side of Reduced Inequalities:\n");
 		for (nConst = 0; nConst < m_pBValues-> m_Count; nConst++)
 		{
 			m_pBValues-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			printf ("\t%s\n", szString);
+			sprintf (buffer, "\t%s\n", szString);
+			result.append(buffer);
 		}
 	}
 	 
+	 return result;
 
 }  /* COptimization_ :: Display () */
 
@@ -880,7 +892,7 @@ LBL_Diagonalized:
 }  /* COptimization_ :: GaussianElimination () */
 
 
-void COptimization_ :: EnumerateVertices ()
+std::string COptimization_ :: EnumerateVertices ()
 {
 	int			Rows;
 	int			Columns;
@@ -905,7 +917,8 @@ void COptimization_ :: EnumerateVertices ()
 	BOOL		bResult;
 				// General boolean return value for checking the
 				// return status of functions.
-
+    std::string result;
+    char buffer[1024];
 
 
 	VarCnt = m_pReducedInequalities-> m_pVariables-> Count ();
@@ -1011,17 +1024,18 @@ void COptimization_ :: EnumerateVertices ()
 		pMatrixA [Rows - 1][nInequality] = 1.0;
 	}
 		    
-	printf ("Matrix A\n");
+	result.append ("Matrix A\n");
 	for (nVar = 0; nVar < Rows; nVar++)
 	{
-		printf ("\t");
+		result.append ("\t");
 		for (nInequality = 0; nInequality < Columns; nInequality++)
 		{
-			printf ("%5.2f ", pMatrixA [nVar][nInequality]);
+			sprintf (buffer, "%5.2f ", pMatrixA [nVar][nInequality]);
+		    result.append(buffer);
 		}
-		printf ("\n");
+		result.append("\n");
 	}
-	printf ("\n");
+	result.append ("\n");
 
 	/*
 	 * Set up the B matrix vector (see Mattheiss paper).
@@ -1032,16 +1046,19 @@ void COptimization_ :: EnumerateVertices ()
 		pVectorB [nVar] = m_pReducedObjective-> m_pVarCoefs [nVar];
 	pVectorB [Rows - 1] = Columns * 50;
 
-	printf ("Vector B\n");
+	result.append ("Vector B\n");
 	for (nVar = 0; nVar < Rows; nVar++)
-		printf ("\t%5.2f\n", pVectorB [nVar]);
-	printf ("\n");
+	{
+		sprintf (buffer, "\t%5.2f\n", pVectorB [nVar]);
+	    result.append(buffer);
+	}
+	result.append ("\n");
 
 
 	pTableau = new CTableau (Columns, Rows,
 							pLabels, pMatrixA, pVectorB);
  
-	pTableau -> VertexEnumerate ();
+	result.append(pTableau -> VertexEnumerate ());
 
 	m_VertexCount = pTableau-> VertexCount ();
 	m_pVertices = new Pdouble_ [m_VertexCount];
@@ -1057,11 +1074,12 @@ void COptimization_ :: EnumerateVertices ()
 	for (nRow = 0; nRow < Rows; nRow++)
 		delete [] pMatrixA [nRow];
 	delete [] pMatrixA;
+	return result;
 
 }  /* COptimization_ :: EnumerateVertices () */
 
 
-void COptimization_::OutputOptimum ()
+std::string COptimization_::OutputOptimum ()
 {
 	CEquation_ *		pValue;
 						// Value to accumulate one of the solution terms.
@@ -1072,11 +1090,13 @@ void COptimization_::OutputOptimum ()
 	int					nBValue;
 
 	char				szSolutionTerm [1024];
+	
+	std::string         result;
 
 	if (m_Style == Opt_Maximize)
-		printf ("\nMIN {\n");
+		result.append ("\nMIN {\n");
 	else
-		printf ("\nMAX {\n");
+		result.append ("\nMAX {\n");
 
 	pValue = new CEquation_ (m_pNoVariables, m_pOrigParameters);
 	for (nVertex = 0; nVertex < m_VertexCount; nVertex++)
@@ -1091,10 +1111,12 @@ void COptimization_::OutputOptimum ()
 			pValue-> Negate ();
 
 		pValue-> BuildOutput (szSolutionTerm, 3, TRUE);
-		printf ("  %s\n", szSolutionTerm);
+		result.append (szSolutionTerm);
+		result.append ("\n");
 	}
-	printf ("}\n\n");
+	result.append ("}\n\n");
 
 	delete pValue;
+	return result;
 }  /* COptimization_::OutputOptimum () */
 

@@ -43,17 +43,36 @@ analyze_graph <- function(graph) {
         names(arglist) <- parents
         
         if(length(parents) == 0) {
-            values <- c("0", "1")
+            values <- list(function(){ 0 }, function() { 1 })
         } else {
             
-            bigboy <- lapply(1:length(parents), function(x) combn(parents, x, simplify = FALSE))
             
-            bigifs <- lapply(bigboy, function(rents) {
-                ifs <- expand.grid(lapply(rents, function(x) c(paste0("(", x, ")"), paste0("(1 - ", x, ")"))))
-                do.call(pastestar, ifs)
-            })
+            ## da matrix
             
-            values <- c("0", unlist(bigifs), "1")
+            poss.ins <- expand.grid(lapply(parents, function(x) c(0, 1)))
+            colnames(poss.ins) <- parents
+            ini.outs <- expand.grid(lapply(1:nrow(poss.ins), function(x) c(0, 1)))
+            
+            args <- vector(mode = "list", length = ncol(poss.ins))
+            names(args) <- parents
+            
+            values <- vector(mode = "list", length = nrow(ini.outs))
+            for(j in 1:nrow(ini.outs)) {
+                f.tmp <- function() {}
+                formals(f.tmp) <- as.pairlist(args)
+                
+                ## build body
+                a1 <- paste("paste0(", paste(parents, collapse = ", "), ")")
+                switchnames <- paste0("`", do.call(paste0, poss.ins), "`")
+                switchbod <- as.list(c(ini.outs[j, ]))
+                fbod <- paste0("switch(", a1, ", ", paste(paste(switchnames, switchbod, sep = " = "), collapse = ", "), ")")
+                body(f.tmp) <- parse(text = fbod)
+                environment(f.tmp) <- parent.frame()
+                
+                values[[j]] <- f.tmp
+                
+            }
+            
         }
         
         respvars[[ini]] <- list(index = 0:(length(values) - 1), values = values)
@@ -69,7 +88,8 @@ analyze_graph <- function(graph) {
     q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp, by = names(right.vars), sort = TRUE)
     ## constraints 
     
-    p.constraints <- rep(NA, nrow(p.vals))
+    p.constraints <- rep(NA, nrow(p.vals) + 1)
+    p.constraints[1] <- paste(paste(variables, collapse= " + "), " = 1")
     for(j in 1:nrow(p.vals)) {
         tmpenvir <- p.vals[j, ]
         
@@ -78,7 +98,7 @@ analyze_graph <- function(graph) {
         for(i in 1:length(right.vars)) {
             
             cf.vals <- unlist(lapply(respvars[[i]]$values, function(x) {
-                eval(parse(text = x), envir=tmpenvir, enclos = parent.frame())
+                do.call(x, tmpenvir[names(tmpenvir) %in% names(formals(x))])
             }))
             
             tmp.match[[i]] <- respvars[[i]]$index[cf.vals == tmpenvir[, i]]
@@ -86,11 +106,10 @@ analyze_graph <- function(graph) {
         }
         
         q.match <- paste0("q", do.call(paste0, expand.grid(tmp.match)))
-        p.constraints[j] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
+        p.constraints[j + 1] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
         
     }
     
-    p.constraints <- c(p.constraints, paste(paste(variables, collapse= " + "), " = 1"))
     
     ## check for any monotonicity assumptions
     if(any(E(graph)$edge.monotone == 1)) {
@@ -100,7 +119,12 @@ analyze_graph <- function(graph) {
             head.mono <- names(head_of(graph, j))
             tail.mono <- names(tail_of(graph, j))
             
-            settozeroindex <- respvars[[head.mono]]$index[grepl(paste0("(1 - ", tail.mono, ")"), respvars[[head.mono]]$values)]
+            tmpenv <- list(1)
+            names(tmpenv) <- tail.mono
+            
+            resp.out <- lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv))
+            
+            settozeroindex <- respvars[[head.mono]]$index[resp.out == 0]
             
             p.constraints <- c(p.constraints, 
                                paste0(variables[q.vals[, head.mono] %in% settozeroindex],  " = 0"))
@@ -126,7 +150,8 @@ analyze_graph <- function(graph) {
             if(names(obsvars)[i] %in% names(intervene)) {
                 as.numeric(intervene[[names(right.vars[i])]])
             } else if (length(parents) == 0){
-                as.numeric(respvars[[names(obsvars[[i]])]]$values[which(respvars[[names(obsvars[[i]])]]$index == r[i])])
+                x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+                do.call(x, list())
             } else {
                 
                 lookin <- lapply(names(parents), function(gu) {
@@ -135,8 +160,8 @@ analyze_graph <- function(graph) {
                     
                 })
                 names(lookin) <- names(parents)
-                inres <- respvars[[names(obsvars[[i]])]]$values[which(respvars[[names(obsvars[[i]])]]$index == r[i])]
-                with(lookin, eval(parse(text = inres)))
+                inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+                do.call(inres, lookin)
                 
             }
         }
@@ -158,11 +183,17 @@ analyze_graph <- function(graph) {
     objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
     objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
     
-    objective <- paste(paste(objterm1, collapse = " + "), " - ", paste(objterm2, collapse = " - "))
+    ## reduce terms
+    
+    red.sets <- const.to.sets(p.constraints, objterm1, objterm2)
+    
+    
+    objective <- paste(paste(red.sets$objective.terms[[1]], collapse = " + "), " - ", 
+                       paste(red.sets$objective.terms[[2]], collapse = " - "))
     
     attr(parameters, "key") <- parameters.key
     
-    list(variables = variables, parameters = parameters, constraints = p.constraints, 
+    list(variables = red.sets$variables, parameters = parameters, constraints = red.sets$constr, 
          objective = objective, p.vals = p.vals, q.vals = q.vals)
     
     
@@ -170,4 +201,89 @@ analyze_graph <- function(graph) {
 
 pastestar <- function(...) paste(..., sep = "*")
 
+
+const.to.sets <- function(constr, objterm1, objterm2) {
+    
+    sets <- lapply(strsplit(constr, " = "), function(x) {
+        
+      tmp1 <- grep("q", x, value = TRUE)  
+      trimws(unlist(strsplit(tmp1, " + ", fixed = TRUE)))
+      
+    })
+    
+    pnames <- lapply(strsplit(constr, " = "), function(x) {
+        
+        tmp1 <- grep("q", x, value = TRUE, invert = TRUE) 
+        trimws(tmp1)
+        
+    })
+    
+    K <- length(sets)
+    sets[[length(sets) + 1]] <- objterm1
+    sets[[length(sets) + 1]] <- objterm2
+    
+    reduced.sets <- reduce.sets(sets)
+    
+    constr.new <- reduced.sets[1:K]
+    obj.new <- reduced.sets[(K+1):(K+2)]
+    var.new <- reduced.sets[[1]]
+    
+    list(constr = paste(unlist(lapply(constr.new, paste, collapse = " + ")), " = ", pnames), 
+         objective.terms = obj.new, 
+         variables = var.new)
+    
+    
+}
+
+
+
+
+reduce.sets <- function(sets){
+    #find commonalities
+    K <- length(sets)
+    fullset <- sets[[1]]
+    common <- list()
+    left <- fullset
+    r <- 1
+    while(length(left)>1){
+        tmp <- left[1]
+        for(i in 2:length(left)){
+            together <- vector(length=K)
+            for(k in 1:K){
+                if((left[1]%in%sets[[k]] & left[i]%in%sets[[k]]) |
+                   (!left[1]%in%sets[[k]] & !left[i]%in%sets[[k]]))
+                    together[k] <- TRUE  
+            }
+            if(sum(together)==K)
+                tmp <- c(tmp, left[i])     
+        }
+        left <- setdiff(left, tmp)
+        if(length(tmp)>1){
+            common[[r]] <- tmp
+            r <- r+1
+        }
+    }
+    
+    if(length(common) == 0) return(sets)
+    #make reduction
+    R <- length(common)
+    for(r in 1:R){
+        tmp <- common[[r]][-1]
+        for(k in 1:K){
+            ind <- match(tmp, sets[[k]])
+            if(sum(is.na(ind))==0)
+                sets[[k]] <- sets[[k]][-ind]
+        }  
+    }
+    #simplify names
+    fullset <- sets[[1]]
+    for(i in 1:length(sets)){
+        tmp <- sets[[i]]
+        for(j in 1:length(tmp)){
+            tmp[j] <- paste0("q", match(tmp[j], fullset))
+        }
+        sets[[i]] <- tmp
+    }
+    return(sets)  
+}
 

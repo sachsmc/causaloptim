@@ -22,6 +22,7 @@ length(formals(f.bounds))
 
 nsim <- 1e4
 objs <- rep(NA, nsim)
+bounds <- matrix(NA, nrow = nsim, ncol = 2)
 for(i in 1:nsim){
     
     sim.qs <- runif(length(obj$variables))
@@ -36,13 +37,18 @@ for(i in 1:nsim){
         assign(names(sim.qs)[j], sim.qs[j], inenv)
         
     }
-    res <- lapply(as.list(obj$constraints[1:nrow(obj$p.vals)]), function(x) eval(parse(text = x), envir = inenv))
+    res <- lapply(as.list(obj$constraints[-1]), function(x){
+        x1 <- strsplit(x, " = ")[[1]]
+        x0 <- paste(x1[2], " = ", x1[1])
+        eval(parse(text = x0), envir = inenv)
+        })
     
     params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
     names(params) <- obj$parameters
     
     bees <- sort(do.call(f.bounds, params))
     objs[i] <- objective
+    bounds[i, ] <- bees
     
     if(objective < bees[1] | objective > bees[2]) {
         stop("error")

@@ -69,14 +69,6 @@ function(input, output) {
                                   rlconnect = rep(0,length(ogright)), edge.monotone= rep(0, length(ogright)))
             
             
-            plot(graphres, vertex.color = ifelse(V(graphres)$latent == 1, "grey70",
-                                                 ifelse(V(graphres)$exposure == 1, "green", "white")), 
-                 vertex.shape = ifelse(V(graphres)$outcome == 1, "rectangle", "circle"),
-                 edge.color = ifelse(E(graphres)$edge.monotone == 1, "blue", "black"), 
-                 layout = layout_nicely, main = "Graph to be analyzed, inspect carefully")
-            legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), pt.cex = c(3, 3, 3, 1), 
-                   pch = c(20, 22, 20, NA), col = c("grey70", "black", "green", "blue"), lty = c(NA, NA, NA, 1))
-            
             graphres
             
         } else {
@@ -98,6 +90,9 @@ function(input, output) {
         
     })
     
+    
+    ## return graph to R
+    
     observeEvent(input$endbtn, {
             
             myin <- edgeList()
@@ -112,6 +107,118 @@ function(input, output) {
         
     })
     
+    
+    ## analyze the graph in shiny
+    
+    observeEvent(input$analyze, {
+      
+        myin <- edgeList()
+        if(sum(myin$rlconnect) > 0) {
+            
+            showNotification("No connections from right to left are allowed!", type = "error")
+            
+        } else {
+            
+            graphres <- igraphFromList()
+            
+            removeUI(selector = "#myplot")
+            removeUI(selector = "#results")
+            
+            insertUI(selector = "#analyze", 
+                     where = "afterEnd", 
+                     ui = tags$div(id = "myplot", 
+                                   plotOutput("myplot")
+                         )
+            )
+            
+            output$myplot <- renderPlot(plot.graphres(graphres))
+            
+            insertUI(selector = "#myplot", 
+                     where = "afterEnd", 
+                     ui = tags$div(id = "results", 
+                                   actionButton("optimize", "Press to optimize the bounds")
+                                   )
+            )
+            
+            
+        }
+        
+    })
+    
+    
+    optimizeGraph <- reactive({
+      
+      graphres <- igraphFromList()
+      obj <- analyze_graph(graphres)
+      bounds.obs <- optimize_effect(obj)
+      
+      list(graphres = graphres, obj = obj, bounds.obs = bounds.obs)
+      
+    })
+    
+    
+    observeEvent(input$optimize, {
+        
+        
+        b <- optimizeGraph()
+        
+        
+        
+        removeUI(selector = "#resultsText")
+        insertUI(selector = "#results", where = "beforeEnd", 
+                 ui = div(h3("Results"), 
+                              htmlOutput("resultsText")
+                          )
+                 )
+        
+        
+        expo <- V(b$graphres)[V(b$graphres)$exposure == 1]
+        outc <- V(b$graphres)[V(b$graphres)$outcome == 1]
+        effectpath <- all_simple_paths(b$graphres, from = expo, to = outc)
+        
+        effecttext <- sprintf("Computed bounds for the total effect of '%s' on '%s', i.e., P(%s = 1 | do(%s = 1)) - P(%s = 1 | do(%s = 0)). The total effect includes the following paths: ", names(expo), names(outc), names(outc), names(expo), names(outc), names(expo))
+        totalpaths <- sapply(effectpath, function(x) paste(names(x), collapse = " -> "))
+        
+        lkey <- letters[1:length(attr(b$obj$parameters, "rightvars"))]
+        rkey <- letters[(length(attr(b$obj$parameters, "rightvars")) + 1):(length(attr(b$obj$parameters, "rightvars")) + 
+                                                                             length(attr(b$obj$parameters, "condvars")))]
+        
+        sampparm <- paste0("p", paste(lkey, collapse = ""), "_", 
+                           paste(rkey, collapse = ""))
+        
+        probstate <- paste0("P(", paste(paste0(attr(b$obj$parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
+        paste0(attr(b$obj$parameters, "condvars"), " = ", rkey, collapse = ", "), ")")
+        
+        variabletext <- sprintf("The bounds are reported in terms of parameters of the form %s, which represents the probability %s.", sampparm, probstate)
+        
+        textres <- lapply(c(effecttext, totalpaths, variabletext, "Bounds: ",
+                            b$bounds.obs$bounds[1], b$bounds.obs$bounds[2]), function(x) {
+                   
+                   x2 <- strsplit(x, "\n", fixed = TRUE)[[1]]
+                   lapply(x2, function(x) tags$p(x))
+                   
+                 })
+        
+        
+        output$resultsText <- renderUI(do.call(tagList, textres))
+        
+        insertUI(selector = "#results", where = "afterEnd", 
+                 ui = actionButton("downloadf", "Press to return objects to R"))
+        
+        
+        
+        
+    })
+    
+    
+    
+    observeEvent(input$downloadf, {
+      
+      b <- optimizeGraph()
+      b$boundsFunction <- interpret_bounds(b$bounds.obs$bounds, b$obj$parameters)
+      stopApp(b)
+      
+    })
     
     
 }

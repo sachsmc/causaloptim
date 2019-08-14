@@ -2,7 +2,7 @@ library(causaloptim)
 
 #graph <- specify_graph()
 
-graph <- readRDS("tests/test-graphs/direct-and-indirect.RData")
+graph <- readRDS("tests/test-graphs/instrument.RData")
 
 plot(graph, vertex.color = ifelse(V(graph)$latent == 1, "grey70",
                                      ifelse(V(graph)$exposure == 1, "green", "white")), 
@@ -15,14 +15,21 @@ legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), 
 
 obj <- analyze_graph(graph)
 bounds.obs <- optimize_effect(obj)
-
 f.bounds <- interpret_bounds(bounds.obs$bounds, obj$parameters)
+
+
+simulation <- simulate_bounds(obj, bounds.obs, nsim = 1000)
+
+
+
+
+
 
 length(formals(f.bounds))
 
-nsim <- 1e4
+nsim <- 1e3
 objs <- rep(NA, nsim)
-bounds <- matrix(NA, nrow = nsim, ncol = 2)
+bounds <- matrix(NA, nrow = nsim, ncol = 4)
 for(i in 1:nsim){
     
     sim.qs <- runif(length(obj$variables))
@@ -48,7 +55,7 @@ for(i in 1:nsim){
     
     bees <- sort(do.call(f.bounds, params))
     objs[i] <- objective
-    bounds[i, ] <- bees
+    bounds[i, ] <- c(bees, bees2)
     
     if(objective < bees[1] | objective > bees[2]) {
         stop("error")

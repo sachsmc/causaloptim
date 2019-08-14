@@ -148,7 +148,7 @@ analyze_graph <- function(graph) {
             parents <- parents[vertex_attr(graph, name="latent", index = parents) == 0 ]
             
             if(names(obsvars)[i] %in% names(intervene)) {
-                as.numeric(intervene[[names(right.vars[i])]])
+                as.numeric(intervene[[names(obsvars[i])]])
             } else if (length(parents) == 0){
                 x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
                 do.call(x, list())
@@ -192,6 +192,8 @@ analyze_graph <- function(graph) {
                        paste(red.sets$objective.terms[[2]], collapse = " - "))
     
     attr(parameters, "key") <- parameters.key
+    attr(parameters, "rightvars") <- names(right.vars)
+    attr(parameters, "condvars") <- names(cond.vars)
     
     list(variables = red.sets$variables, parameters = parameters, constraints = red.sets$constr, 
          objective = objective, p.vals = p.vals, q.vals = q.vals)
@@ -207,7 +209,7 @@ const.to.sets <- function(constr, objterm1, objterm2) {
     sets <- lapply(strsplit(constr, " = "), function(x) {
         
       tmp1 <- grep("q", x, value = TRUE)  
-      trimws(unlist(strsplit(tmp1, " + ", fixed = TRUE)))
+      trimws(unlist(strsplit(tmp1, "( \\+ | - )")))
       
     })
     
@@ -230,7 +232,9 @@ const.to.sets <- function(constr, objterm1, objterm2) {
     
     list(constr = paste(unlist(lapply(constr.new, paste, collapse = " + ")), " = ", pnames), 
          objective.terms = obj.new, 
-         variables = var.new)
+         variables = var.new, 
+         raw.sets = constr.new, 
+         pnames = pnames)
     
     
 }
@@ -287,3 +291,18 @@ reduce.sets <- function(sets){
     return(sets)  
 }
 
+#' Plot the analyzed graph object
+#' 
+#' 
+#' @export
+
+plot.graphres <- function(graphres) {
+  plot(graphres, vertex.color = ifelse(V(graphres)$latent == 1, "grey70",
+                                       ifelse(V(graphres)$exposure == 1, "green", "white")), 
+       vertex.shape = ifelse(V(graphres)$outcome == 1, "rectangle", "circle"),
+       edge.color = ifelse(E(graphres)$edge.monotone == 1, "blue", "black"), 
+       layout = layout_nicely, main = "Graph to be analyzed, inspect carefully")
+  legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), pt.cex = c(3, 3, 3, 1), 
+         pch = c(20, 22, 20, NA), col = c("grey70", "black", "green", "blue"), lty = c(NA, NA, NA, 1))
+  
+}

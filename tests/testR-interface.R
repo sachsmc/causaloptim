@@ -2,7 +2,7 @@ library(causaloptim)
 
 #graph <- specify_graph()
 
-graph <- readRDS("tests/test-graphs/instrument.RData")
+graph <- readRDS("tests/test-graphs/confounded-instrument.RData")
 
 plot(graph, vertex.color = ifelse(V(graph)$latent == 1, "grey70",
                                      ifelse(V(graph)$exposure == 1, "green", "white")), 
@@ -13,53 +13,12 @@ legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), 
        pch = c(20, 22, 20, NA), col = c("grey70", "black", "green", "blue"), lty = c(NA, NA, NA, 1))
 
 
+E(graph)$edge.monotone[1] <- 1
 obj <- analyze_graph(graph)
 bounds.obs <- optimize_effect(obj)
 f.bounds <- interpret_bounds(bounds.obs$bounds, obj$parameters)
-
-
 simulation <- simulate_bounds(obj, bounds.obs, nsim = 1000)
 
 
 
 
-
-
-length(formals(f.bounds))
-
-nsim <- 1e3
-objs <- rep(NA, nsim)
-bounds <- matrix(NA, nrow = nsim, ncol = 4)
-for(i in 1:nsim){
-    
-    sim.qs <- runif(length(obj$variables))
-    sim.qs <- sim.qs / sum(sim.qs)
-    
-    names(sim.qs) <- obj$variables
-    objective <- eval(parse(text = obj$objective), envir = as.list(sim.qs))
-    
-    inenv <- new.env()
-    for(j in 1:length(sim.qs)) {
-        
-        assign(names(sim.qs)[j], sim.qs[j], inenv)
-        
-    }
-    res <- lapply(as.list(obj$constraints[-1]), function(x){
-        x1 <- strsplit(x, " = ")[[1]]
-        x0 <- paste(x1[2], " = ", x1[1])
-        eval(parse(text = x0), envir = inenv)
-        })
-    
-    params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
-    names(params) <- obj$parameters
-    
-    bees <- sort(do.call(f.bounds, params))
-    objs[i] <- objective
-    bounds[i, ] <- c(bees, bees2)
-    
-    if(objective < bees[1] | objective > bees[2]) {
-        stop("error")
-        break
-    }
-    
-}

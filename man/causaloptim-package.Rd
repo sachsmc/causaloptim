@@ -3,20 +3,20 @@
 \alias{causaloptim}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  An Interface to Specify Causal Graphs and Compute Balke Bounds
 }
 \description{
-  A more detailed description of what the package does. A length
-  of about one to five lines is recommended.
+  Specify causal graphs using a visual interactive interface and then 
+  analyze them and compute symbolic bounds for the causal effects in 
+  terms of the observable parameters. 
 }
 \details{
-  This section should provide a more detailed overview of how to use the
-  package, including the most important functions.
+  Run the shiny app by \code{results <- specify_graph()}. See detailed instructions in the vignett \code{browseVignettes("causaloptim")}. 
 }
 \author{
-Your Name, email optional.
+Michael C Sachs, Arvid Sjölander, Alexandre Balke, Colorado Reed, and Erin Gabriel
 
-Maintainer: Your Name <your@email.com>
+Maintainer: Michael C Sachs <sachsmc@gmail.com>
 }
 \references{
   This optional section can contain literature or other references for
@@ -24,7 +24,7 @@ Maintainer: Your Name <your@email.com>
 }
 \keyword{ package }
 \seealso{
-  Optional links to other man pages
+  \code{browseVignettes("causaloptim")}
 }
 \examples{
   \dontrun{

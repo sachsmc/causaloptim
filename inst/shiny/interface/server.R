@@ -55,7 +55,7 @@ function(input, output) {
                                             latent = edges$target.latent, outcome = edges$target.outcome, 
                                             exposure = edges$target.exposure))
             
-            print(myin)
+            #print(myin)
             graphres <- graph_from_data_frame(edges[, c(1, 2, 5, 12)], vertices = unique(vertex.meta))
             
             ogleft <- V(graphres)[V(graphres)$leftside == 1]
@@ -202,7 +202,7 @@ function(input, output) {
         
         output$resultsText <- renderUI(do.call(tagList, textres))
         
-        insertUI(selector = "#results", where = "afterEnd", 
+        insertUI(selector = "#results", where = "beforeEnd", 
                  ui = actionButton("downloadf", "Press to return objects to R"))
         
         

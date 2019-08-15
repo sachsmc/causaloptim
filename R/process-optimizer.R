@@ -4,7 +4,7 @@
 #' 
 #' @return An object of class "balkebound" that contains the bounds and logs as character strings
 #' 
-#' @export
+
 
 optimize_effect <- function(obj) {
     
@@ -122,11 +122,11 @@ shortentxt <- function(x) {
     vin <- vex
     while(length(vin) > 0) {
         
-        res <- paste0(res, vin[1])
+        res <- paste(res, vin[1])
         ccount <- ccount + nchar(vin[1])
         
         if(ccount > 80 & vin[1] %in% c("+", "-")){ 
-            res <- paste0(res, "\\ \n")
+            res <- paste(res, " \\ \n")
             ccount <- 0
         }
         vin <- vin[-1]
@@ -153,7 +153,7 @@ shortentxt <- function(x) {
 simulate_bounds <- function(obj, bounds, nsim = 1e3) {
     
     
-    f.bounds <- interpret_bounds(bounds.obs$bounds, obj$parameters)
+    f.bounds <- interpret_bounds(bounds$bounds, obj$parameters)
     result <- matrix(NA, ncol = 3, nrow = nsim)
     
     for(i in 1:nsim) {

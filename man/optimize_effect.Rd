@@ -2,10 +2,16 @@
 % Please edit documentation in R/process-optimizer.R
 \name{optimize_effect}
 \alias{optimize_effect}
-\title{Run the Balke optimizer and return bounds as a function}
+\title{Run the Balke optimizer}
 \usage{
 optimize_effect(obj)
 }
+\arguments{
+\item{obj}{Object as returned by \link{analyze_graph}}
+}
+\value{
+An object of class "balkebound" that contains the bounds and logs as character strings
+}
 \description{
-Run the Balke optimizer and return bounds as a function
+Run the Balke optimizer
 }

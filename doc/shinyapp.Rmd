@@ -1,0 +1,76 @@
+---
+title: "How to use the Shiny app to analyze causal graphs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to use the Shiny app to analyze causal graphs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+results <- readRDS("example.RData")
+```
+
+```{r setup}
+library(causaloptim)
+```
+
+Run the Shiny application like so. The result is assigned to an objected called `results` so that you can save the results that are produced in the web interface. 
+
+```{r, eval = FALSE}
+results <- specify_graph()
+```
+
+A new window in your system's default web browser is opened with the following interface: 
+
+![Application start](screen1.png)
+
+The instructions at the top provide details on how to specify the graph. The graph is divided into a left side and a right side. There is no confounding allowed between the left and right sides. All variables on the right side are confounded. Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. On the left side, arbitrary connections are allowed and the model assumes that all nodes are observed and connected. On the right side, unmeasured variables are allowed, and the procedure assumes unmeasured confounding between all nodes. These restrictions are sufficient to ensure that the problem can be solved analytically using linear optimization. 
+
+In the main window below the text, Shift+click to add nodes. When a node is added, you are prompted to give it a name. Make sure that you use a valid R variable name. This means it cannot start with a number, and cannot contain spaces or special characters. Single capital letters are good choices, possibly with trailing numbers. 
+
+![Naming nodes](screen2.png)
+
+Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press 'u' to mark it as unobserved/latent. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.  
+
+![Connections](screen3.png)
+
+Once we have our graph specified, we need to make some annotations. You must specify the outcome of interest, and the exposure of interest. Select the outcome node and press 'y' to mark it as the outcome of interest, and then select the exposure node and press 'e' to mark it as the exposure of interest. The default causal contrast is the total effect. The exposure will be colored blue, and the outcome colored red. 
+
+![Final graph](screen4.png)
+
+We now have a graph specified that is ready to be analyzed. Optionally, click an edge and press 'm' to enforce monotonicity for that connection. If you are ready to analyze the object click on the "Press to analyze the graph button". The program interprets the graph, converts it to an `igraph` object with annotations, and prints the result from R. Inspect the resulting graph carefully so that you understand what is being analyzed. 
+
+![Interpreted graph](screen5.png)
+
+Once you have inspected the graph and understand what is being analyzed, press the next button to optimize the bounds. 
+
+![Bounds](screen6.png)
+
+The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see the paper that doesn't exist yet. The final button allows you to return all of the objects back to the R environment and store them in `results`. 
+
+The `results` object contains the graph, the parameterization and interpretation of the graph in terms of the variables and parameters, the bounds and log information about the optimization procedure, and an R function that implements the bounds: 
+
+```{r}
+names(results)
+
+print(results$boundsFunction)
+```
+
+
+The results object can also be used to numerically simulate the bounds. Try using the `simulate_bounds` function. 
+
+
+```{r}
+sim <- simulate_bounds(results$obj, results$bounds.obs, nsim = 100)
+head(sim)
+```
+
+Please sends any bugs or feedback to michael.sachs@ki.se. 
+
+

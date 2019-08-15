@@ -6,6 +6,11 @@
 \usage{
 interpret_bounds(bounds, parameters)
 }
+\arguments{
+\item{bounds}{The bounds element as returned by \link{optimize_effect}}
+
+\item{parameters}{Character vector defining parameters, as returned by \link{analyze_graph}}
+}
 \description{
 Convert bounds string to a function
 }

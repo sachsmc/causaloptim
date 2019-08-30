@@ -20,7 +20,7 @@ function(input, output) {
         
         myin <- input$edges
         if(length(myin) > 0) {
-            j <- seq(1, length(myin) - 12, by = 13)
+            j <- seq(1, length(myin) - 16, by = 17)
             
             data.frame(id = paste0("e", myin[j]), source = myin[j+1], target = myin[j+2], 
                        source.leftside = ifelse(myin[j+3] == "FALSE", 0, 1), 
@@ -29,7 +29,9 @@ function(input, output) {
                        source.latent = as.numeric(myin[j + 6]), target.latent = as.numeric(myin[j + 7]), 
                        source.outcome = as.numeric(myin[j + 8]), target.outcome = as.numeric(myin[j + 9]), 
                        source.exposure = as.numeric(myin[j + 10]), target.exposure = as.numeric(myin[j + 11]), 
-                       edge.monotone = as.numeric(myin[j + 12]))
+                       edge.monotone = as.numeric(myin[j + 12]), 
+                       source.x = as.numeric(myin[j + 13]), source.y = as.numeric(myin[j + 14]), 
+                       target.x = as.numeric(myin[j + 15]), target.y = as.numeric(myin[j + 16]) )
             
             
         } else {
@@ -50,24 +52,33 @@ function(input, output) {
             
             vertex.meta <- rbind(data.frame(vnames = edges$source, leftside = edges$source.leftside, 
                                       latent = edges$source.latent, outcome = edges$source.outcome, 
-                                      exposure = edges$source.exposure),
+                                      exposure = edges$source.exposure, x = edges$source.x, y = -edges$source.y),
                                  data.frame(vnames = edges$target, leftside = edges$target.leftside, 
                                             latent = edges$target.latent, outcome = edges$target.outcome, 
-                                            exposure = edges$target.exposure))
+                                            exposure = edges$target.exposure, x = edges$target.x, y = -edges$target.y))
             
             #print(myin)
             graphres <- graph_from_data_frame(edges[, c(1, 2, 5, 12)], vertices = unique(vertex.meta))
             
             ogleft <- V(graphres)[V(graphres)$leftside == 1]
             ogright <- V(graphres)[V(graphres)$leftside == 0]
-            graphres <- add_vertices(graphres, 2, name = c("VL0", "VR0"), latent = c(1, 1), 
-                                     leftside = c(1, 0), outcome = c(0, 0), exposure = c(0, 0))
             
-            graphres <- add_edges(graphres, unlist(lapply(names(ogleft), function(x) c("VL0", x))), 
-                                  rlconnect = rep(0,length(ogleft)), edge.monotone= rep(0, length(ogleft)))
-            graphres <- add_edges(graphres, unlist(lapply(names(ogright), function(x) c("VR0", x))), 
-                                  rlconnect = rep(0,length(ogright)), edge.monotone= rep(0, length(ogright)))
+            if(length(ogleft) > 1) {
+              graphres <- add_vertices(graphres, 1, name = "Ul", latent = 1, 
+                                       leftside = 1, outcome = 0, exposure = 0, 
+                                       x = min(V(graphres)$x) - 100, y = min(V(graphres)$y) +20)
+              graphres <- add_edges(graphres, unlist(lapply(names(ogleft), function(x) c("Ul", x))), 
+                                    rlconnect = rep(0,length(ogleft)), edge.monotone= rep(0, length(ogleft)))
+            }
             
+            if(length(ogright) > 1) {
+              graphres <- add_vertices(graphres, 1, name = "Ur", latent = 1, 
+                                       leftside = 0, outcome = 0, exposure = 0, 
+                                       x = max(V(graphres)$x) + 100, y = min(V(graphres)$y) +20)
+              
+              graphres <- add_edges(graphres, unlist(lapply(names(ogright), function(x) c("Ur", x))), 
+                                    rlconnect = rep(0,length(ogright)), edge.monotone= rep(0, length(ogright)))
+            }
             
             graphres
             
@@ -136,7 +147,8 @@ function(input, output) {
             insertUI(selector = "#myplot", 
                      where = "afterEnd", 
                      ui = tags$div(id = "results", 
-                                   actionButton("optimize", "Press to optimize the bounds")
+                                   actionButton("constraints", "Press to specify constraints"),
+                                   actionButton("optimize", "Press to compute the bounds")
                                    )
             )
             
@@ -150,9 +162,111 @@ function(input, output) {
       
       graphres <- igraphFromList()
       obj <- analyze_graph(graphres)
+      
+      ## parse constraints
+      
+      if(input$constraints > 0) {
+        
+        constraints <- lapply(1:input$constraints, function(i) {
+          
+          thisconst <- paste0("varconstr.", i)
+          thisin <- poutc$pout[[thisconst]]
+          
+          lefton <- righton <- NULL
+          for(j in 1:length(thisin$vary)) {
+           
+            lefton <- c(lefton, paste0(thisin$vary[j], " = ", input[[paste0(thisconst, "vcl.", thisin$vary[j])]]))
+            righton <- c(righton, paste0(thisin$vary[j], " = ", input[[paste0(thisconst, "vcr.", thisin$vary[j])]]))
+          
+          }
+          oper <- input[[paste0(thisconst, "operator")]]
+          
+          paste0(thisin$fix, "(", paste(lefton, collapse = ", "), ") ", oper, " ", thisin$fix, "(", paste(righton, collapse = ", "), ")")
+          
+        })
+        
+        print(constraints)
+        
+      } else {
+        
+        constraints <- NULL
+        
+      }
+    
+      
       bounds.obs <- optimize_effect(obj)
       
-      list(graphres = graphres, obj = obj, bounds.obs = bounds.obs)
+      list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, constraints = constraints)
+      
+    })
+    
+    nconstraints <- reactiveValues(nconst = NULL)
+    
+    observeEvent(input$constraints, {
+      
+      ## variables that have parents
+      graphres <- igraphFromList()
+      parentsof <- adjacent_vertices(graphres, V(graphres), mode = "in")
+      tmpparent <- lapply(parentsof, function(x) {
+        if(length(names(x)) == 0) return("") 
+        paste0("(", paste(names(x), collapse = ", "), ")")
+        
+      })
+      
+      
+      potent.outs <- paste0(names(parentsof), tmpparent)
+      potent.outs <- potent.outs[lapply(parentsof, length) > 0]
+      
+      insertUI(selector = "#optimize", where = "beforeBegin", 
+               ui = div(h3(paste0("Constraint ", input$constraints)), 
+                        selectInput(paste0("varconstr.", input$constraints), "Potential outcome to constrain", 
+                                    choices = potent.outs)
+               )
+      )
+      nconstraints$nconst <- input$constraints
+      
+    })
+    
+    ## keep track of potential outcomes
+    poutc <- reactiveValues(pout = NULL)
+    
+    observeEvent({ 
+      
+      dex <- nconstraints$nconst
+      eval(parse(text = paste0("input$varconstr.", dex)))
+      
+      }, {
+        
+        constid <- paste0("varconstr.", nconstraints$nconst)
+        thisconst <- input[[paste0("varconstr.", nconstraints$nconst)]]
+      
+      proc.vars <- strsplit(gsub(")", "", thisconst, fixed = TRUE), "(", fixed = TRUE)[[1]]
+      fix <- proc.vars[1]
+      vary <- strsplit(proc.vars[-1], ", ", fixed = TRUE)[[1]]
+      
+      poutc$pout[[constid]] <- list(fix = fix, vary = vary)
+      
+      ui0 <- lapply(vary, function(x){
+            
+            column(1, selectInput(paste0(constid, "vcl.", x), x, choices = c(x, "0", "1"), width = "80px"))
+            
+          })
+      ui1 <- lapply(vary, function(x){
+                   
+                   column(1, selectInput(paste0(constid, "vcr.", x), x, choices = c(x, "0", "1"), width = "80px"))
+                   
+                 })
+      
+      removeUI(selector = paste0("#constrow", nconstraints$nconst), immediate = TRUE, multiple = TRUE)
+      insertUI(selector = "#optimize", where = "beforeBegin", 
+               ui = fluidRow(id = paste0("constrow", nconstraints$nconst), h3(paste0("Constraint for outcome:", thisconst)), 
+                        column(1, fix),
+                        ui0, 
+                        column(1, selectInput(paste0(constid, "operator"), "Operator", choices = c("=", "<", "\u2264", ">", "\u2265"), width = "80px")), 
+                        column(1, fix), 
+                        ui1
+                        )
+      )
       
     })
     
@@ -160,6 +274,11 @@ function(input, output) {
     observeEvent(input$optimize, {
         
         
+      ## parse constraints
+      
+      
+      ###
+      
         b <- optimizeGraph()
         
         
@@ -183,15 +302,25 @@ function(input, output) {
         rkey <- letters[(length(attr(b$obj$parameters, "rightvars")) + 1):(length(attr(b$obj$parameters, "rightvars")) + 
                                                                              length(attr(b$obj$parameters, "condvars")))]
         
+        if(length(attr(b$obj$parameters, "condvars")) == 0) rkey <- NULL
+        
         sampparm <- paste0("p", paste(lkey, collapse = ""), "_", 
                            paste(rkey, collapse = ""))
         
         probstate <- paste0("P(", paste(paste0(attr(b$obj$parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
         paste0(attr(b$obj$parameters, "condvars"), " = ", rkey, collapse = ", "), ")")
         
+        if(length(attr(b$obj$parameters, "condvars")) == 0) {
+          probstate <- paste0("P(", paste(paste0(attr(b$obj$parameters, "rightvars"), " = ", lkey), collapse = ", "), ")")
+        }
+        
         variabletext <- sprintf("The bounds are reported in terms of parameters of the form %s, which represents the probability %s.", sampparm, probstate)
         
-        textres <- lapply(c(effecttext, totalpaths, variabletext, "Bounds: ",
+        if(!is.null(b$constraints)) {
+          constrainttext <- sprintf("This following constraints have been specifed: \n %s", paste(b$constraints, collapse = "\n"))
+        } else constrainttext <- "No constraints have been specified"
+        
+        textres <- lapply(c(effecttext, totalpaths, constrainttext, variabletext, "Bounds: ",
                             b$bounds.obs$bounds[1], b$bounds.obs$bounds[2]), function(x) {
                    
                    x2 <- strsplit(x, "\n", fixed = TRUE)[[1]]

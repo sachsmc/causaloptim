@@ -179,7 +179,7 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
         params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
         names(params) <- obj$parameters
         
-        bees <- sort(do.call(f.bounds, params))
+        bees <- sort(do.call(f.bounds, params))  # don't sort here
         result[i, ] <- c(objective, bees)
         
         if(objective < bees[1] | objective > bees[2]) {

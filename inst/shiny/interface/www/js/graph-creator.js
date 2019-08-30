@@ -88,30 +88,6 @@
     svg.on("mousedown", function(d){thisGraph.svgMouseDown.call(thisGraph, d);});
     svg.on("mouseup", function(d){thisGraph.svgMouseUp.call(thisGraph, d);});
 
-    // listen for dragging
-    var dragSvg = d3.behavior.zoom()
-          .on("zoom", function(){
-            if (d3.event.sourceEvent.shiftKey){
-              // TODO  the internal d3 state is still changing
-              return false;
-            } else{
-              thisGraph.zoomed.call(thisGraph);
-            }
-            return true;
-          })
-          .on("zoomstart", function(){
-            var ael = d3.select("#" + thisGraph.consts.activeEditId).node();
-            if (ael){
-              ael.blur();
-            }
-            if (!d3.event.sourceEvent.shiftKey) d3.select('body').style("cursor", "move");
-          })
-          .on("zoomend", function(){
-            d3.select('body').style("cursor", "auto");
-          });
-
-    svg.call(dragSvg).on("dblclick.zoom", null);
-
     // listen for resize
     window.onresize = function(){thisGraph.updateWindow(svg);};
 
@@ -430,9 +406,9 @@
     case 85: // u key for unobserved
         if (selectedNode) {
             state.selectedNode.latent = 1 - state.selectedNode.latent;
-            if(state.selectedNode.latent == 1) {
-                state.selectedNode.outcome = 0;
-            }
+         //   if(state.selectedNode.latent == 1) {
+          //      state.selectedNode.outcome = 0;
+        //    }
             thisGraph.updateGraph();
         }
       break;
@@ -444,7 +420,7 @@
                 thisGraph.nodes[i].outcome = 0;
             }
             state.selectedNode.outcome = 1 - state.selectedNode.outcome;
-            state.selectedNode.latent = 0;
+       //     state.selectedNode.latent = 0;
             thisGraph.updateGraph();
         }
         break;
@@ -595,7 +571,8 @@
             sourceLatent: val.source.latent, targetLatent: val.target.latent, 
             sourceOutcome: val.source.outcome, targetOutcome: val.target.outcome, 
             sourceExposure: val.source.exposure, targetExposure: val.target.exposure,
-            edgeMonotone: val.monotone
+            edgeMonotone: val.monotone, sourceX: val.source.x, sourceY: val.source.y, 
+            targetX: val.target.x, targetY: val.target.y
         });
       });
     

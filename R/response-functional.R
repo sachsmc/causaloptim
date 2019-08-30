@@ -13,7 +13,7 @@ analyze_graph <- function(graph) {
     if(sum(edge_attr(graph)$rlconnect) > 0) stop("No edges can go from right to left")
     
     cond.vars <- V(graph)[leftind == 1 & V(graph)$latent == 0]
-    right.vars <- V(graph)[leftind == 0 & V(graph)$latent == 0]
+    right.vars <- V(graph)[leftind == 0] # & V(graph)$latent == 0]
     
     var.values <- lapply(names(c(right.vars, cond.vars)), function(i) c(0, 1))
     names(var.values) <- names(c(right.vars, cond.vars))
@@ -79,6 +79,29 @@ analyze_graph <- function(graph) {
         
     }
     
+    
+    ## check for any monotonicity assumptions
+    if(any(E(graph)$edge.monotone == 1)) {
+      which.monotone <- which(E(graph)$edge.monotone == 1)
+      for(j in which.monotone) {
+        
+        head.mono <- names(head_of(graph, j))
+        tail.mono <- names(tail_of(graph, j))
+        
+        tmpenv <- list(1)
+        names(tmpenv) <- tail.mono
+        
+        resp.out <- lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv))
+        
+        settozeroindex <- respvars[[head.mono]]$index[resp.out == 0]
+        removedex <- respvars[[head.mono]]$index == settozeroindex
+      
+        respvars[[head.mono]]$index <- respvars[[head.mono]]$index[!removedex] 
+        respvars[[head.mono]]$values <- respvars[[head.mono]]$values[!removedex] 
+          
+      }
+    }
+    
     q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
     q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1)[which(obsvars %in% right.vars)])
     
@@ -88,6 +111,7 @@ analyze_graph <- function(graph) {
     q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp, by = names(right.vars), sort = TRUE)
     ## constraints 
     
+    removeprows <- rep(0, nrow(p.vals))
     p.constraints <- rep(NA, nrow(p.vals) + 1)
     p.constraints[1] <- paste(paste(variables, collapse= " + "), " = 1")
     for(j in 1:nrow(p.vals)) {
@@ -105,32 +129,24 @@ analyze_graph <- function(graph) {
             
         }
         
-        q.match <- paste0("q", do.call(paste0, expand.grid(tmp.match)))
-        p.constraints[j + 1] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
+        obsdex <- expand.grid(tmp.match)
         
-    }
-    
-    
-    ## check for any monotonicity assumptions
-    if(any(E(graph)$edge.monotone == 1)) {
-        which.monotone <- which(E(graph)$edge.monotone == 1)
-        for(j in which.monotone) {
-            
-            head.mono <- names(head_of(graph, j))
-            tail.mono <- names(tail_of(graph, j))
-            
-            tmpenv <- list(1)
-            names(tmpenv) <- tail.mono
-            
-            resp.out <- lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv))
-            
-            settozeroindex <- respvars[[head.mono]]$index[resp.out == 0]
-            
-            p.constraints <- c(p.constraints, 
-                               paste0(variables[q.vals[, head.mono] %in% settozeroindex],  " = 0"))
-            
+        if(nrow(obsdex) == 0) {
+          
+          removeprows[j] <- 1
+          next
+          
+        } else {
+          
+          q.match <- paste0("q", do.call(paste0, obsdex))
+          p.constraints[j + 1] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
+          
         }
     }
+    
+    p.vals <- p.vals[removeprows == 0,]
+    parameters <- parameters[removeprows == 0]
+    p.constraints <- p.constraints[!is.na(p.constraints)]
     
     baseind <- rep(FALSE, length(p.constraints))
     baseind[1:nrow(p.vals)] <- TRUE
@@ -297,11 +313,13 @@ reduce.sets <- function(sets){
 #' @export
 
 plot.graphres <- function(graphres) {
+  
+  mylayout <- cbind(V(graphres)$x, V(graphres)$y)
   plot(graphres, vertex.color = ifelse(V(graphres)$latent == 1, "grey70",
                                        ifelse(V(graphres)$exposure == 1, "green", "white")), 
        vertex.shape = ifelse(V(graphres)$outcome == 1, "rectangle", "circle"),
        edge.color = ifelse(E(graphres)$edge.monotone == 1, "blue", "black"), 
-       layout = layout_nicely, main = "Graph to be analyzed, inspect carefully")
+       layout = mylayout, main = "Graph to be analyzed, inspect carefully")
   legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), pt.cex = c(3, 3, 3, 1), 
          pch = c(20, 22, 20, NA), col = c("grey70", "black", "green", "blue"), lty = c(NA, NA, NA, 1))
   

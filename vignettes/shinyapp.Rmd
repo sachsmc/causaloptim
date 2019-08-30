@@ -46,6 +46,11 @@ Once we have our graph specified, we need to make some annotations. You must spe
 
 We now have a graph specified that is ready to be analyzed. Optionally, click an edge and press 'm' to enforce monotonicity for that connection. If you are ready to analyze the object click on the "Press to analyze the graph button". The program interprets the graph, converts it to an `igraph` object with annotations, and prints the result from R. Inspect the resulting graph carefully so that you understand what is being analyzed. 
 
+## Specifying other constraints
+
+
+
+
 ![Interpreted graph](screen5.png)
 
 Once you have inspected the graph and understand what is being analyzed, press the next button to optimize the bounds. 

@@ -17,7 +17,7 @@ legend("topleft", legend = c("latent", "outcome", "exposure", "monotone edge"), 
 obj <- analyze_graph(graph)
 bounds.obs <- optimize_effect(obj)
 f.bounds <- interpret_bounds(bounds.obs$bounds, obj$parameters)
-simulation <- simulate_bounds(obj, bounds.obs, nsim = 1000)
+simulation <- simulate_bounds(obj, bounds.obs, nsim = 100)
 
 
 

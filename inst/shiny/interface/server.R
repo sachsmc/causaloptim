@@ -208,8 +208,9 @@ function(input, output) {
       graphres <- igraphFromList()
       parentsof <- adjacent_vertices(graphres, V(graphres), mode = "in")
       tmpparent <- lapply(parentsof, function(x) {
-        if(length(names(x)) == 0) return("") 
-        paste0("(", paste(names(x), collapse = ", "), ")")
+        if(length(names(x)) == 0) return("")
+        xn <- names(x)[!names(x) %in% c("Ul", "Ur")]
+        paste0("(", paste(xn, collapse = ", "), ")")
         
       })
       

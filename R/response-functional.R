@@ -6,19 +6,19 @@
 #' 
 #' @export
 
-analyze_graph <- function(graph) {
+analyze_graph <- function(graph, constraints) {
     
     leftind <- vertex_attr(graph)$leftside
     
     if(sum(edge_attr(graph)$rlconnect) > 0) stop("No edges can go from right to left")
     
     cond.vars <- V(graph)[leftind == 1 & V(graph)$latent == 0]
-    right.vars <- V(graph)[leftind == 0] # & V(graph)$latent == 0]
+    right.vars <- V(graph)[leftind == 0 & V(graph)$latent == 0] ## allow outcome to be latent? but how
     
     var.values <- lapply(names(c(right.vars, cond.vars)), function(i) c(0, 1))
     names(var.values) <- names(c(right.vars, cond.vars))
     
-    p.vals <- do.call(expand.grid, var.values)
+    p.vals <- do.call(expand.grid, var.values)  # p vals need to be based on observed variables only
     
     jd <- do.call(paste0, p.vals[, names(right.vars), drop = FALSE])
     cond <- do.call(paste0, p.vals[, names(cond.vars), drop = FALSE])
@@ -27,7 +27,7 @@ analyze_graph <- function(graph) {
     parameters.key <- paste(paste(names(right.vars), collapse = ""), paste(names(cond.vars), collapse = ""), sep = "_")
     
     
-    ## response variable for each observed variable
+    ## response variable for each variable observed or unobserved
     
     obsvars <- c(right.vars, cond.vars)
     respvars <- vector(mode = "list", length = length(obsvars))
@@ -88,12 +88,14 @@ analyze_graph <- function(graph) {
         head.mono <- names(head_of(graph, j))
         tail.mono <- names(tail_of(graph, j))
         
-        tmpenv <- list(1)
-        names(tmpenv) <- tail.mono
+        tmpenv.1 <- list(1)
+        tmpenv.0 <- list(0)
+        names(tmpenv.1) <- names(tmpenv.0) <- tail.mono
         
-        resp.out <- lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv))
+        resp.out.0 <- unlist(lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv.0)))
+        resp.out.1 <- unlist(lapply(respvars[[head.mono]]$values, function(f) do.call(f, tmpenv.1)))
         
-        settozeroindex <- respvars[[head.mono]]$index[resp.out == 0]
+        settozeroindex <- respvars[[head.mono]]$index[resp.out.0 > resp.out.1]
         removedex <- respvars[[head.mono]]$index == settozeroindex
       
         respvars[[head.mono]]$index <- respvars[[head.mono]]$index[!removedex] 
@@ -101,6 +103,54 @@ analyze_graph <- function(graph) {
           
       }
     }
+    
+    ## additional constraints
+    
+    if(!is.null(constraints)) {
+      
+      for(j in 1:length(constraints)) {
+        
+        p0 <- strsplit(constraints[[j]], "\\) ")[[1]]
+        pl1 <- strsplit(p0[1], "\\(")[[1]]
+        
+        leftout <- pl1[1]
+        leftcond <- strsplit(pl1[-1], ", ")[[1]]
+        
+        operator <- substr(p0[-1], 1, 1)
+        if(operator == "\u2264") operator <- "<="
+        if(operator == "\u2265") operator <- ">="
+        
+        pr1 <- strsplit(substr(p0[-1], 3, nchar(p0[-1])), "\\(")[[1]]
+        rightout <- pr1[1]
+        rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ", ")[[1]]
+        
+        stopifnot(leftout == rightout)
+        ## end parse, now apply
+        
+        tmpenv.left <- tmpenv.right <- list()
+        tmpenv.left <- within(tmpenv.left, eval(parse(text = leftcond)))
+        tmpenv.right <- within(tmpenv.right, eval(parse(text = rightcond)))
+        
+        resp.out.left <- unlist(lapply(respvars[[leftout]]$values, function(f) do.call(f, tmpenv.left)))
+        resp.out.right <- unlist(lapply(respvars[[rightout]]$values, function(f) do.call(f, tmpenv.right)))
+        
+        stopifnot(length(resp.out.left) == length(resp.out.right))
+        
+        settozeroindex <- respvars[[head.mono]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
+        
+        if(length(settozeroindex) > 0) {
+          removedex <- respvars[[leftout]]$index == settozeroindex
+        
+          respvars[[leftout]]$index <- respvars[[leftout]]$index[!removedex] 
+          respvars[[leftout]]$values <- respvars[[leftout]]$values[!removedex] 
+          
+        }
+        
+      }
+      
+      
+    }
+    
     
     q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
     q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1)[which(obsvars %in% right.vars)])

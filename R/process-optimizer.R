@@ -105,7 +105,7 @@ interpret_bounds <- function(bounds, parameters) {
     
     f <- function() {}
     formals(f) <- as.pairlist(args)
-    body(f) <- parse(text = paste0("c(lower = ", bcalls[2], ", upper = ", bcalls[1], ") \n"))
+    body(f) <- parse(text = paste0("c(lower = ", bcalls[1], ", upper = ", bcalls[2], ") \n"))
     environment(f) <- parent.frame()
     
     f
@@ -179,7 +179,7 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
         params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
         names(params) <- obj$parameters
         
-        bees <- sort(do.call(f.bounds, params))  # don't sort here
+        bees <- do.call(f.bounds, params)
         result[i, ] <- c(objective, bees)
         
         if(objective < bees[1] | objective > bees[2]) {

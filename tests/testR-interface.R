@@ -22,3 +22,4 @@ simulation <- simulate_bounds(obj, bounds.obs, nsim = 100)
 
 
 
+simulate_bounds(graph$obj, graph$bounds.obs, nsim = 100)

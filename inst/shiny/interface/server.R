@@ -161,7 +161,7 @@ function(input, output) {
     optimizeGraph <- reactive({
       
       graphres <- igraphFromList()
-      obj <- analyze_graph(graphres)
+      
       
       ## parse constraints
       
@@ -193,7 +193,7 @@ function(input, output) {
         
       }
     
-      
+      obj <- analyze_graph(graphres, constraints)
       bounds.obs <- optimize_effect(obj)
       
       list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, constraints = constraints)

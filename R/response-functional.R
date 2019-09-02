@@ -136,7 +136,7 @@ analyze_graph <- function(graph, constraints) {
         
         stopifnot(length(resp.out.left) == length(resp.out.right))
         
-        settozeroindex <- respvars[[head.mono]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
+        settozeroindex <- respvars[[leftout]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
         
         if(length(settozeroindex) > 0) {
           removedex <- respvars[[leftout]]$index == settozeroindex

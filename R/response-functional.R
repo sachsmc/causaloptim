@@ -13,7 +13,9 @@ analyze_graph <- function(graph, constraints) {
     if(sum(edge_attr(graph)$rlconnect) > 0) stop("No edges can go from right to left")
     
     cond.vars <- V(graph)[leftind == 1 & V(graph)$latent == 0]
-    right.vars <- V(graph)[leftind == 0 & V(graph)$latent == 0] ## allow outcome to be latent? but how
+    right.vars <- V(graph)[leftind == 0 & V(graph)$latent == 0] 
+    ## allow outcome to be latent? but how
+    ## all variables that have parents have a response function, even if unobserved
     
     var.values <- lapply(names(c(right.vars, cond.vars)), function(i) c(0, 1))
     names(var.values) <- names(c(right.vars, cond.vars))
@@ -126,6 +128,8 @@ analyze_graph <- function(graph, constraints) {
         
         stopifnot(leftout == rightout)
         ## end parse, now apply
+        
+        ## handle cases like X(Z = 0, Y = Y)
         
         tmpenv.left <- tmpenv.right <- list()
         tmpenv.left <- within(tmpenv.left, eval(parse(text = leftcond)))

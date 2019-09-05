@@ -169,19 +169,27 @@ function(input, output) {
         
         constraints <- lapply(1:input$constraints, function(i) {
           
-          thisconst <- paste0("varconstr.", i)
-          thisin <- poutc$pout[[thisconst]]
+          thisconst.l <- paste0("varconstr.l.", i)
+          thisconst.r <- paste0("varconstr.r.", i)
+          
+          thisin.l <- poutc$pout[[thisconst.l]]
+          thisin.r <- poutc$pout[[thisconst.r]]
           
           lefton <- righton <- NULL
-          for(j in 1:length(thisin$vary)) {
+          for(j in 1:length(thisin.l$vary)) {
            
-            lefton <- c(lefton, paste0(thisin$vary[j], " = ", input[[paste0(thisconst, "vcl.", thisin$vary[j])]]))
-            righton <- c(righton, paste0(thisin$vary[j], " = ", input[[paste0(thisconst, "vcr.", thisin$vary[j])]]))
+            lefton <- c(lefton, paste0(thisin.l$vary[j], " = ", input[[paste0(thisconst.l, "vcl.", thisin.l$vary[j])]]))
           
           }
-          oper <- input[[paste0(thisconst, "operator")]]
+          for(j in 1:length(thisin.r$vary)) {
+            
+            righton <- c(righton, paste0(thisin.r$vary[j], " = ", input[[paste0(thisconst.r, "vcr.", thisin.r$vary[j])]]))
+            
+          }
+          oper <- input[[paste0("varconstr.", i, ".operator")]]
           
-          paste0(thisin$fix, "(", paste(lefton, collapse = ", "), ") ", oper, " ", thisin$fix, "(", paste(righton, collapse = ", "), ")")
+          paste0(thisin.l$fix, "(", paste(lefton, collapse = ", "), ") ", oper, " ", 
+                 thisin.r$fix, "(", paste(righton, collapse = ", "), ")")
           
         })
         
@@ -220,7 +228,9 @@ function(input, output) {
       
       insertUI(selector = "#optimize", where = "beforeBegin", 
                ui = div(h3(paste0("Constraint ", input$constraints)), 
-                        selectInput(paste0("varconstr.", input$constraints), "Potential outcome to constrain", 
+                        selectInput(paste0("varconstr.l.", input$constraints), "Potential outcome (left) to constrain", 
+                                    choices = potent.outs), 
+                        selectInput(paste0("varconstr.r.", input$constraints), "Potential outcome (right) to constrain", 
                                     choices = potent.outs)
                )
       )
@@ -234,37 +244,47 @@ function(input, output) {
     observeEvent({ 
       
       dex <- nconstraints$nconst
-      eval(parse(text = paste0("input$varconstr.", dex)))
+      eval(parse(text = paste0("input$varconstr.l.", dex)))
+      eval(parse(text = paste0("input$varconstr.r.", dex)))
       
       }, {
         
-        constid <- paste0("varconstr.", nconstraints$nconst)
-        thisconst <- input[[paste0("varconstr.", nconstraints$nconst)]]
+        constid.l <- paste0("varconstr.l.", nconstraints$nconst)
+        thisconst.l <- input[[paste0("varconstr.l.", nconstraints$nconst)]]
+        constid.r <- paste0("varconstr.r.", nconstraints$nconst)
+        thisconst.r <- input[[paste0("varconstr.r.", nconstraints$nconst)]]
+        
       
-      proc.vars <- strsplit(gsub(")", "", thisconst, fixed = TRUE), "(", fixed = TRUE)[[1]]
-      fix <- proc.vars[1]
-      vary <- strsplit(proc.vars[-1], ", ", fixed = TRUE)[[1]]
+      proc.vars.l <- strsplit(gsub(")", "", thisconst.l, fixed = TRUE), "(", fixed = TRUE)[[1]]
+      fix.l <- proc.vars.l[1]
+      vary.l <- strsplit(proc.vars.l[-1], ", ", fixed = TRUE)[[1]]
       
-      poutc$pout[[constid]] <- list(fix = fix, vary = vary)
+      proc.vars.r <- strsplit(gsub(")", "", thisconst.r, fixed = TRUE), "(", fixed = TRUE)[[1]]
+      fix.r <- proc.vars.r[1]
+      vary.r <- strsplit(proc.vars.r[-1], ", ", fixed = TRUE)[[1]]
       
-      ui0 <- lapply(vary, function(x){
+      
+      poutc$pout[[constid.l]] <- list(fix = fix.l, vary = vary.l)
+      poutc$pout[[constid.r]] <- list(fix = fix.r, vary = vary.r)
+      
+      ui0 <- lapply(vary.l, function(x){
             
-            column(1, selectInput(paste0(constid, "vcl.", x), x, choices = c(x, "0", "1"), width = "80px"))
+            column(1, selectInput(paste0(constid.l, "vcl.", x), x, choices = c(x, "0", "1"), width = "80px"))
             
           })
-      ui1 <- lapply(vary, function(x){
+      ui1 <- lapply(vary.r, function(x){
                    
-                   column(1, selectInput(paste0(constid, "vcr.", x), x, choices = c(x, "0", "1"), width = "80px"))
+                   column(1, selectInput(paste0(constid.r, "vcr.", x), x, choices = c(x, "0", "1"), width = "80px"))
                    
                  })
       
       removeUI(selector = paste0("#constrow", nconstraints$nconst), immediate = TRUE, multiple = TRUE)
       insertUI(selector = "#optimize", where = "beforeBegin", 
-               ui = fluidRow(id = paste0("constrow", nconstraints$nconst), h3(paste0("Constraint for outcome:", thisconst)), 
-                        column(1, fix),
+               ui = fluidRow(id = paste0("constrow", nconstraints$nconst), 
+                        column(1, fix.l),
                         ui0, 
-                        column(1, selectInput(paste0(constid, "operator"), "Operator", choices = c("=", "<", "\u2264", ">", "\u2265"), width = "80px")), 
-                        column(1, fix), 
+                        column(1, selectInput(paste0("varconstr.", nconstraints$nconst, ".operator"), "Operator", choices = c("=", "<", "\u2264", ">", "\u2265"), width = "80px")), 
+                        column(1, fix.r), 
                         ui1
                         )
       )

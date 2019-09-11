@@ -24,7 +24,7 @@ g.selected:hover circle{
     fill: rgb(250, 232, 255);
 }
 g.conceptG.latent circle{
-    fill: rgb(110, 110, 110);
+    stroke-dasharray: 5;
 }
 g.conceptG.outcome circle{
     fill: rgb(220, 155, 155);

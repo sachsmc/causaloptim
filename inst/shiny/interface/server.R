@@ -364,6 +364,7 @@ function(input, output) {
     
     observeEvent(input$downloadf, {
       
+      print("click")
       b <- optimizeGraph()
       b$boundsFunction <- interpret_bounds(b$bounds.obs$bounds, b$obj$parameters)
       stopApp(b)

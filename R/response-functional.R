@@ -108,7 +108,11 @@ analyze_graph <- function(graph, constraints) {
     
     ## additional constraints
     
+    notsatlist <- NULL
     if(!is.null(constraints)) {
+      
+      
+      parsed.constraints <- NULL
       
       for(j in 1:length(constraints)) {
         
@@ -121,48 +125,83 @@ analyze_graph <- function(graph, constraints) {
         operator <- substr(p0[-1], 1, 1)
         if(operator == "\u2264") operator <- "<="
         if(operator == "\u2265") operator <- ">="
+        if(operator == "=") operator <- "=="
         
         pr1 <- strsplit(substr(p0[-1], 3, nchar(p0[-1])), "\\(")[[1]]
         rightout <- pr1[1]
         rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ", ")[[1]]
         
-        stopifnot(leftout == rightout)
-        ## end parse, now apply
-        
+        # stopifnot(leftout == rightout)
         ## handle cases like X(Z = 0, Y = Y)
+        rightcond2 <- expand_cond(rightcond, names(obsvars))
+        leftcond2 <- expand_cond(leftcond, names(obsvars))
         
+        conds <- expand.grid(leftcond = leftcond2, rightcond = rightcond2, stringsAsFactors = FALSE)
+        parsed.constraints <- rbind(parsed.constraints, 
+                                    data.frame(leftout = leftout, rightout = rightout, operator, conds, stringsAsFactors = FALSE))
+        
+      }
+        
+      ### apply parsed constraints
+      
+      for(j in 1:nrow(parsed.constraints)) {
+        
+        iin <- parsed.constraints[j, ]
         tmpenv.left <- tmpenv.right <- list()
-        tmpenv.left <- within(tmpenv.left, eval(parse(text = leftcond)))
-        tmpenv.right <- within(tmpenv.right, eval(parse(text = rightcond)))
+        tmpenv.left <- within(tmpenv.left, eval(parse(text = iin$leftcond)))
+        tmpenv.right <- within(tmpenv.right, eval(parse(text = iin$rightcond)))
         
-        resp.out.left <- unlist(lapply(respvars[[leftout]]$values, function(f) do.call(f, tmpenv.left)))
-        resp.out.right <- unlist(lapply(respvars[[rightout]]$values, function(f) do.call(f, tmpenv.right)))
+        resp.out.left <- unlist(lapply(respvars[[iin$leftout]]$values, function(f) do.call(f, tmpenv.left)))
+        resp.out.right <- unlist(lapply(respvars[[iin$rightout]]$values, function(f) do.call(f, tmpenv.right)))
         
-        stopifnot(length(resp.out.left) == length(resp.out.right))
-        
-        settozeroindex <- respvars[[leftout]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
-        
-        if(length(settozeroindex) > 0) {
-          removedex <- respvars[[leftout]]$index == settozeroindex
-        
-          respvars[[leftout]]$index <- respvars[[leftout]]$index[!removedex] 
-          respvars[[leftout]]$values <- respvars[[leftout]]$values[!removedex] 
+        if(iin$leftout == iin$rightout) {  ## constraints are for the same counterfactual, these lead to removals of qs
+            settozeroindex <- respvars[[iin$leftout]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
+            
+            if(length(settozeroindex) > 0) {
+              removedex <- respvars[[leftout]]$index == settozeroindex
+              
+              respvars[[leftout]]$index <- respvars[[leftout]]$index[!removedex] 
+              respvars[[leftout]]$values <- respvars[[leftout]]$values[!removedex] 
+              
+            }
+            
+        } else {  ## otherwise these lead to added constraints
           
+          lnotsat <- length(notsatlist)
+          finddex <- !do.call(operator, expand.grid(resp.out.left, resp.out.right))
+          notsat <- expand.grid(respvars[[leftout]]$index, respvars[[rightout]]$index)[finddex, ]
+          colnames(notsat) <- c(leftout, rightout)  
+          ## these sets of response variables do not satisfy the constraints and should be removed from the q.vals table
+          notsatlist[[lnotsat + 1]] <- notsat
+           
         }
         
       }
+        
+      }
       
+    
+    q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
+    ## remove rows not in notsatlist
+    if(length(notsatlist) > 0) {
+      
+      for(j in 1:length(notsatlist)) {
+        
+        q.vals.tmp <- merge(q.vals.all, cbind(notsatlist[[j]], remove=1), all.x = TRUE)
+        q.vals.all <- q.vals.tmp[is.na(q.vals.tmp$remove), -ncol(q.vals.tmp)]
+        
+      }
       
     }
     
-    
-    q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
     q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1)[which(obsvars %in% right.vars)])
     
     variables <- paste0("q", do.call(paste0, q.vals))
     
     q.vals.tmp <- cbind(q.vals, vars = variables)
     q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp, by = names(right.vars), sort = TRUE)
+    
+    variables <- as.character(unique(q.vals.all.lookup$vars))
     ## constraints 
     
     removeprows <- rep(0, nrow(p.vals))
@@ -193,6 +232,8 @@ analyze_graph <- function(graph, constraints) {
         } else {
           
           q.match <- paste0("q", do.call(paste0, obsdex))
+          q.match <- q.match[q.match %in% variables]
+          if(length(q.match) == 0) q.match <- "0"
           p.constraints[j + 1] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
           
         }
@@ -255,7 +296,9 @@ analyze_graph <- function(graph, constraints) {
     
     ## reduce terms
     
-    red.sets <- const.to.sets(p.constraints, objterm1, objterm2)
+    special.terms <- grepl("p(.*) = 0", p.constraints)
+    
+    red.sets <- const.to.sets(p.constraints[!special.terms], objterm1, objterm2)
     
     
     objective <- paste(paste(red.sets$objective.terms[[1]], collapse = " + "), " - ", 
@@ -265,13 +308,33 @@ analyze_graph <- function(graph, constraints) {
     attr(parameters, "rightvars") <- names(right.vars)
     attr(parameters, "condvars") <- names(cond.vars)
     
-    list(variables = red.sets$variables, parameters = parameters, constraints = red.sets$constr, 
+    list(variables = red.sets$variables, parameters = parameters, constraints = c(red.sets$constr, p.constraints[special.terms]), 
          objective = objective, p.vals = p.vals, q.vals = q.vals)
     
     
 }
 
 pastestar <- function(...) paste(..., sep = "*")
+
+expand_cond <- function(cond, obsnames) {
+  
+  chk1 <- sapply(cond, function(x) substr(x, nchar(x), nchar(x))) %in% obsnames
+  if(!any(chk1)) {
+    return(paste(cond, collapse = "; "))
+  }
+  
+  retcond <- cond[!chk1]
+  
+  for(j in (1:length(cond))[chk1]) {
+    
+    newcond <- paste0(substr(cond[j], 1, nchar(cond[j]) - 1), c("0", "1"))
+    retcond <- paste(retcond, newcond, sep = "; ")
+    
+  }
+  
+  retcond
+  
+}
 
 
 const.to.sets <- function(constr, objterm1, objterm2) {
@@ -285,7 +348,7 @@ const.to.sets <- function(constr, objterm1, objterm2) {
     
     pnames <- lapply(strsplit(constr, " = "), function(x) {
         
-        tmp1 <- grep("q", x, value = TRUE, invert = TRUE) 
+        tmp1 <- grep("(q)", x, value = TRUE, invert = TRUE)
         trimws(tmp1)
         
     })

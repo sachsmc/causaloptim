@@ -144,13 +144,97 @@ function(input, output) {
             
             output$myplot <- renderPlot(plot.graphres(graphres))
             
+            rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
+            defaultOut <- names(V(graphres)[V(graphres)$outcome == 1])
+            
+            
+            effectUI <- fluidRow(id = "effect", 
+                                 h3("Specify causal effect of interest"), 
+                                 column(1, selectInput("effV1", label="Variable 1", choices = names(rightvars), selected = defaultOut, selectize = FALSE)), 
+                                 column(1, selectInput("effV2", label="Variable 2", choices = names(rightvars), selected = defaultOut, selectize = FALSE))
+                                 )
+            
+    
+            
             insertUI(selector = "#myplot", 
                      where = "afterEnd", 
-                     ui = tags$div(id = "results", 
-                                   actionButton("constraints", "Press to specify constraints"),
-                                   actionButton("optimize", "Press to compute the bounds")
+                     ui = list(effectUI,
+                               fluidRow(id = "results", 
+                                   column(1, actionButton("constraints", "Specify constraints")),
+                                   column(1, actionButton("optimize", "Compute the bounds"))
                                    )
+                     )
             )
+            
+            
+            observeEvent({
+              input$effV1
+              input$effV2
+            }, {
+              
+              selV1 <- V(graphres)[which(names(V(graphres)) == input$effV1)]
+              selV2 <- V(graphres)[which(names(V(graphres)) == input$effV2)]
+              
+              chV1 <- adjacent_vertices(graphres, selV1, mode = "in")[[1]]
+              choiceV1 <- names(chV1)[!names(chV1) %in% c("Ul", "Ur")]
+              chV2 <- adjacent_vertices(graphres, selV2, mode = "in")[[1]]
+              choiceV2 <- names(chV2)[!names(chV2) %in% c("Ul", "Ur")]
+              
+              potentUI <- fluidRow(id = "condition", 
+                                   column(1, selectInput("condV1", label="Condition 1", choices = choiceV1, multiple = TRUE, selectize = FALSE)), 
+                                   column(1, selectInput("condV2", label="Condition 2", choices = choiceV2, multiple = TRUE, selectize = FALSE))
+              )
+              
+              removeUI(selector = "#condition", immediate = TRUE)
+              
+              insertUI(selector = "#results", 
+                       where = "beforeBegin", 
+                       ui = list(
+                         potentUI
+                       ))
+                       
+            })
+            
+            
+            observeEvent({
+              
+              input$condV1
+              input$condV2
+              
+            }, {
+              
+              
+              
+              uicondL <- lapply(input$condV1, function(x){
+                
+                column(1, selectInput(paste0("effect.condl.", x), x, choices = c("0", "1"), width = "80px"))
+                
+              })
+              uicondR <- lapply(input$condV2, function(x){
+                
+                column(1, selectInput(paste0("effect.condr.", x), x, choices = c("0", "1"), width = "80px"))
+                
+              })
+              
+              print(length(uicondR))
+              
+              removeUI(selector = "#effectrow", immediate = TRUE, multiple = TRUE)
+              insertUI(selector = "#results", where = "beforeBegin", 
+                       ui = fluidRow(id = "effectrow", 
+                                     column(1, input$effV1),
+                                     uicondL, 
+                                     column(1, selectInput("effect.operator", 
+                                                           "Operator", choices = c("-", "+"), width = "80px")), 
+                                     column(1, input$effV2), 
+                                     uicondR
+                       )
+              )
+              
+            })
+            
+            
+                     
+            
             
             
         }
@@ -207,6 +291,9 @@ function(input, output) {
       list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, constraints = constraints)
       
     })
+ 
+    
+    ### constraints
     
     nconstraints <- reactiveValues(nconst = NULL)
     

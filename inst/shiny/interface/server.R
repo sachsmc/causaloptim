@@ -148,103 +148,128 @@ function(input, output) {
             defaultOut <- names(V(graphres)[V(graphres)$outcome == 1])
             
             
-            effectUI <- fluidRow(id = "effect", 
+            effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest"), 
-                                 column(1, selectInput("effV1", label="Variable 1", choices = names(rightvars), selected = defaultOut, selectize = FALSE)), 
-                                 column(1, selectInput("effV2", label="Variable 2", choices = names(rightvars), selected = defaultOut, selectize = FALSE))
-                                 )
+                            fluidRow(
+                                 column(1, actionButton("addpo", "Add potential outcome")), 
+                                 column(1, actionButton("addvar", "Add variable")), 
+                                 column(1, actionButton("addpocond", "Add potential condition")),
+                                 column(1, actionButton("addoper", "Add operator")), 
+                                 column(1, actionButton("clear", "Reset"))
+                                 ))
             
-    
             
             insertUI(selector = "#myplot", 
                      where = "afterEnd", 
                      ui = list(effectUI,
                                fluidRow(id = "results", 
-                                   column(1, actionButton("constraints", "Specify constraints")),
-                                   column(1, actionButton("optimize", "Compute the bounds"))
-                                   )
+                                        h3("Constraints"),
+                                        column(1, actionButton("constraints", "Specify constraints")),
+                                        column(1, actionButton("optimize", "Compute the bounds"))
+                               )
                      )
             )
             
-            
-            observeEvent({
-              input$effV1
-              input$effV2
-            }, {
+            observeEvent(input$addpo, {
               
-              selV1 <- V(graphres)[which(names(V(graphres)) == input$effV1)]
-              selV2 <- V(graphres)[which(names(V(graphres)) == input$effV2)]
-              
-              chV1 <- adjacent_vertices(graphres, selV1, mode = "in")[[1]]
-              choiceV1 <- names(chV1)[!names(chV1) %in% c("Ul", "Ur")]
-              chV2 <- adjacent_vertices(graphres, selV2, mode = "in")[[1]]
-              choiceV2 <- names(chV2)[!names(chV2) %in% c("Ul", "Ur")]
-              
-              potentUI <- fluidRow(id = "condition", 
-                                   column(1, selectInput("condV1", label="Condition 1", choices = choiceV1, multiple = TRUE, selectize = FALSE)), 
-                                   column(1, selectInput("condV2", label="Condition 2", choices = choiceV2, multiple = TRUE, selectize = FALSE))
-              )
-              
-              removeUI(selector = "#condition", immediate = TRUE)
-              
-              insertUI(selector = "#results", 
-                       where = "beforeBegin", 
-                       ui = list(
-                         potentUI
+              insertUI(selector = "#effect", "beforeEnd", 
+                       ui = fluidRow(
+                         column(1, id = paste0("po.", input$addpo), 
+                                selectInput(inputId=paste0("po.", input$addpo), 
+                                            label = "", choices=names(rightvars), multiple = FALSE, selectize = FALSE, width = "80px")),
+                         column(1, style= "padding-top: 20px", h4("(")), 
+                         
+                         column(1, id = paste0("end", input$addpo),  style= "padding-top: 20px", h4(")"))
                        ))
-                       
+              
             })
             
-            
             observeEvent({
-              
-              input$condV1
-              input$condV2
-              
+              input$addvar
             }, {
               
+              pout <- V(graphres)[names(V(graphres)) == input[[paste0("po.", input$addpo)]]]
               
+              condsel <- names(adjacent_vertices(graphres, pout, mode = "in")[[1]])
+              condsel <- condsel[!condsel %in% c("Ur", "Ul")]
               
-              uicondL <- lapply(input$condV1, function(x){
-                
-                column(1, selectInput(paste0("effect.condl.", x), x, choices = c("0", "1"), width = "80px"))
-                
-              })
-              uicondR <- lapply(input$condV2, function(x){
-                
-                column(1, selectInput(paste0("effect.condr.", x), x, choices = c("0", "1"), width = "80px"))
-                
-              })
-              
-              print(length(uicondR))
-              
-              removeUI(selector = "#effectrow", immediate = TRUE, multiple = TRUE)
-              insertUI(selector = "#results", where = "beforeBegin", 
-                       ui = fluidRow(id = "effectrow", 
-                                     column(1, input$effV1),
-                                     uicondL, 
-                                     column(1, selectInput("effect.operator", 
-                                                           "Operator", choices = c("-", "+"), width = "80px")), 
-                                     column(1, input$effV2), 
-                                     uicondR
-                       )
+              insertUI(selector = paste0("#end", input$addpo), "beforeBegin", 
+                       ui = list(column(1, selectInput(inputId = paste0("cond.", input$addvar), 
+                                                       label = "", choices = condsel, multiple = FALSE, selectize = FALSE, width = "80px")), 
+                                 column(1, selectInput(inputId = paste0("cond.val.", input$addvar), 
+                                                       label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px")))
               )
               
             })
             
+            observeEvent(input$addoper, {
+              
+              insertUI(selector = "#effect", "beforeEnd", 
+                       ui = fluidRow(
+                         column(1, selectInput(inputId=paste0("oper.", input$addoper), 
+                                            label = "", choices=c("-", "+"), multiple = FALSE, selectize = FALSE, width = "80px"))
+                         
+                       ))
+              
+            })
             
-                     
+            
+            observeEvent(input$addpocond, {
+              
+              pout <- V(graphres)[names(V(graphres)) == input[[paste0("po.", input$addpo)]]]
+              
+              condsel <- names(adjacent_vertices(graphres, pout, mode = "in")[[1]])
+              condsel <- condsel[!condsel %in% c("Ur", "Ul")]
+              
+              insertUI(selector = paste0("#end", input$addpo), "beforeBegin", 
+                       ui = list(column(1, selectInput(inputId = paste0("pocond.", input$addpocond), 
+                                                       label = "", choices = condsel, multiple = FALSE, selectize = FALSE, width = "80px")), 
+                                 column(1, style= "padding-top: 20px", h4("(")), 
+                                 column(1, id = paste0("pocondend", input$addpocond), style= "padding-top: 20px", h4(")")), 
+                                 column(1, selectInput(inputId = paste0("pocond.val.", input$addpocond), 
+                                                       label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px"))
+                                 ))
+              
+              observeEvent(input[[paste0("pocond.", input$addpocond)]], {
+                
+                seldcond <- input[[paste0("pocond.", input$addpocond)]]
+                pvout <- V(graphres)[names(V(graphres)) == seldcond]
+                
+                condsel2 <- names(adjacent_vertices(graphres, pvout, mode = "in")[[1]])
+                condsel2 <- condsel2[!condsel2 %in% c("Ur", "Ul")]
+                
+                removeUI(selector = paste0("#pocondcho", input$addpocond), immediate = TRUE)
+                removeUI(selector = paste0("#pocondchov", input$addpocond), immediate = TRUE)
+                insertUI(selector = paste0("#pocondend", input$addpocond), where = "beforeBegin", 
+                         ui = list(column(1, id = paste0("pocondcho", input$addpocond), 
+                                          selectInput(paste0("pocond.cond.", input$addpocond), 
+                                                         label = "", choices = condsel2, multiple = FALSE, selectize = FALSE, width = "80px")), 
+                                   column(1, id = paste0("pocondchov", input$addpocond), 
+                                          selectInput(inputId = paste0("pocond.cond.val.", input$addpocond), 
+                                                         label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px"))
+                                   ))
+                
+              }, ignoreNULL=TRUE, ignoreInit = TRUE)
+              
+            })
+            
+    
             
             
             
         }
-        
-    })
-    
+            
+            })
+            
+            
+                     
     
     optimizeGraph <- reactive({
       
       graphres <- igraphFromList()
+      
+      ## parse causal effect
+      
       
       
       ## parse constraints
@@ -313,7 +338,7 @@ function(input, output) {
       potent.outs <- paste0(names(parentsof), tmpparent)
       potent.outs <- potent.outs[lapply(parentsof, length) > 0]
       
-      insertUI(selector = "#optimize", where = "beforeBegin", 
+      insertUI(selector = "#results", where = "beforeBegin", 
                ui = div(h3(paste0("Constraint ", input$constraints)), 
                         selectInput(paste0("varconstr.l.", input$constraints), "Potential outcome (left) to constrain", 
                                     choices = potent.outs), 
@@ -366,7 +391,7 @@ function(input, output) {
                  })
       
       removeUI(selector = paste0("#constrow", nconstraints$nconst), immediate = TRUE, multiple = TRUE)
-      insertUI(selector = "#optimize", where = "beforeBegin", 
+      insertUI(selector = "#results", where = "beforeBegin", 
                ui = fluidRow(id = paste0("constrow", nconstraints$nconst), 
                         column(1, fix.l),
                         ui0, 
@@ -393,8 +418,8 @@ function(input, output) {
         
         removeUI(selector = "#resultsText")
         insertUI(selector = "#results", where = "beforeEnd", 
-                 ui = div(h3("Results"), 
-                              htmlOutput("resultsText")
+                 ui = fluidRow(column(12, h3("Results")), 
+                              column(12, htmlOutput("resultsText"))
                           )
                  )
         

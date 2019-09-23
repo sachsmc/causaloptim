@@ -194,9 +194,9 @@ function(input, output) {
               condsel <- condsel[!condsel %in% c("Ur", "Ul")]
               
               insertUI(selector = paste0("#end", input$addpo), "beforeBegin", 
-                       ui = list(column(1, selectInput(inputId = paste0("cond.", input$addvar), 
+                       ui = list(column(1, selectInput(inputId = paste0("po.", input$addpo, ".cond.", input$addvar), 
                                                        label = "", choices = condsel, multiple = FALSE, selectize = FALSE, width = "80px")), 
-                                 column(1, selectInput(inputId = paste0("cond.val.", input$addvar), 
+                                 column(1, selectInput(inputId = paste0("po.", input$addpo, ".cond.", input$addvar, ".val"), 
                                                        label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px")))
               )
               
@@ -222,17 +222,17 @@ function(input, output) {
               condsel <- condsel[!condsel %in% c("Ur", "Ul")]
               
               insertUI(selector = paste0("#end", input$addpo), "beforeBegin", 
-                       ui = list(column(1, selectInput(inputId = paste0("pocond.", input$addpocond), 
+                       ui = list(column(1, selectInput(inputId = paste0("po.", input$addpo, ".pocond.", input$addpocond), 
                                                        label = "", choices = condsel, multiple = FALSE, selectize = FALSE, width = "80px")), 
                                  column(1, style= "padding-top: 20px", h4("(")), 
                                  column(1, id = paste0("pocondend", input$addpocond), style= "padding-top: 20px", h4(")")), 
-                                 column(1, selectInput(inputId = paste0("pocond.val.", input$addpocond), 
+                                 column(1, selectInput(inputId = paste0("po.", input$addpo, ".pocond.", input$addpocond, ".val"), 
                                                        label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px"))
                                  ))
               
-              observeEvent(input[[paste0("pocond.", input$addpocond)]], {
+              observeEvent(input[[paste0("po.", input$addpo, ".pocond.", input$addpocond)]], {
                 
-                seldcond <- input[[paste0("pocond.", input$addpocond)]]
+                seldcond <- input[[paste0("po.", input$addpo, ".pocond.", input$addpocond)]]
                 pvout <- V(graphres)[names(V(graphres)) == seldcond]
                 
                 condsel2 <- names(adjacent_vertices(graphres, pvout, mode = "in")[[1]])
@@ -242,14 +242,14 @@ function(input, output) {
                 removeUI(selector = paste0("#pocondchov", input$addpocond), immediate = TRUE)
                 insertUI(selector = paste0("#pocondend", input$addpocond), where = "beforeBegin", 
                          ui = list(column(1, id = paste0("pocondcho", input$addpocond), 
-                                          selectInput(paste0("pocond.cond.", input$addpocond), 
+                                          selectInput(paste0("po.", input$addpo, ".pocond.cond.", input$addpocond), 
                                                          label = "", choices = condsel2, multiple = FALSE, selectize = FALSE, width = "80px")), 
                                    column(1, id = paste0("pocondchov", input$addpocond), 
-                                          selectInput(inputId = paste0("pocond.cond.val.", input$addpocond), 
+                                          selectInput(inputId = paste0("po.", input$addpo, ".pocond.cond.", input$addpocond, ".val"), 
                                                          label = "=", choices = c("0", "1"), multiple = FALSE, selectize = FALSE, width = "80px"))
                                    ))
                 
-              }, ignoreNULL=TRUE, ignoreInit = TRUE)
+              }, ignoreNULL=TRUE, ignoreInit = FALSE)
               
             })
             
@@ -270,6 +270,56 @@ function(input, output) {
       
       ## parse causal effect
       
+      n.pos <- input$addpo
+      n.oper <- input$addoper
+      
+      effectlist <- vector(mode = "list")
+      for(i in 1:n.pos) {
+        
+        po.rele <- grep(paste0("^po\\.", i), names(input), value = TRUE)
+        inlist <- vector(mode = "list")
+        
+        po.povars <- grep(paste0("^po\\.", i, "\\.pocond\\.[1-9]$"), names(input), value = TRUE)
+        po.vars <- grep(paste0("^po\\.", i, "\\.cond\\.[1-9]$"), names(input), value = TRUE)
+        
+        jout <- 1
+        if(length(po.vars) > 0) {
+        for(j in 1:length(po.vars)) {
+          
+          inlist[[j]] <- input[[paste0(po.vars[j], ".val")]]
+          names(inlist[[j]]) <- input[[po.vars[j]]]
+          jout <- jout + 1
+          
+        }
+        }
+        
+        if(length(po.povars) > 0) {
+          
+          for(j in 1:length(po.povars)) {
+            
+            inpolist <- vector(mode = "list")
+            po.condpo.vars <- grep(paste0("^po\\.", i, "\\.pocond\\.cond\\.[1-9]$"), names(input), value = TRUE)
+            for(k in 1:length(po.condpo.vars)) {
+              
+              inpolist[[k]] <- input[[paste0(po.condpo.vars[k], ".val")]]
+              names(inpolist[[k]]) <- input[[po.condpo.vars[k]]]
+              
+            }
+            
+            inlist[[jout]] <- inpolist
+            names(inlist[[jout]]) <- input[[po.povars[j]]]
+            jout <- jout + 1
+            
+          }
+          
+        }
+        
+        effectlist[[i]] <- inlist
+        names(effectlist[[i]]) <- input[[paste0("po.", i)]]
+        
+      }
+      
+      operators <- lapply(1:n.oper, function(i) input[[paste0("oper.", i)]])
       
       
       ## parse constraints
@@ -310,7 +360,7 @@ function(input, output) {
         
       }
     
-      obj <- analyze_graph(graphres, constraints)
+      obj <- analyze_graph(graphres, constraints, effect = list(effectlist, operators))
       bounds.obs <- optimize_effect(obj)
       
       list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, constraints = constraints)

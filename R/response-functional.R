@@ -6,7 +6,7 @@
 #' 
 #' @export
 
-analyze_graph <- function(graph, constraints) {
+analyze_graph <- function(graph, constraints, effect = NULL) {
     
     leftind <- vertex_attr(graph)$leftside
     
@@ -288,6 +288,9 @@ analyze_graph <- function(graph, constraints) {
     baseind[1:nrow(p.vals)] <- TRUE
     attr(p.constraints, "baseconstr") <- baseind
     ## determine objective based on exposure and outcome in terms of qs 
+    
+    if(is.null(effect)) {
+    
     expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
     outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
     var.eff <- list(NULL, NULL)
@@ -334,6 +337,8 @@ analyze_graph <- function(graph, constraints) {
     
     objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
     objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
+    
+    }
     
     ## reduce terms
     

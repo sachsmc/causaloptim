@@ -151,9 +151,9 @@ function(input, output) {
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest"), 
                             fluidRow(
-                                 column(1, actionButton("addpo", "Add potential outcome")), 
+                                 column(2, actionButton("addpo", "Add potential outcome")), 
                                  column(1, actionButton("addvar", "Add variable")), 
-                                 column(1, actionButton("addpocond", "Add potential condition")),
+                                 column(2, actionButton("addpocond", "Add potential condition")),
                                  column(1, actionButton("addoper", "Add operator")), 
                                  column(1, actionButton("clear", "Reset"))
                                  ))
@@ -171,10 +171,17 @@ function(input, output) {
                      )
             )
             
+            observeEvent(input$clear, {
+              removeUI(".outrow", multiple = TRUE)
+              varcounter$addvar <- 0
+              varcounter$addpocond <- 0
+              
+            })
+            
             observeEvent(input$addpo, {
               
               insertUI(selector = "#effect", "beforeEnd", 
-                       ui = fluidRow(
+                       ui = fluidRow(class="outrow", 
                          column(1, id = paste0("po.", input$addpo), 
                                 selectInput(inputId=paste0("po.", input$addpo), 
                                             label = "", choices=names(rightvars), multiple = FALSE, selectize = FALSE, width = "80px")),
@@ -211,7 +218,7 @@ function(input, output) {
             observeEvent(input$addoper, {
               
               insertUI(selector = "#effect", "beforeEnd", 
-                       ui = fluidRow(
+                       ui = fluidRow(class = "outrow",
                          column(1, selectInput(inputId=paste0("oper.", input$addoper), 
                                             label = "", choices=c("-", "+"), multiple = FALSE, selectize = FALSE, width = "80px"))
                          

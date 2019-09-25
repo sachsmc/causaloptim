@@ -356,79 +356,55 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
         var.dex <- var.dex & res.mat[, names(varconditions)[i]] == varconditions[[i]]
         
       }
-      var.eff[[v]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
+      var.eff[[v]] <- unique(as.character(q.vals.all.lookup[var.dex, "vars"]))
     }
     
     
     ## handle addition and subtraction based on operator
+    ## accumulate final effect based on subtraction and addition
     
+   
     
+    objective <- list(var.eff[[1]])
+    curreff <- 2
+    for(opp in 1:length(effect$oper)) {
+      
+      if(effect$oper[[opp]] == "-") {
+        
+        resss <- symb.subtract(objective[[curreff - 1]], var.eff[[curreff]])
+        objective[[curreff - 1]] <- resss[[1]]
+        objective[[curreff]] <- resss[[2]]
+        curreff <- curreff + 1
+        
+      } else if(effect$oper[[opp]] == "+") {
+        
+        objective[[curreff]] <- var.eff[[curreff]]
+        curreff <- curreff + 1
+        
+      }
+      
+    }
     
-    
-    # expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
-    # outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
-    # var.eff <- list(NULL, NULL)
-    # for(do.x in 0:1) {
-    #     intervene <- list(do.x)
-    #     names(intervene) <- names(expo.var)
-    #     gee_r <- function(r, i) {
-    #         
-    #         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-    #         parents <- parents[!names(parents) %in% c("Ul", "Ur")]
-    #         
-    #         if(names(obsvars)[i] %in% names(intervene)) {
-    #             as.numeric(intervene[[names(obsvars[i])]])
-    #         } else if (length(parents) == 0){
-    #             x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
-    #             do.call(x, list())
-    #         } else {
-    #             
-    #             lookin <- lapply(names(parents), function(gu) {
-    #                 
-    #                 as.numeric(gee_r(r, which(names(obsvars) == gu)))
-    #                 
-    #             })
-    #             names(lookin) <- names(parents)
-    #             inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
-    #             do.call(inres, lookin)
-    #             
-    #         }
-    #     }
-    #     
-    #     
-    #     res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
-    #     for(k in 1:nrow(q.vals.all)) {
-    #         for(j in 1:ncol(q.vals.all)) {
-    #             res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
-    #             
-    #         }
-    #     }
-    #     colnames(res.mat) <- names(obsvars)
-    #     var.dex <- res.mat[, names(outcome)] == 1
-    #     var.eff[[(1 - do.x) + 1]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
-    #     
-    # }
-    # 
-    # objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
-    # objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
-    
-    
-    ## reduce terms
     
     special.terms <- grepl("p(.*) = 0", p.constraints)
     
-    red.sets <- const.to.sets(p.constraints[!special.terms], objterm1, objterm2)
+    red.sets <- const.to.sets(p.constraints[!special.terms], objective)
     
     
-    objective <- paste(paste(red.sets$objective.terms[[1]], collapse = " + "), " - ", 
-                       paste(red.sets$objective.terms[[2]], collapse = " - "))
+    objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
+    for(opp in 1:length(effect$oper)) {
+      
+      objective.fin <- paste(objective.fin, effect$oper[[opp]], 
+                             paste(red.sets$objective.terms[[opp + 1]], collapse = " + "))
+      
+    }
     
     attr(parameters, "key") <- parameters.key
     attr(parameters, "rightvars") <- names(right.vars)
     attr(parameters, "condvars") <- names(cond.vars)
     
     list(variables = red.sets$variables, parameters = parameters, constraints = c(red.sets$constr, p.constraints[special.terms]), 
-         objective = objective, p.vals = p.vals, q.vals = q.vals)
+         objective = objective.fin, p.vals = p.vals, q.vals = q.vals)
     
     
 }
@@ -456,7 +432,7 @@ expand_cond <- function(cond, obsnames) {
 }
 
 
-const.to.sets <- function(constr, objterm1, objterm2) {
+const.to.sets <- function(constr, objterms) {
     
     sets <- lapply(strsplit(constr, " = "), function(x) {
         
@@ -473,13 +449,13 @@ const.to.sets <- function(constr, objterm1, objterm2) {
     })
     
     K <- length(sets)
-    sets[[length(sets) + 1]] <- objterm1
-    sets[[length(sets) + 1]] <- objterm2
+    sets[(K+1):(K + length(objterms))]<- objterms
+    
     
     reduced.sets <- reduce.sets(sets)
     
     constr.new <- reduced.sets[1:K]
-    obj.new <- reduced.sets[(K+1):(K+2)]
+    obj.new <- reduced.sets[(K+1):(K+length(objterms))]
     var.new <- reduced.sets[[1]]
     
     list(constr = paste(unlist(lapply(constr.new, paste, collapse = " + ")), " = ", pnames), 
@@ -541,6 +517,25 @@ reduce.sets <- function(sets){
         sets[[i]] <- tmp
     }
     return(sets)  
+}
+
+#' Symbolic subtraction
+#' 
+#' Like setdiff but doesn't remove duplicates
+symb.subtract <- function(x1, x2) {
+  ## x1 - x2
+  res1 <- x1
+  res2 <- NULL
+  for(j in x2) {
+    if(!j %in% res1){
+      res2 <- c(res2, j)
+    } else {
+      res1 <- res1[-which(res1 == j)[1]]  
+      
+    }
+  }
+  list(res1, res2)
+  
 }
 
 #' Plot the analyzed graph object

@@ -1,6 +1,6 @@
 library(causaloptim)
 
-#graph <- specify_graph()
+#b <- specify_graph()
 
 graph <- readRDS("tests/test-graphs/simple.RData")
 

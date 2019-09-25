@@ -287,58 +287,131 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
     baseind <- rep(FALSE, length(p.constraints))
     baseind[1:nrow(p.vals)] <- TRUE
     attr(p.constraints, "baseconstr") <- baseind
-    ## determine objective based on exposure and outcome in terms of qs 
-    
-    if(is.null(effect)) {
-    
-    expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
-    outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
-    var.eff <- list(NULL, NULL)
-    for(do.x in 0:1) {
-        intervene <- list(do.x)
-        names(intervene) <- names(expo.var)
-        gee_r <- function(r, i) {
+    ## determine objective based on exposure and outcome in terms of qs
+
+    var.eff <- NULL
+    for(v in 1:length(effect$vars)) {
+
+      thisvar <- effect$vars[[v]]
+      outcome <- V(graph)[names(V(graph)) == names(effect$vars)[v]]
+      intervene <- vector(mode = "list")
+      varconditions <- vector(mode = "list")
+      varconditions[[names(effect$vars)[v]]] <- 1
+      for(ll in 1:length(thisvar)){
+
+          if(is.list(thisvar[[ll]])) {
             
-            parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-            parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+            varconditions[[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]][[2]])
+            intervene[[names(thisvar[[ll]])[1]]] <- as.numeric(thisvar[[ll]][[1]])
             
-            if(names(obsvars)[i] %in% names(intervene)) {
-                as.numeric(intervene[[names(obsvars[i])]])
-            } else if (length(parents) == 0){
-                x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
-                do.call(x, list())
-            } else {
-                
-                lookin <- lapply(names(parents), function(gu) {
-                    
-                    as.numeric(gee_r(r, which(names(obsvars) == gu)))
-                    
-                })
-                names(lookin) <- names(parents)
-                inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
-                do.call(inres, lookin)
-                
-            }
+          } else {
+            
+            intervene[[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
+            
+          }
+        
         }
-        
-        
-        res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
-        for(k in 1:nrow(q.vals.all)) {
-            for(j in 1:ncol(q.vals.all)) {
-                res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
-                
-            }
+
+      gee_r <- function(r, i) {
+
+        parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+        parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+
+        if(names(obsvars)[i] %in% names(intervene)) {
+
+          as.numeric(intervene[[names(obsvars[i])]])
+
+        } else if (length(parents) == 0){
+
+          x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+          do.call(x, list())
+
+        } else {
+
+          lookin <- lapply(names(parents), function(gu) {
+
+            as.numeric(gee_r(r, which(names(obsvars) == gu)))
+
+          })
+          names(lookin) <- names(parents)
+          inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+          do.call(inres, lookin)
+
         }
-        colnames(res.mat) <- names(obsvars)
-        var.dex <- res.mat[, names(outcome)] == 1
-        var.eff[[(1 - do.x) + 1]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
+      }
+
+
+      res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
+      for(k in 1:nrow(q.vals.all)) {
+        for(j in 1:ncol(q.vals.all)) {
+          res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+
+        }
+      }
+      colnames(res.mat) <- names(obsvars)
+      
+      var.dex <- rep(TRUE, nrow(res.mat))
+      for(i in 1:length(varconditions)) {
         
+        var.dex <- var.dex & res.mat[, names(varconditions)[i]] == varconditions[[i]]
+        
+      }
+      var.eff[[v]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
     }
     
-    objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
-    objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
     
-    }
+    ## handle addition and subtraction based on operator
+    
+    
+    
+    
+    # expo.var <- V(graph)[vertex_attr(graph, "exposure") == 1]
+    # outcome <- V(graph)[vertex_attr(graph, "outcome") == 1]
+    # var.eff <- list(NULL, NULL)
+    # for(do.x in 0:1) {
+    #     intervene <- list(do.x)
+    #     names(intervene) <- names(expo.var)
+    #     gee_r <- function(r, i) {
+    #         
+    #         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+    #         parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+    #         
+    #         if(names(obsvars)[i] %in% names(intervene)) {
+    #             as.numeric(intervene[[names(obsvars[i])]])
+    #         } else if (length(parents) == 0){
+    #             x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+    #             do.call(x, list())
+    #         } else {
+    #             
+    #             lookin <- lapply(names(parents), function(gu) {
+    #                 
+    #                 as.numeric(gee_r(r, which(names(obsvars) == gu)))
+    #                 
+    #             })
+    #             names(lookin) <- names(parents)
+    #             inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+    #             do.call(inres, lookin)
+    #             
+    #         }
+    #     }
+    #     
+    #     
+    #     res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
+    #     for(k in 1:nrow(q.vals.all)) {
+    #         for(j in 1:ncol(q.vals.all)) {
+    #             res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+    #             
+    #         }
+    #     }
+    #     colnames(res.mat) <- names(obsvars)
+    #     var.dex <- res.mat[, names(outcome)] == 1
+    #     var.eff[[(1 - do.x) + 1]] <- as.character(q.vals.all.lookup[var.dex, "vars"])
+    #     
+    # }
+    # 
+    # objterm1 <- setdiff(var.eff[[1]], var.eff[[2]])
+    # objterm2 <- setdiff(var.eff[[2]], var.eff[[1]])
+    
     
     ## reduce terms
     

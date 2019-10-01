@@ -341,8 +341,9 @@ function(input, output) {
       
       names(effectlist) <- lapply(1:n.pos, function(i) input[[paste0("po.", i)]])
       
+      if(n.oper > 0){
       operators <- lapply(1:n.oper, function(i) input[[paste0("oper.", i)]])
-      
+      } else operators <- NULL
       
       ## parse constraints
       
@@ -491,7 +492,8 @@ function(input, output) {
         removeUI(selector = "#resultsText")
         insertUI(selector = "#results", where = "beforeEnd", 
                  ui = fluidRow(column(12, h3("Results")), 
-                              column(12, htmlOutput("resultsText"))
+                               column(1), 
+                              column(11, htmlOutput("resultsText"))
                           )
                  )
         

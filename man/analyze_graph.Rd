@@ -4,7 +4,7 @@
 \alias{analyze_graph}
 \title{Analyze the causal graph to determine constraints and objective}
 \usage{
-analyze_graph(graph)
+analyze_graph(graph, constraints, effect = NULL)
 }
 \description{
 The graph must contain edge attributes named "leftside" and "lrconnect"

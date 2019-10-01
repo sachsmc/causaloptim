@@ -366,6 +366,9 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
    
     
     objective <- list(var.eff[[1]])
+    if(length(var.eff) > 1 & is.null(effect$oper) | (length(effect$oper) != length(length(var.eff)) -1)) stop("Missing operator")
+    
+    if(!is.null(effect$oper)) {
     curreff <- 2
     for(opp in 1:length(effect$oper)) {
       
@@ -384,6 +387,7 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
       }
       
     }
+    }
     
     
     special.terms <- grepl("p(.*) = 0", p.constraints)
@@ -392,12 +396,21 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
     
     
     objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
-    for(opp in 1:length(effect$oper)) {
+    
+   
+    if(!is.null(effect$oper)) {
       
-      objective.fin <- paste(objective.fin, effect$oper[[opp]], 
-                             paste(red.sets$objective.terms[[opp + 1]], collapse = " + "))
+      for(opp in 1:length(effect$oper)) {
+        
+        thiscol <- ifelse(effect$oper[[opp]] == "-", " - ", " + ")
+        objective.fin <- paste(objective.fin, effect$oper[[opp]], 
+                               paste(red.sets$objective.terms[[opp + 1]], collapse = thiscol))
+        
+      }
       
     }
+    
+  
     
     attr(parameters, "key") <- parameters.key
     attr(parameters, "rightvars") <- names(right.vars)

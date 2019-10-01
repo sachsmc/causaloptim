@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Balke Bounds
-Version: 0.1.0
-Date: 2019-09-02
+Version: 0.2.0
+Date: 2019-09-25
 Author: Michael C Sachs and Arvid Sjölander and Alexander A Balke (C code) and Colorado Reed (graph-creator.js)
 Maintainer: Michael C Sachs <sachsmc@gmail.com>
 Description: One paragraph description of what the package does as one or more full sentences.

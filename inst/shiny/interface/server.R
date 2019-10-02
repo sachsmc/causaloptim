@@ -149,7 +149,7 @@ function(input, output) {
             
             
             effectUI <- div(id = "effect", 
-                                 h3("Specify causal effect of interest"), 
+                                 h3("Specify causal effect of interest (required)"), 
                             fluidRow(
                                  column(2, actionButton("addpo", "Add potential outcome")), 
                                  column(1, actionButton("addvar", "Add variable")), 
@@ -163,11 +163,14 @@ function(input, output) {
             insertUI(selector = "#myplot", 
                      where = "afterEnd", 
                      ui = list(effectUI,
-                               fluidRow(id = "results", 
-                                        h3("Constraints"),
-                                        column(1, actionButton("constraints", "Specify constraints")),
-                                        column(1, actionButton("optimize", "Compute the bounds"))
-                               )
+                               div(id = "constraintsdiv", h3("Constraints (optional)"),
+                                   fluidRow(
+                                        column(1, actionButton("constraints", "Specify constraints"))
+                                        )),
+                               div(id = "results", h3("Bounds"), 
+                                   fluidRow(
+                                        column(1, actionButton("optimize", "Compute the bounds", style="background-color: #69fb82"))
+                               ))
                      )
             )
             
@@ -411,7 +414,7 @@ function(input, output) {
       potent.outs <- paste0(names(parentsof), tmpparent)
       potent.outs <- potent.outs[lapply(parentsof, length) > 0]
       
-      insertUI(selector = "#results", where = "beforeBegin", 
+      insertUI(selector = "#constraintsdiv", where = "beforeEnd", 
                ui = div(h3(paste0("Constraint ", input$constraints)), 
                         selectInput(paste0("varconstr.l.", input$constraints), "Potential outcome (left) to constrain", 
                                     choices = potent.outs), 
@@ -491,10 +494,9 @@ function(input, output) {
         
         removeUI(selector = "#resultsText")
         insertUI(selector = "#results", where = "beforeEnd", 
-                 ui = fluidRow(column(12, h3("Results")), 
-                               column(1), 
-                              column(11, htmlOutput("resultsText"))
-                          )
+                 ui = div(fluidRow(column(12, h3("Results")), 
+                               column(12, pre(htmlOutput("resultsText")))
+                          ))
                  )
         
         
@@ -539,7 +541,7 @@ function(input, output) {
         output$resultsText <- renderUI(do.call(tagList, textres))
         
         insertUI(selector = "#results", where = "beforeEnd", 
-                 ui = actionButton("downloadf", "Press to return objects to R"))
+                 ui = actionButton("downloadf", "Exit and return objects to R", style="background-color: #fb6970"))
         
         
         

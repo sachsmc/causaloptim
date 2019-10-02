@@ -18,8 +18,8 @@ shinyUI(fluidPage(tags$head(
                           tags$br()))
     ), 
     verbatimTextOutput("outcode"),
-    actionButton("endbtn", "Press to return graph object"),
-    actionButton("analyze", "Press to analyze the graph"), 
+    actionButton("endbtn", "Exit and return graph object", style="background-color: #fb6970"),
+    actionButton("analyze", "Analyze the graph", style="background-color: #69fb82"), 
     
     headerPanel("More information (add link here)"),
     

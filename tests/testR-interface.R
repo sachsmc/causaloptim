@@ -1,6 +1,6 @@
 library(causaloptim)
 
-#b <- specify_graph()
+b <- specify_graph()
 
 graph <- readRDS("tests/test-graphs/simple.RData")
 
@@ -19,7 +19,11 @@ bounds.obs <- optimize_effect(obj)
 f.bounds <- interpret_bounds(bounds.obs$bounds, obj$parameters)
 simulation <- simulate_bounds(obj, bounds.obs, nsim = 100)
 
-
-
-
 simulate_bounds(graph$obj, graph$bounds.obs, nsim = 100)
+
+
+### erins problem
+
+p.vals <- p.vals[5:8, ]
+constraints <- NULL
+effect <- list(vars = list(I = list(V = 1), I = list(V = 0)), oper = list("-"))

@@ -1,18 +1,18 @@
 function(input, output) {
     
-    output$outcode <- renderPrint({
-        
-        myin <- input$edges
-        if(length(myin) > 0) {
-            print(edgeList())
-            #print(igraphFromList())
-        } else {
-            
-            print("Shift+click to add nodes, shift+drag to add edges")
-            
-        }
-        
-    })
+    # output$outcode <- renderPrint({
+    #     
+    #     myin <- input$edges
+    #     if(length(myin) > 0) {
+    #         print(edgeList())
+    #         #print(igraphFromList())
+    #     } else {
+    #         
+    #         print("Shift+click to add nodes, shift+drag to add edges")
+    #         
+    #     }
+    #     
+    # })
     
     
     edgeList <- reactive({
@@ -147,6 +147,7 @@ function(input, output) {
             rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
             defaultOut <- names(V(graphres)[V(graphres)$outcome == 1])
             
+            varcounter <- reactiveValues(addvar = 0, addpocond = 0, addoper = 0)
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
@@ -157,8 +158,6 @@ function(input, output) {
                                  column(1, actionButton("addoper", "Add operator")), 
                                  column(1, actionButton("clear", "Reset"))
                                  ))
-            
-            varcounter <- reactiveValues(addvar = 0, addpocond = 0)
             
             insertUI(selector = "#myplot", 
                      where = "afterEnd", 
@@ -178,6 +177,7 @@ function(input, output) {
               removeUI(".outrow", multiple = TRUE)
               varcounter$addvar <- 0
               varcounter$addpocond <- 0
+              varcounter$addoper <- 0
               
             })
             
@@ -227,6 +227,8 @@ function(input, output) {
                          
                        ))
               
+              varcounter$addoper <- varcounter$addoper + 1
+              
             })
             
             
@@ -275,7 +277,7 @@ function(input, output) {
             
     
             
-            
+         
             
         }
             
@@ -287,7 +289,6 @@ function(input, output) {
     optimizeGraph <- reactive({
       
       graphres <- igraphFromList()
-      
       ## parse causal effect
       #stopApp(reactiveValuesToList(input))
       n.pos <- input$addpo

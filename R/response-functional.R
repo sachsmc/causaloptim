@@ -366,7 +366,9 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
    
     
     objective <- list(var.eff[[1]])
-    if(length(var.eff) > 1 & is.null(effect$oper) | (length(effect$oper) != length(length(var.eff)) -1)) stop("Missing operator")
+    if(length(var.eff) > 1 & is.null(effect$oper) | (length(effect$oper) != length(var.eff) -1)){
+      stop("Missing operator")
+    }
     
     if(!is.null(effect$oper)) {
     curreff <- 2
@@ -398,7 +400,7 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
     objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
     
    
-    if(!is.null(effect$oper)) {
+    if(!is.null(effect$oper) & length(red.sets$objective.terms) > 1) {
       
       for(opp in 1:length(effect$oper)) {
         

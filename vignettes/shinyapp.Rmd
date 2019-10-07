@@ -40,22 +40,46 @@ Click on an existing node to select it, and shift+click on a node to change the 
 
 ![Connections](screen3.png)
 
-Once we have our graph specified, we need to make some annotations. You must specify the outcome of interest, and the exposure of interest. Select the outcome node and press 'y' to mark it as the outcome of interest, and then select the exposure node and press 'e' to mark it as the exposure of interest. The default causal contrast is the total effect. The exposure will be colored blue, and the outcome colored red. 
+Once we have our graph specified, we can optionally make some annotations. You must specify the outcome of interest, and the exposure of interest. Select the outcome node and press 'y' to mark it as the outcome of interest, and then select the exposure node and press 'e' to mark it as the exposure of interest. The default causal contrast is the total effect. The exposure will be colored blue, and the outcome colored red. 
 
 ![Final graph](screen4.png)
 
 We now have a graph specified that is ready to be analyzed. Optionally, click an edge and press 'm' to enforce monotonicity for that connection. If you are ready to analyze the object click on the "Press to analyze the graph button". The program interprets the graph, converts it to an `igraph` object with annotations, and prints the result from R. Inspect the resulting graph carefully so that you understand what is being analyzed. 
 
-## Specifying other constraints
+## Specifying the causal effect of interest
 
-
-
+The next step is to use the buttons to specify the causal effect of interest. In our current example, we are interested in the causal risk difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The optimizer will compute bounds for the expected value of this quantity. 
 
 ![Interpreted graph](screen5.png)
 
-Once you have inspected the graph and understand what is being analyzed, press the next button to optimize the bounds. 
+Use the buttons to describe your causal effect of interest. The following buttons are available to make this specification:
 
-![Bounds](screen6.png)
+- **Add potential outcome**: This button adds one of the variables as a potential outcome that depends on one or more of its parents. Click the button, and then select the outcome from the dropdown list. In this example, we click and select the "Y" variable. 
+   + Once you have selected a potential outcome, you must specify what it depends on, which will be indicated by the parentheses. An outcome can depend on a _variable_, that is, one of its parents in the graph whose value is fixed to 0 or 1, or on a _potential condition_ which is a potential variable that itself depends on the value of one of its parents. 
+- **Add variable**: This button adds a selector for the parents of the outcome in the current row, and 0 or 1 for the value of that variable. In our example we set the variable X to 1.
+- **Add potential condition**: This button adds a selector for the parents of the outcome in the current row, but unlike the variable, these are potential outcomes as well. The condition for the potential outcome depend on the parents of the variable selected, two levels up from the outcome in the current row. 
+- **Add operator**: This button terminates the selection of variables in the current row, and adds a new row that allows you to select "+" or "-", which is the operator that is used to combine with the next row. In our example, we click and select "-" for the difference. 
+- **Reset**: Clears all of the outcomes and operators. 
+
+If the potential outcome has multiple parents, you can press the add variable or add potential condition button as many times as is needed to define your effect. Continue adding variables, specifying their conditions, and make sure that all rows are separated by an operator. 
+
+Our specified effect now looks like this: 
+
+![Specified effect](screen6.png)
+
+
+## Specifying constraints (optional)
+
+Once the causal effect of interest has been specified, you may optionally specify some constraints. Click the button to start the constraint interface. 
+
+![Constraint interface](screen7.png)
+
+Here you can choose potential outcomes to constrain by selecting the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). In our example, we can specify monotonicity of the instrument Z by defining the constraint X(Z = 1) $\geq$ X(Z = 0). 
+
+
+## Computation of the bounds
+
+Once you have inspected the graph, specified the causal effect, and understand what is being analyzed, press the final button to compute the bounds. 
 
 The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see the paper that doesn't exist yet. The final button allows you to return all of the objects back to the R environment and store them in `results`. 
 

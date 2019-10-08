@@ -118,12 +118,19 @@ function(input, output) {
         
     })
     
+    varcounter <- reactiveValues(addvar = 0, addpocond = 0, addoper = 0, addpo= 0)
     
     ## analyze the graph in shiny
     
     observeEvent(input$analyze, {
       
         myin <- edgeList()
+        
+        varcounter$addvar <- 0 
+        varcounter$addpocond <- 0 
+        varcounter$addoper <- 0
+        varcounter$addpo <- 0
+        
         if(sum(myin$rlconnect) > 0) {
             
             showNotification("No connections from right to left are allowed!", type = "error")
@@ -146,8 +153,7 @@ function(input, output) {
             
             rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
             defaultOut <- names(V(graphres)[V(graphres)$outcome == 1])
-            
-            varcounter <- reactiveValues(addvar = 0, addpocond = 0, addoper = 0)
+        
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
@@ -178,6 +184,7 @@ function(input, output) {
               varcounter$addvar <- 0
               varcounter$addpocond <- 0
               varcounter$addoper <- 0
+              varcounter$addpo <- 0
               
             })
             
@@ -195,6 +202,7 @@ function(input, output) {
               
               varcounter$addvar <-  0
               varcounter$addpocond <- 0
+              varcounter$addpo <- varcounter$addpo + 1
               
             })
             
@@ -288,11 +296,13 @@ function(input, output) {
     
     optimizeGraph <- reactive({
       
+      
       graphres <- igraphFromList()
       ## parse causal effect
-      #stopApp(reactiveValuesToList(input))
-      n.pos <- input$addpo
-      n.oper <- input$addoper
+      
+      n.pos <- varcounter$addpo
+      n.oper <- varcounter$addoper
+      
       
       effectlist <- vector(mode = "list")
       for(i in 1:n.pos) {

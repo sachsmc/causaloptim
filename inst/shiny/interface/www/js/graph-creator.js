@@ -389,8 +389,7 @@
         selectedEdge = state.selectedEdge;
     
     switch(d3.event.keyCode) {
-    case consts.BACKSPACE_KEY:
-    case consts.DELETE_KEY:
+    case 68:
       d3.event.preventDefault();
       if (selectedNode){
         thisGraph.nodes.splice(thisGraph.nodes.indexOf(selectedNode), 1);

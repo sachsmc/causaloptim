@@ -6,7 +6,7 @@
 #' 
 #' @export
 
-analyze_graph <- function(graph, constraints, effect = NULL) {
+analyze_graph <- function(graph, constraints, effectt) {
     
     leftind <- vertex_attr(graph)$leftside
     
@@ -118,20 +118,20 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
       
       for(j in 1:length(constraints)) {
         
-        p0 <- strsplit(constraints[[j]], "\\) ")[[1]]
+        constin <- gsub("\\s", "", constraints[[j]])
+        p0 <- strsplit(constin, "\\)")[[1]]
         pl1 <- strsplit(p0[1], "\\(")[[1]]
         
         leftout <- pl1[1]
-        leftcond <- strsplit(pl1[-1], ", ")[[1]]
+        leftcond <- strsplit(pl1[-1], ",")[[1]]
         
-        operator <- substr(p0[-1], 1, 1)
-        if(operator == "\u2264") operator <- "<="
-        if(operator == "\u2265") operator <- ">="
+        opdex <- ifelse(substr(p0[-1], 2, 2) == "=", 2, 1)
+        operator <- substr(p0[-1], 1, opdex)
         if(operator == "=") operator <- "=="
         
-        pr1 <- strsplit(substr(p0[-1], 3, nchar(p0[-1])), "\\(")[[1]]
+        pr1 <- strsplit(substr(p0[-1], opdex + 1, nchar(p0[-1])), "\\(")[[1]]
         rightout <- pr1[1]
-        rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ", ")[[1]]
+        rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
         
         # stopifnot(leftout == rightout)
         ## handle cases like X(Z = 0, Y = Y)
@@ -157,22 +157,22 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
         resp.out.right <- unlist(lapply(respvars[[iin$rightout]]$values, function(f) do.call(f, tmpenv.right)))
         
         if(iin$leftout == iin$rightout) {  ## constraints are for the same counterfactual, these lead to removals of qs
-            settozeroindex <- respvars[[iin$leftout]]$index[!do.call(operator, list(resp.out.left, resp.out.right))]
+            settozeroindex <- respvars[[iin$leftout]]$index[!do.call(iin$operator, list(resp.out.left, resp.out.right))]
             
             if(length(settozeroindex) > 0) {
-              removedex <- respvars[[leftout]]$index == settozeroindex
+              removedex <- respvars[[iin$leftout]]$index %in% settozeroindex
               
-              respvars[[leftout]]$index <- respvars[[leftout]]$index[!removedex] 
-              respvars[[leftout]]$values <- respvars[[leftout]]$values[!removedex] 
+              respvars[[iin$leftout]]$index <- respvars[[iin$leftout]]$index[!removedex] 
+              respvars[[iin$leftout]]$values <- respvars[[iin$leftout]]$values[!removedex] 
               
             }
             
         } else {  ## otherwise these lead to added constraints
           
           lnotsat <- length(notsatlist)
-          finddex <- !do.call(operator, expand.grid(resp.out.left, resp.out.right))
-          notsat <- expand.grid(respvars[[leftout]]$index, respvars[[rightout]]$index)[finddex, ]
-          colnames(notsat) <- c(leftout, rightout)  
+          finddex <- !do.call(iin$operator, expand.grid(resp.out.left, resp.out.right))
+          notsat <- expand.grid(respvars[[iin$leftout]]$index, respvars[[iin$rightout]]$index)[finddex, ]
+          colnames(notsat) <- c(iin$leftout, iin$rightout)  
           ## these sets of response variables do not satisfy the constraints and should be removed from the q.vals table
           notsatlist[[lnotsat + 1]] <- notsat
            
@@ -180,7 +180,7 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
         
       }
         
-      }
+      } #endif
       
     
     q.vals.all <- do.call(expand.grid, lapply(respvars, "[[", 1))
@@ -289,6 +289,8 @@ analyze_graph <- function(graph, constraints, effect = NULL) {
     attr(p.constraints, "baseconstr") <- baseind
     ## determine objective based on exposure and outcome in terms of qs
 
+    effect <- parse_effect(effectt)
+    
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
 
@@ -552,6 +554,24 @@ symb.subtract <- function(x1, x2) {
   list(res1, res2)
   
 }
+
+#' Parse text that defines a causal effect
+#' 
+#' 
+parse_effect <- function(text) {
+  
+  text <- gsub("(\\n|\\t| )", "", text)
+  
+  terms <- strsplit(text, split = "-|\\+")[[1]]
+  opers <- as.list(grep("-|\\+", strsplit(text, "")[[1]], value = TRUE))
+  
+  pterms <- gsub("(", " = list(", terms, fixed = TRUE)
+  parsedEffect <- eval(str2expression(paste("list(", paste(pterms, collapse = ","), ")")))
+  
+  list(vars = parsedEffect, oper = opers)
+  
+}
+
 
 #' Plot the analyzed graph object
 #' 

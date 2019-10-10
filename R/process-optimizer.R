@@ -4,6 +4,7 @@
 #' 
 #' @return An object of class "balkebound" that contains the bounds and logs as character strings
 #' 
+#' @export
 
 
 optimize_effect <- function(obj) {
@@ -80,6 +81,8 @@ print.balkebound <- function(x, ...){
 #' @param bounds The bounds element as returned by \link{optimize_effect}
 #' @param parameters Character vector defining parameters, as returned by \link{analyze_graph}
 #' 
+#' @return A function that takes arguments for the parameters, i.e., the observed probabilites and returns a vector of length 2: the lower bound and the upper bound. 
+#' 
 #' @export
 
 interpret_bounds <- function(bounds, parameters) {
@@ -149,6 +152,8 @@ shortentxt <- function(x) {
 #' @param nsim Number of simulation replicates
 #' 
 #' @return A data frame with columns: objective, bound.lower, bound.upper
+#' 
+#' @export
 
 simulate_bounds <- function(obj, bounds, nsim = 1e3) {
     
@@ -193,3 +198,8 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
     
     
 }
+
+
+#' @useDynLib causaloptim
+#' @import Rcpp methods
+NULL

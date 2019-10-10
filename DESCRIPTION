@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Balke Bounds
-Version: 0.2.2
-Date: 2019-10-07
+Version: 0.3.0
+Date: 2019-10-08
 Author: Michael C Sachs and Erin E Gabriel and Arvid Sjölander and Alexander A Balke (C++ code) and Colorado Reed (graph-creator.js)
 Maintainer: Michael C Sachs <sachsmc@gmail.com>
 Description: When causal quantities are not identifiable from the observed data, it still may be possible 
@@ -14,7 +14,7 @@ Description: When causal quantities are not identifiable from the observed data,
             this class to be depicted. The user can then define linear constraints to further refine their 
             DAG to meet their specific problem. The program converts this user defined DAG and constraints, 
             and, using Balke's algorithm, returns tight bounds.
-License: GPL (>= 2)
+License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.1)
 Depends: shiny, 
     igraph,

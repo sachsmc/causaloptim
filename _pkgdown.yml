@@ -1,0 +1,22 @@
+destination: docs
+reference:
+  - title: "Shiny interface"
+    desc: >
+      Most users will only need to use this function. 
+    contents: 
+      - specify_graph
+      - causaloptim
+  - title: "Direct interface"
+    desc: "Functions for creating and interacting with Balke's program."
+    contents:
+      - analyze_graph
+      - optimize_effect
+      - interpret_bounds
+      - simulate_bounds
+  - title: "Utilities"
+    desc: "Internal functions"
+    contents:
+      - plot_graphres
+      - symb.subtract
+      - parse_effect
+      - shortentxt

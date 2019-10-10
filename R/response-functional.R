@@ -4,6 +4,20 @@
 #' that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
 #' The shiny app returns a graph in this format. 
 #' 
+#' @param graph An \link[igraph]{igraph} object that represents a directed acyclic graph
+#' @param constraints A vector of character strings that represent the constraints
+#' @param effect A character string that represents the causal effect of interest
+#' 
+#' @return A list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code: 
+#'     \describe{
+#'         \item{variables}{Character vector of variable names of potential outcomes, these start with 'q' to match Balke's notation} 
+#'         \item{parameters}{Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation}
+#'         \item{constraints}{Character vector of parsed constraints}
+#'         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
+#'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of paramters.}
+#'         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
+#'     }
+#' 
 #' @export
 
 analyze_graph <- function(graph, constraints, effectt) {
@@ -575,10 +589,13 @@ parse_effect <- function(text) {
 
 #' Plot the analyzed graph object
 #' 
+#' Special plotting method for igraphs of this type
+#' 
+#' @param graphres an igraph object
 #' 
 #' @export
 
-plot.graphres <- function(graphres) {
+plot_graphres <- function(graphres) {
   
   mylayout <- cbind(V(graphres)$x, V(graphres)$y)
   plot(graphres, vertex.color = ifelse(V(graphres)$latent == 1, "grey70",

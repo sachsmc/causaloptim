@@ -143,7 +143,7 @@ function(input, output) {
                          )
             )
             
-            output$myplot <- renderPlot(plot.graphres(graphres))
+            output$myplot <- renderPlot(plot_graphres(graphres))
             
             rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
             

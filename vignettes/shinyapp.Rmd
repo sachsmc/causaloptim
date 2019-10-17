@@ -48,7 +48,7 @@ We now have a graph specified that is ready to be analyzed. Optionally, click an
 
 ## Specifying the causal effect of interest
 
-The next step is to use the buttons to specify the causal effect of interest. In our current example, we are interested in the causal risk difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The optimizer will compute bounds for the expected value of this quantity. 
+The next step is to use the text box to specify the causal effect of interest. In our current example, we are interested in the causal risk difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The optimizer will compute bounds for the expected value of this quantity. 
 
 ![Interpreted graph](screen5.png)
 

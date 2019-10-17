@@ -311,8 +311,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       thisvar <- effect$vars[[v]]
       outcome <- V(graph)[names(V(graph)) == names(effect$vars)[v]]
       intervene <- vector(mode = "list")
-      varconditions <- vector(mode = "list")
-      varconditions[[names(effect$vars)[v]]] <- 1
+      varconditions <- effect$values[v]
       
       for(ll in 1:length(thisvar)){
 
@@ -578,14 +577,29 @@ symb.subtract <- function(x1, x2) {
 parse_effect <- function(text) {
   
   text <- gsub("(\\n|\\t| )", "", text)
-  
-  terms <- strsplit(text, split = "-|\\+")[[1]]
+ 
+  terms0 <- strsplit(text, split = "-|\\+")[[1]]
   opers <- as.list(grep("-|\\+", strsplit(text, "")[[1]], value = TRUE))
+  
+  terms0 <- gsub("(p\\{)|(\\})", "", terms0)
+  parse1 <- lapply(terms0, function(x) {
+    
+    val0 <- substr(x, nchar(x) - 1, nchar(x))
+    rmain <- substr(x, 1, nchar(x) - 2)
+    
+    list(as.numeric(substr(val0, 2, 2)), rmain)
+    
+  })
+  
+  terms <- lapply(parse1, "[[", 2)
+  vals <- lapply(parse1, "[[", 1)
   
   pterms <- gsub("(", " = list(", terms, fixed = TRUE)
   parsedEffect <- eval(str2expression(paste("list(", paste(pterms, collapse = ","), ")")))
   
-  list(vars = parsedEffect, oper = opers)
+  names(vals) <- names(parsedEffect)
+  
+  list(vars = parsedEffect, oper = opers, values = vals)
   
 }
 

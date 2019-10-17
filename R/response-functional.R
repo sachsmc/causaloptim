@@ -313,29 +313,32 @@ analyze_graph <- function(graph, constraints, effectt) {
       intervene <- vector(mode = "list")
       varconditions <- vector(mode = "list")
       varconditions[[names(effect$vars)[v]]] <- 1
+      
       for(ll in 1:length(thisvar)){
 
           if(is.list(thisvar[[ll]])) {
             
-            varconditions[[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]][[2]])
-            intervene[[names(thisvar[[ll]])[1]]] <- as.numeric(thisvar[[ll]][[1]])
+            intervene[[names(thisvar)[ll]]][[names(thisvar[[ll]])]] <- as.numeric(thisvar[[ll]])
             
           } else {
             
-            intervene[[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
+            intervene[[names(effect$vars)[v]]][[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
             
           }
         
         }
 
-      gee_r <- function(r, i) {
+      gee_r <- function(r, i, childcall = NULL) {
 
         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
         parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+        
+        if(!is.null(childcall)){
+          thisintervene <- intervene[[childcall]]
+        }
+        if(!is.null(childcall) && names(obsvars)[i] %in% names(thisintervene)) {
 
-        if(names(obsvars)[i] %in% names(intervene)) {
-
-          as.numeric(intervene[[names(obsvars[i])]])
+          as.numeric(thisintervene[[names(obsvars[i])]])
 
         } else if (length(parents) == 0){
 
@@ -346,7 +349,7 @@ analyze_graph <- function(graph, constraints, effectt) {
 
           lookin <- lapply(names(parents), function(gu) {
 
-            as.numeric(gee_r(r, which(names(obsvars) == gu)))
+            as.numeric(gee_r(r, which(names(obsvars) == gu), childcall = names(obsvars[i])))
 
           })
           names(lookin) <- names(parents)

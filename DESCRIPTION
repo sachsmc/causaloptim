@@ -4,7 +4,13 @@ Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Balke Bounds
 Version: 0.4.0
 Date: 2019-10-17
-Author: Michael C Sachs and Erin E Gabriel and Arvid Sjölander and Alexander A Balke (C++ code) and Colorado Reed (graph-creator.js)
+Authors@R: c(
+    person("Michael", "Sachs", "C", role = c("aut", "cre")), 
+    person("Erin", "Gabriel", "E", role = "aut"), 
+    person("Arvid", "Sjölander", role = "aut"), 
+    person("Alexander", "Balke", "A", role = "ctb",comment ="(C++ code)"), 
+    person("Colorado", "Reed", role = "ctb", comment = "(graph-creator.js)")
+    )
 Maintainer: Michael C Sachs <sachsmc@gmail.com>
 Description: When causal quantities are not identifiable from the observed data, it still may be possible 
             to bound these quantities using the observed data. We outline a class of problems for which the 
@@ -24,3 +30,5 @@ RoxygenNote: 6.1.1
 Suggests: 
     knitr
 VignetteBuilder: knitr
+URL: https://github.com/sachsmc/causaloptim
+BugReports: https://github.com/sachsmc/causaloptim/issues

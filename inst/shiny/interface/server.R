@@ -170,6 +170,7 @@ function(input, output) {
               
             }
            
+            def.eff <- paste0("p{", def.eff, "=1}")
             default.effect <- paste(sapply(c(1, 0), function(x) sprintf(def.eff, x, x)), collapse = " - ")
             }
             ##

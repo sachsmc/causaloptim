@@ -308,10 +308,17 @@ analyze_graph <- function(graph, constraints, effectt) {
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
 
-      thisvar <- effect$vars[[v]]
-      outcome <- V(graph)[names(V(graph)) == names(effect$vars)[v]]
+      #nest 
+      thisterm <- effect$vars[[v]]
+      
+      res.mat.list <- vector(mode = "list", length = length(thisterm))
+      
+      for(v2 in 1:length(thisterm)){
+      
+      thisvar <- thisterm[[v2]]
+      outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
       intervene <- vector(mode = "list")
-      varconditions <- effect$values[v]
+      
       
       for(ll in 1:length(thisvar)){
 
@@ -321,7 +328,7 @@ analyze_graph <- function(graph, constraints, effectt) {
             
           } else {
             
-            intervene[[names(effect$vars)[v]]][[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
+            intervene[[names(thisterm)[v2]]][[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
             
           }
         
@@ -367,14 +374,21 @@ analyze_graph <- function(graph, constraints, effectt) {
         }
       }
       colnames(res.mat) <- names(obsvars)
+     
+      res.mat.list[[v2]] <- res.mat
+      }
       
-      var.dex <- rep(TRUE, nrow(res.mat))
-      for(i in 1:length(varconditions)) {
+    
+      
+    
+      var.dex <- rep(TRUE, nrow(q.vals.all))
+      for(i in 1:length(effect$values[[v]])) {
         
-        var.dex <- var.dex & res.mat[, names(varconditions)[i]] == varconditions[[i]]
+        var.dex <- var.dex & res.mat.list[[i]][, names(effect$values[[v]])[i]] == effect$values[[v]][[i]]
         
       }
       var.eff[[v]] <- unique(as.character(q.vals.all.lookup[var.dex, "vars"]))
+      
     }
     
     
@@ -582,24 +596,43 @@ parse_effect <- function(text) {
   opers <- as.list(grep("-|\\+", strsplit(text, "")[[1]], value = TRUE))
   
   terms0 <- gsub("(p\\{)|(\\})", "", terms0)
-  parse1 <- lapply(terms0, function(x) {
+  
+  termssplit <- lapply(terms0, function(x) {
     
-    val0 <- substr(x, nchar(x) - 1, nchar(x))
-    rmain <- substr(x, 1, nchar(x) - 2)
-    
-    list(as.numeric(substr(val0, 2, 2)), rmain)
+    strsplit(x, ";")[[1]]
     
   })
   
-  terms <- lapply(parse1, "[[", 2)
-  vals <- lapply(parse1, "[[", 1)
+  res.effs <- res.vals <- vector(mode = "list", length= length(termssplit))
   
-  pterms <- gsub("(", " = list(", terms, fixed = TRUE)
-  parsedEffect <- eval(str2expression(paste("list(", paste(pterms, collapse = ","), ")")))
+  for(j in 1:length(termssplit)) {
+    terms0 <- termssplit[[j]]
+    
+    parse1 <- lapply(terms0, function(x) {
+      val0 <- substr(x, nchar(x) - 1, nchar(x))
+      rmain <- substr(x, 1, nchar(x) - 2)
+      
+      list(as.numeric(substr(val0, 2, 2)), rmain)
+      
+    })
+    
+    terms <- lapply(parse1, "[[", 2)
+    vals <- lapply(parse1, "[[", 1)
+    
+    pterms <- gsub("(", " = list(", terms, fixed = TRUE)
+    parsedEffect <-
+      eval(str2expression(paste(
+        "list(", paste(pterms, collapse = ","), ")"
+      )))
+    
+    names(vals) <- names(parsedEffect)
+    
+    res.effs[[j]] <- parsedEffect
+    res.vals[[j]] <- vals
+    
+  }
   
-  names(vals) <- names(parsedEffect)
-  
-  list(vars = parsedEffect, oper = opers, values = vals)
+  list(vars = res.effs, oper = opers, values = res.vals)
   
 }
 

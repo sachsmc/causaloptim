@@ -15,6 +15,13 @@ This package is in early development. The interface is subject to change at any 
 remotes::install_github("sachsmc/causaloptim")
 ```
 
+Or download the Windows binary from the releases section and install with 
+
+```{r}
+install.packages('causaloptim_0.4.0.zip', repos = NULL)
+```
+
+
 ## Usage
 
 Launch the shiny app to get started, results are saved in the `results` object: 

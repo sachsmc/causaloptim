@@ -5,6 +5,10 @@
 
 When causal quantities are not identifiable from the observed data, it still may be possible to bound these quantities using the observed data. We outline a class of problems for which the derivation of tight bounds is always a linear programming problem and can therefore, at least theoretically, be solved using Balke's optimizer. Using this class, we provide a user friendly graphical interface for setting up such problems via DAGs, which only allow for problems within this class to be depicted. The user can then define linear constraints to further refine their DAG to meet their specific problem. The program converts this user defined DAG and constraints, and, using Balke's algorithm, returns tight bounds.
 
+## Development status
+
+This package is in early development. The interface is subject to change at any time, and there is a limited amount of error checking and testing. 
+
 ## Installation
 
 ```{r}

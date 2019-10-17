@@ -27,3 +27,4 @@ simulate_bounds(graph$obj, graph$bounds.obs, nsim = 100)
 p.vals <- p.vals[5:8, ]
 constraints <- NULL
 effect <- list(vars = list(I = list(V = 1), I = list(V = 0)), oper = list("-"))
+

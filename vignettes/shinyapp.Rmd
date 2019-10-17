@@ -5,6 +5,12 @@ vignette: >
   %\VignetteIndexEntry{How to use the causaloptim Shiny app to analyze graphs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+resource_files:
+  - screen1.png
+  - screen2.png
+  - screen3.png
+  - screen4.png
+  - screen5.png
 ---
 
 ```{r, include = FALSE}
@@ -28,7 +34,8 @@ results <- specify_graph()
 
 A new window in your system's default web browser is opened with the following interface: 
 
-![Application start](screen1.png)
+![Startup](screen1.png)
+
 
 The instructions at the top provide details on how to specify the graph. The graph is divided into a left side and a right side. There is no confounding allowed between the left and right sides. All variables on the right side are confounded. Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. On the left side, arbitrary connections are allowed and the model assumes that all nodes are observed and connected. On the right side, unmeasured variables are allowed, and the procedure assumes unmeasured confounding between all nodes. These restrictions are sufficient to ensure that the problem can be solved analytically using linear optimization. 
 
@@ -69,7 +76,7 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}
 Back to our example, we specify the effect as
 
 ```
-p{Y(X = 1) = 1} - p{Y(X = 0)}
+p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 ```
 
 then click the "parse" button to fix the effect. 

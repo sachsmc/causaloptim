@@ -52,29 +52,40 @@ The next step is to use the text box to specify the causal effect of interest. I
 
 ![Interpreted graph](screen5.png)
 
-Use the buttons to describe your causal effect of interest. The following buttons are available to make this specification:
+Use the text box to describe your causal effect of interest. The effects must be of the form
 
-- **Add potential outcome**: This button adds one of the variables as a potential outcome that depends on one or more of its parents. Click the button, and then select the outcome from the dropdown list. In this example, we click and select the "Y" variable. 
-   + Once you have selected a potential outcome, you must specify what it depends on, which will be indicated by the parentheses. An outcome can depend on a _variable_, that is, one of its parents in the graph whose value is fixed to 0 or 1, or on a _potential condition_ which is a potential variable that itself depends on the value of one of its parents. 
-- **Add variable**: This button adds a selector for the parents of the outcome in the current row, and 0 or 1 for the value of that variable. In our example we set the variable X to 1.
-- **Add potential condition**: This button adds a selector for the parents of the outcome in the current row, but unlike the variable, these are potential outcomes as well. The condition for the potential outcome depend on the parents of the variable selected, two levels up from the outcome in the current row. 
-- **Add operator**: This button terminates the selection of variables in the current row, and adds a new row that allows you to select "+" or "-", which is the operator that is used to combine with the next row. In our example, we click and select "-" for the difference. 
-- **Reset**: Clears all of the outcomes and operators. 
+```
+p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...
+```
 
-If the potential outcome has multiple parents, you can press the add variable or add potential condition button as many times as is needed to define your effect. Continue adding variables, specifying their conditions, and make sure that all rows are separated by an operator. 
+where `Vij` are names of variables in the graph, `a, b` are either 0 or 1, and `op` are either `-` or `+`. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by `;`. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statments: 
 
-Our specified effect now looks like this: 
+```
+p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
+p{X(Z = 1) = 1; X(Z = 0) = 0}
+p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}
+```
 
-![Specified effect](screen6.png)
+Back to our example, we specify the effect as
+
+```
+p{Y(X = 1) = 1} - p{Y(X = 0)}
+```
+
+then click the "parse" button to fix the effect. 
 
 
 ## Specifying constraints (optional)
 
 Once the causal effect of interest has been specified, you may optionally specify some constraints. Click the button to start the constraint interface. 
 
-![Constraint interface](screen7.png)
+Here you can specify potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). In our example, we can specify monotonicity of the instrument Z by defining the constraint X(Z = 1) $\geq$ X(Z = 0): 
 
-Here you can choose potential outcomes to constrain by selecting the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). In our example, we can specify monotonicity of the instrument Z by defining the constraint X(Z = 1) $\geq$ X(Z = 0). 
+```
+X(Z = 1) >= X(Z = 0)
+```
+
+then click parse. 
 
 
 ## Computation of the bounds
@@ -88,6 +99,8 @@ The `results` object contains the graph, the parameterization and interpretation
 ```{r}
 names(results)
 
+print(results$bounds.obs)
+
 print(results$boundsFunction)
 ```
 
@@ -100,6 +113,6 @@ sim <- simulate_bounds(results$obj, results$bounds.obs, nsim = 100)
 head(sim)
 ```
 
-Please sends any bugs or feedback to michael.sachs@ki.se. 
+Please sends any bugs or feedback to michael.sachs@ki.se or file an issue on https://github.com/sachsmc/causaloptim . 
 
 

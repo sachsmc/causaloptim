@@ -208,11 +208,50 @@ function(input, output) {
       
       
         effecttext <- input$effect
+        error <- NULL
+        
+        parsed.test <- tryCatch(parse_effect(effecttext), error = function(e) "fail")
+        if(!is.list(parsed.test)) {
+          
+          error <- "Unable to parse effect!"
+          
+        } else {
+          
+          chk0 <- unlist(parsed.test)
+          
+          allnmes <- unique(unlist(strsplit(gsub("(vars\\.|values\\.)", "", 
+                                                 names(chk0[-which(names(chk0) == "oper")])), 
+                                            "\\.")))
+          
+          graph <- igraphFromList()
+          if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
+            error <- sprintf("Operator '%s' not allowed!", chk0["oper"])
+          }
+          
+          realnms <- names(V(graph))
+          if(any(!allnmes %in% realnms)) {
+            
+            error <- sprintf("Names %s in effect not specified in graph!", 
+                             paste(allnmes[which(!allnmes %in% realnms)], collapse = ", "))
+            
+          }
+          
+          
+        }
+        
+        if(is.null(error)) {
+        
         removeUI("#effecttext", immediate = TRUE)
         insertUI("#effect", "beforeEnd", 
                  ui = fluidRow(column(8, pre(effecttext))))
         
         effectFixed$effectt <- effecttext
+        
+        } else {
+          
+          showNotification(error, type = "error")
+          
+        }
         
       
     })

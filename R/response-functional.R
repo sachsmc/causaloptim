@@ -596,7 +596,9 @@ symb.subtract <- function(x1, x2) {
 
 #' Parse text that defines a causal effect
 #' 
-#' 
+#' @param text Character string
+#' @return A list
+#' @export
 parse_effect <- function(text) {
   
   text <- gsub("(\\n|\\t| )", "", text)

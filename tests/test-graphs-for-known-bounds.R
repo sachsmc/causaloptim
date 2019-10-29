@@ -90,3 +90,7 @@ obj <- analyze_graph(b, constraints = mono2, effectt = eff)
 bound <- optimize_effect(obj)
 
 ## no idea if these are right or published 
+
+
+obj <- analyze_graph(b, constraints = list("Z(X=0)<=Z(X=1)"), effectt = eff)
+bound <- optimize_effect(obj)

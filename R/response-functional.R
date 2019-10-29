@@ -145,12 +145,17 @@ analyze_graph <- function(graph, constraints, effectt) {
         
         pr1 <- strsplit(substr(p0[-1], opdex + 1, nchar(p0[-1])), "\\(")[[1]]
         rightout <- pr1[1]
-        rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
         
-        # stopifnot(leftout == rightout)
-        ## handle cases like X(Z = 0, Y = Y)
-        rightcond2 <- expand_cond(rightcond, names(obsvars))
+        if(rightout %in% c("0", "1")) {
+          rightcond2 <- rightout
+        } else {
+        
+          rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
+          rightcond2 <- expand_cond(rightcond, names(obsvars))
+        
+        }
         leftcond2 <- expand_cond(leftcond, names(obsvars))
+        
         
         conds <- expand.grid(leftcond = leftcond2, rightcond = rightcond2, stringsAsFactors = FALSE)
         parsed.constraints <- rbind(parsed.constraints, 
@@ -170,7 +175,11 @@ analyze_graph <- function(graph, constraints, effectt) {
         resp.out.left <- unlist(lapply(respvars[[iin$leftout]]$values, function(f) do.call(f, tmpenv.left)))
         resp.out.right <- unlist(lapply(respvars[[iin$rightout]]$values, function(f) do.call(f, tmpenv.right)))
         
-        if(iin$leftout == iin$rightout) {  ## constraints are for the same counterfactual, these lead to removals of qs
+        if(iin$rightout %in% c("0", "1")) {
+          resp.out.right <- rep(iin$rightout, length(resp.out.left))
+        }
+        
+        if(iin$leftout == iin$rightout | iin$rightout %in% c("0", "1")) {  ## constraints are for the same counterfactual, these lead to removals of qs
             settozeroindex <- respvars[[iin$leftout]]$index[!do.call(iin$operator, list(resp.out.left, resp.out.right))]
             
             if(length(settozeroindex) > 0) {
@@ -402,7 +411,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       stop("Missing operator")
     }
     
-    if(!is.null(effect$oper)) {
+    if(!is.null(effect$oper) & length(effect$oper) > 0) {
     curreff <- 2
     for(opp in 1:length(effect$oper)) {
       
@@ -432,7 +441,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
     
    
-    if(!is.null(effect$oper) & length(red.sets$objective.terms) > 1) {
+    if(!is.null(effect$oper) & length(effect$oper) > 0 & length(red.sets$objective.terms) > 1) {
       
       for(opp in 1:length(effect$oper)) {
         

@@ -1,5 +1,5 @@
 library(causaloptim)
-
+if(FALSE) {
 b <- specify_graph()
 
 graph <- readRDS("tests/test-graphs/simple.RData")
@@ -28,3 +28,4 @@ p.vals <- p.vals[5:8, ]
 constraints <- NULL
 effect <- list(vars = list(I = list(V = 1), I = list(V = 0)), oper = list("-"))
 
+}

@@ -6,6 +6,9 @@
 \usage{
 shortentxt(x)
 }
+\arguments{
+\item{x}{String}
+}
 \description{
 Shorten strings to 80 characters wide
 }

@@ -302,11 +302,46 @@ function(input, output) {
       
       constrainttext <- strsplit(input$constraintfield, "\n", fixed = TRUE)[[1]]
       
+      error <- NULL
+      
+      parsed.ctest <- tryCatch(parse_constraints(constrainttext), error = function(e) "fail")
+      if(!is.list(parsed.ctest)) {
+        
+        error <- "Unable to parse constraints!"
+        
+      } else {
+        
+        allnmes <- unique(c(parsed.ctest$leftout, parsed.ctest$rightout, 
+                            gsub("=(0|1)", "", c(parsed.ctest$leftcond, parsed.ctest$rightcond))))
+        
+        graph <- igraphFromList()
+        if(any(!parsed.ctest$operator %in% c("==", "<", ">", "<=", ">="))) {
+          error <- "Operator not allowed!"
+        }
+        
+        realnms <- c(names(V(graph)), "0", "1")
+        if(any(!allnmes %in% realnms)) {
+          
+          error <- sprintf("Names %s in constraint not specified in graph!", 
+                           paste(allnmes[which(!allnmes %in% realnms)], collapse = ", "))
+          
+        }
+        
+        
+      }
+      
+      if(is.null(error)) {
+      
       removeUI("#constrainttext", immediate = TRUE)
       insertUI("#constraintsdiv", "beforeEnd", 
                ui = fluidRow(column(8, pre(paste(constrainttext, collapse = "\n")))))
       
       fixedConstraints$constraints <- constrainttext
+      
+      } else {
+        showNotification(error, type = "error")
+        
+      }
       
     })
     

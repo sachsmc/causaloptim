@@ -116,6 +116,8 @@ interpret_bounds <- function(bounds, parameters) {
 }
 
 #' Shorten strings to 80 characters wide
+#' 
+#' @param x String
 
 shortentxt <- function(x) {
     

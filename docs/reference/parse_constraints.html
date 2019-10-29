@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Run the Balke optimizer — optimize_effect • causaloptim</title>
+<title>Parse text that defines a the constraints — parse_constraints • causaloptim</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Run the Balke optimizer — optimize_effect" />
+<meta property="og:title" content="Parse text that defines a the constraints — parse_constraints" />
 
-<meta property="og:description" content="Run the Balke optimizer" />
+<meta property="og:description" content="Parse text that defines a the constraints" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,31 +111,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Run the Balke optimizer</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/process-optimizer.R'><code>R/process-optimizer.R</code></a></small>
-    <div class="hidden name"><code>optimize_effect.Rd</code></div>
+    <h1>Parse text that defines a the constraints</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/response-functional.R'><code>R/response-functional.R</code></a></small>
+    <div class="hidden name"><code>parse_constraints.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Run the Balke optimizer</p>
+    <p>Parse text that defines a the constraints</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>optimize_effect</span>(<span class='no'>obj</span>)</pre>
+    <pre class="usage"><span class='fu'>parse_constraints</span>(<span class='no'>constraints</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>obj</th>
-      <td><p>Object as returned by <a href='analyze_graph.html'>analyze_graph</a></p></td>
+      <th>constraints</th>
+      <td><p>A list of character strings</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class "balkebound" that contains the bounds and logs as character strings</p>
+    <p>A data frame</p>
     
 
   </div>

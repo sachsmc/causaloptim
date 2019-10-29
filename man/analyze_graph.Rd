@@ -11,7 +11,7 @@ analyze_graph(graph, constraints, effectt)
 
 \item{constraints}{A vector of character strings that represent the constraints}
 
-\item{effect}{A character string that represents the causal effect of interest}
+\item{effectt}{A character string that represents the causal effect of interest}
 }
 \value{
 A list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code: 

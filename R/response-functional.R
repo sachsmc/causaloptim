@@ -1,3 +1,9 @@
+#' @import igraph markdown shiny
+#' @importFrom graphics legend plot
+#' @importFrom stats runif
+NULL
+
+
 #' Analyze the causal graph to determine constraints and objective
 #' 
 #' The graph must contain edge attributes named "leftside" and "lrconnect"
@@ -6,7 +12,7 @@
 #' 
 #' @param graph An \link[igraph]{igraph} object that represents a directed acyclic graph
 #' @param constraints A vector of character strings that represent the constraints
-#' @param effect A character string that represents the causal effect of interest
+#' @param effectt A character string that represents the causal effect of interest
 #' 
 #' @return A list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code: 
 #'     \describe{
@@ -128,41 +134,8 @@ analyze_graph <- function(graph, constraints, effectt) {
     if(!is.null(constraints)) {
       
       
-      parsed.constraints <- NULL
+      parsed.constraints <- parse_constraints(constraints) 
       
-      for(j in 1:length(constraints)) {
-        
-        constin <- gsub("\\s", "", constraints[[j]])
-        p0 <- strsplit(constin, "\\)")[[1]]
-        pl1 <- strsplit(p0[1], "\\(")[[1]]
-        
-        leftout <- pl1[1]
-        leftcond <- strsplit(pl1[-1], ",")[[1]]
-        
-        opdex <- ifelse(substr(p0[-1], 2, 2) == "=", 2, 1)
-        operator <- substr(p0[-1], 1, opdex)
-        if(operator == "=") operator <- "=="
-        
-        pr1 <- strsplit(substr(p0[-1], opdex + 1, nchar(p0[-1])), "\\(")[[1]]
-        rightout <- pr1[1]
-        
-        if(rightout %in% c("0", "1")) {
-          rightcond2 <- rightout
-        } else {
-        
-          rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
-          rightcond2 <- expand_cond(rightcond, names(obsvars))
-        
-        }
-        leftcond2 <- expand_cond(leftcond, names(obsvars))
-        
-        
-        conds <- expand.grid(leftcond = leftcond2, rightcond = rightcond2, stringsAsFactors = FALSE)
-        parsed.constraints <- rbind(parsed.constraints, 
-                                    data.frame(leftout = leftout, rightout = rightout, operator, conds, stringsAsFactors = FALSE))
-        
-      }
-        
       ### apply parsed constraints
       
       for(j in 1:nrow(parsed.constraints)) {
@@ -577,7 +550,10 @@ reduce.sets <- function(sets){
 
 #' Symbolic subtraction
 #' 
-#' Like setdiff but doesn't remove duplicates
+#' Like setdiff but doesn't remove duplicates x1 - x2
+#' @param x1 First term (subtract from)
+#' @param x2 Second term (subtract)
+#' 
 symb.subtract <- function(x1, x2) {
   ## x1 - x2
   res1 <- x1
@@ -644,6 +620,51 @@ parse_effect <- function(text) {
   }
   
   list(vars = res.effs, oper = opers, values = res.vals)
+  
+}
+
+#' Parse text that defines a the constraints
+#' 
+#' @param constraints A list of character strings
+#' @return A data frame
+#' @export
+parse_constraints <- function(constraints) {
+  
+  parsed.constraints <- NULL
+  for(j in 1:length(constraints)) {
+    
+    constin <- gsub("\\s", "", constraints[[j]])
+    p0 <- strsplit(constin, "\\)")[[1]]
+    pl1 <- strsplit(p0[1], "\\(")[[1]]
+    
+    leftout <- pl1[1]
+    leftcond <- strsplit(pl1[-1], ",")[[1]]
+    
+    opdex <- ifelse(substr(p0[-1], 2, 2) == "=", 2, 1)
+    operator <- substr(p0[-1], 1, opdex)
+    if(operator == "=") operator <- "=="
+    
+    pr1 <- strsplit(substr(p0[-1], opdex + 1, nchar(p0[-1])), "\\(")[[1]]
+    rightout <- pr1[1]
+    
+    if(rightout %in% c("0", "1")) {
+      rightcond2 <- rightout
+    } else {
+      
+      rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
+      rightcond2 <- expand_cond(rightcond, names(obsvars))
+      
+    }
+    leftcond2 <- expand_cond(leftcond, names(obsvars))
+    
+    
+    conds <- expand.grid(leftcond = leftcond2, rightcond = rightcond2, stringsAsFactors = FALSE)
+    parsed.constraints <- rbind(parsed.constraints, 
+                                data.frame(leftout = leftout, rightout = rightout, operator, conds, stringsAsFactors = FALSE))
+    
+  }
+  
+  parsed.constraints
   
 }
 

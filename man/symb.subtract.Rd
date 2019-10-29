@@ -6,6 +6,11 @@
 \usage{
 symb.subtract(x1, x2)
 }
+\arguments{
+\item{x1}{First term (subtract from)}
+
+\item{x2}{Second term (subtract)}
+}
 \description{
-Like setdiff but doesn't remove duplicates
+Like setdiff but doesn't remove duplicates x1 - x2
 }

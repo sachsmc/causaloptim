@@ -6,6 +6,12 @@
 \usage{
 parse_effect(text)
 }
+\arguments{
+\item{text}{Character string}
+}
+\value{
+A list
+}
 \description{
 Parse text that defines a causal effect
 }

@@ -2,6 +2,7 @@
 
 S3method(print,balkebound)
 export(analyze_graph)
+export(find_cycles)
 export(interpret_bounds)
 export(optimize_effect)
 export(parse_constraints)

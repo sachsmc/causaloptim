@@ -113,7 +113,17 @@ function(input, output) {
                 
             } else {
             
-                stopApp(igraphFromList())
+                graph <- igraphFromList()
+                
+                ## check for cycles
+                
+                cychek <- find_cycles(graph)
+                if(!is.null(cychek)) {
+                  
+                  showNotification("No cycles in the graph are allowed!", type = "error")
+                } else {
+                  stopApp(graph)
+                }
             }
         
     })
@@ -132,6 +142,15 @@ function(input, output) {
         } else {
             
             graphres <- igraphFromList()
+            
+            cychek <- find_cycles(graphres)
+            if(!is.null(cychek)) {
+              
+              showNotification("No cycles in the graph are allowed!", type = "error")
+              
+            } else {
+             
+            
             
             removeUI(selector = "#myplot")
             removeUI(selector = "#results")
@@ -197,7 +216,7 @@ function(input, output) {
             )
             
             
-        }
+        }}
             
             })
     

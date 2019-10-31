@@ -114,15 +114,25 @@ function(input, output) {
             } else {
             
                 graph <- igraphFromList()
-                
+                ## check for valid names
+                vnames <- names(V(graph))
+                badnames <- grep("(^[^[:alpha:]])|([[:punct:]])|(^p)", vnames, value = TRUE)
                 ## check for cycles
                 
                 cychek <- find_cycles(graph)
                 if(!is.null(cychek)) {
                   
                   showNotification("No cycles in the graph are allowed!", type = "error")
+                } else if (length(badnames) > 0) {
+                  
+                  showNotification(sprintf("Invalid names: %s, found in graph vertices!", paste(badnames, collapse = ",")), type = "error")
+                  
                 } else {
+                  
+                  
+                  
                   stopApp(graph)
+                  
                 }
             }
         
@@ -144,11 +154,19 @@ function(input, output) {
             graphres <- igraphFromList()
             
             cychek <- find_cycles(graphres)
+            ## check for valid names
+            vnames <- names(V(graphres))
+            badnames <- grep("(^[^[:alpha:]])|([[:punct:]])|(^p)", vnames, value = TRUE)
+            
             if(!is.null(cychek)) {
               
               showNotification("No cycles in the graph are allowed!", type = "error")
               
-            } else {
+            } else if(length(badnames) > 0) { 
+              
+              showNotification(sprintf("Invalid names: %s, found in graph vertices!", paste(badnames, collapse = ",")), type = "error")
+              
+              } else {
              
             
             

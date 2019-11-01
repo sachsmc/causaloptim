@@ -6,3 +6,4 @@
 ^pkgdown$
 ^LICENSE\.md$
 build\.R
+^doc$

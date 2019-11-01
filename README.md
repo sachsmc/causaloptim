@@ -18,7 +18,7 @@ remotes::install_github("sachsmc/causaloptim")
 Or download the Windows binary from the releases section and install with 
 
 ```{r}
-install.packages('causaloptim_0.4.0.zip', repos = NULL)
+install.packages('causaloptim_0.5.0.zip', repos = NULL)
 ```
 
 

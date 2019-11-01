@@ -120,6 +120,15 @@ sim <- simulate_bounds(results$obj, results$bounds.obs, nsim = 100)
 head(sim)
 ```
 
+
+We also provide a helper function to print the bounds as latex equations. Use the `latex_bounds` function. 
+
+```{r, results = "asis"}
+cat(latex_bounds(results$bounds.obs$bounds, results$obj$parameters))
+
+```
+
+
 Please sends any bugs or feedback to michael.sachs@ki.se or file an issue on https://github.com/sachsmc/causaloptim . 
 
 

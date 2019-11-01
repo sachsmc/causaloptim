@@ -243,3 +243,97 @@ parse_constraints <- function(constraints) {
     
 }
 
+
+
+#' Latex bounds equations
+#' 
+#' @param bounds Vector of bounds as returned by \link{optimize_effect}
+#' @param parameters The parameters object as returned by \link{analyze_graph}
+#' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
+#' @export
+#' 
+latex_bounds <- function(bounds, parameters, prob.sym = "P") {
+    
+    lkeyup <- do.call(expand.grid, c(lapply(1:length(attr(parameters, "rightvars")), function(x) c("0", "1")), stringsAsFactors = FALSE))
+    if(length(attr(parameters, "condvars")) == 0) {
+        
+        probstate <- lapply(1:nrow(lkeyup), function(i) {
+            lkey <- lkeyup[i, ]
+            paste0(prob.sym, "(", paste(paste0(attr(parameters, "rightvars"), " = ", lkey), collapse = ", "), ")")
+        })
+        namelook <- sapply(1:nrow(lkeyup), function(i) {
+            
+            paste0("p", paste(lkeyup[i, ], collapse = ""), "_")
+            
+        })
+        
+        names(probstate) <- namelook
+        
+        
+    } else {
+        
+        nr <- length(attr(parameters, "rightvars"))
+        nc <- length(attr(parameters, "condvars"))
+        lrkeyup <- do.call(expand.grid, c(lapply(1:(nr + nc), function(x) c("0", "1")), stringsAsFactors = FALSE))
+        
+        probstate <- lapply(1:nrow(lrkeyup), function(i) {
+            
+            lkey <- lrkeyup[i, 1:nr]
+            rkey <- lrkeyup[i, (nr + 1):(nr + nc)]
+            paste0(prob.sym, "(", paste(paste0(attr(parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
+                        paste0(attr(parameters, "condvars"), " = ", rkey, collapse = ", "), ")")
+        })
+        
+        
+        namelook <- sapply(1:nrow(lrkeyup), function(i) {
+            
+            paste0("p", paste(lrkeyup[i, 1:nr], collapse = ""), "_", paste(lrkeyup[i, (nr+1):(nr+nc)], collapse = ""))
+            
+            })
+        
+        names(probstate) <- namelook
+        
+    }
+    
+    
+    ### apply the lookup table
+    
+    bnd2 <- gsub("}\\n\\n", "", substr(bounds, 8, nchar(bounds)))
+    bnd3 <- strsplit(bnd2, "\\n")
+    
+    for(i in 1:length(probstate)) {
+        
+        bnd3$lower <- gsub(names(probstate)[i], probstate[[i]], bnd3$lower, fixed = TRUE)
+        bnd3$upper <- gsub(names(probstate)[i], probstate[[i]], bnd3$upper, fixed = TRUE)
+        
+    }
+    
+    if(length(bnd3$lower) == 1) {
+        
+        lwr <- bnd3$lower
+        
+    } else {
+        
+        l0 <- paste(bnd3$lower, collapse = "\\\\ \\n ")
+        lwr <- sprintf("\\mbox{MAX} \\left. \\begin{cases} %s \\end{cases} \\right\\}", l0)
+        
+        
+    }
+    
+    if(length(bnd3$upper) == 1) {
+        
+        upr <- bnd3$upper
+        
+    } else {
+        
+        r0 <- paste(bnd3$upper, collapse = "\\\\ \\n ")
+        upr <- sprintf("\\mbox{MIN} \\left. \\begin{cases} %s \\end{cases} \\right\\}", r0)
+        
+        
+    }
+    
+    
+    return(sprintf("\\[ \\mbox{Lower bound} = %s \\] \\n \\[ \\mbox{Upper bound} = %s \\] \\n", lwr, upr))
+    
+    
+}

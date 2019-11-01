@@ -13,6 +13,7 @@ reference:
       - optimize_effect
       - interpret_bounds
       - simulate_bounds
+      - latex_bounds
   - title: "Utilities"
     desc: "Internal functions"
     contents:
@@ -20,4 +21,3 @@ reference:
       - symb.subtract
       - parse_effect
       - shortentxt
-      

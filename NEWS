@@ -1,6 +1,0 @@
-- Version 0.4.1
-        + Bugfixes in parsing bounds
-        + Cran checks
-        + Error checking in parse effect and parse constraints in shiny app
-- Version 0.3.0
-        + Rebuilt interface, text based now. 

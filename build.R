@@ -1,6 +1,6 @@
 
 ## build
-file.copy("vignettes/shinyapp.html", "inst/shiny/interface/www/shinyapp.html", overwrite = TRUE)
+file.copy("doc/shinyapp.html", "inst/shiny/interface/www/shinyapp.html", overwrite = TRUE)
 devtools::build()
 
 pkgdown::build_site()

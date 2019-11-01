@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Balke Bounds
-Version: 0.4.2
-Date: 2019-10-29
+Version: 0.5.0
+Date: 2019-11-01
 Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 

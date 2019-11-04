@@ -120,12 +120,13 @@ function(input, output) {
                 ## check for cycles
                 
                 cychek <- find_cycles(graph)
-                if(!is.null(cychek)) {
+                if(length(cychek) > 0) {
                   
                   showNotification("No cycles in the graph are allowed!", type = "error")
                 } else if (length(badnames) > 0) {
                   
-                  showNotification(sprintf("Invalid names: %s, found in graph vertices!", paste(badnames, collapse = ",")), type = "error")
+                  showNotification(sprintf("Invalid names: %s, found in graph vertices!", 
+                                           paste(badnames, collapse = ",")), type = "error")
                   
                 } else {
                   
@@ -158,7 +159,7 @@ function(input, output) {
             vnames <- names(V(graphres))
             badnames <- grep("(^[^[:alpha:]])|([[:punct:]])|(^p)", vnames, value = TRUE)
             
-            if(!is.null(cychek)) {
+            if(length(cychek) > 0) {
               
               showNotification("No cycles in the graph are allowed!", type = "error")
               

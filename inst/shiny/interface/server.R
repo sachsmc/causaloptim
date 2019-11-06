@@ -286,7 +286,8 @@ function(input, output) {
           })
           
           if(any(any.children.onleft) == TRUE) {
-            error <- "No children of variables in the intervention set allowed on the leftside!"
+            error <- sprintf("Cannot intervent on %s because it has children on the leftside!", 
+                             paste(interven.vars[which(any.children.onleft)], collapse = ", "))
           }
           
           if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
@@ -335,10 +336,20 @@ function(input, output) {
       
     
       obj <- analyze_graph(graphres, constraints, effectt = effecttext)
+      
+      if(obj$objective == "") {
+        
+        showNotification("Objective is NULL, nothing to optimize.", type = "error")
+        "Error"
+        
+      } else {
+      
       bounds.obs <- optimize_effect(obj)
       
       list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, 
            constraints = constraints, effect = effecttext)
+      
+      }
       
     })
  
@@ -417,7 +428,8 @@ function(input, output) {
         
         b <- optimizeGraph()
         
-        
+        if(is.list(b)) {
+          
         
         removeUI(selector = "#resultsText")
         insertUI(selector = "#results", where = "beforeEnd", 
@@ -463,10 +475,15 @@ function(input, output) {
         output$resultsText <- renderUI(do.call(tagList, textres))
         
         insertUI(selector = "#results", where = "beforeEnd", 
-                 ui = actionButton("downloadf", "Exit and return objects to R", style="background-color: #fb6970"))
+                 ui = fluidRow(
+                   column(2, actionButton("downloadf", 
+                                          "Exit and return objects to R", 
+                                          style="background-color: #fb6970")), 
+                   column(2, actionButton("latexme", 
+                                          "Show latex code for bounds"))))
         
         
-        
+        }
         
     })
     
@@ -478,6 +495,22 @@ function(input, output) {
       b <- optimizeGraph()
       b$boundsFunction <- interpret_bounds(b$bounds.obs$bounds, b$obj$parameters)
       stopApp(b)
+      
+    })
+    
+    observeEvent(input$latexme, {
+      
+      b <- optimizeGraph()
+      
+      insertUI(selector = "#results", where = "afterEnd", 
+               ui = div(fluidRow(column(12, h3("Latex code")), 
+                                 column(12, pre(htmlOutput("latexCode")))
+               ))
+      )
+      
+      
+      output$latexCode <- renderUI(p(latex_bounds(b$bounds.obs$bounds, b$obj$parameters)))
+      
       
     })
     

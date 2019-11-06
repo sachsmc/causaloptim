@@ -1,3 +1,11 @@
+# causaloptim 0.5.1
+
+## New features
+
+- button to print latex code in shiny app
+- Checking for intervention set children to be on rightside
+- Other error checks
+
 # causaloptim 0.5.0
 
 ## New features

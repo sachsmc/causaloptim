@@ -183,9 +183,9 @@ parse_effect <- function(text) {
         
         pterms <- gsub("(", " = list(", terms, fixed = TRUE)
         parsedEffect <-
-            eval(str2expression(paste(
+            eval(parse(text = paste(
                 "list(", paste(pterms, collapse = ","), ")"
-            )))
+            ), keep.source = FALSE))
         
         names(vals) <- names(parsedEffect)
         
@@ -201,9 +201,10 @@ parse_effect <- function(text) {
 #' Parse text that defines a the constraints
 #' 
 #' @param constraints A list of character strings
+#' @param obsnames Vector of names of the observed variables in the graph
 #' @return A data frame
 #' @export
-parse_constraints <- function(constraints) {
+parse_constraints <- function(constraints, obsnames) {
     
     parsed.constraints <- NULL
     for(j in 1:length(constraints)) {
@@ -227,10 +228,10 @@ parse_constraints <- function(constraints) {
         } else {
             
             rightcond <- strsplit(gsub("\\)", "", pr1[-1]), ",")[[1]]
-            rightcond2 <- expand_cond(rightcond, names(obsvars))
+            rightcond2 <- expand_cond(rightcond, obsnames)
             
         }
-        leftcond2 <- expand_cond(leftcond, names(obsvars))
+        leftcond2 <- expand_cond(leftcond, obsnames)
         
         
         conds <- expand.grid(leftcond = leftcond2, rightcond = rightcond2, stringsAsFactors = FALSE)

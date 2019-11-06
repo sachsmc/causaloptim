@@ -4,10 +4,12 @@
 \alias{parse_constraints}
 \title{Parse text that defines a the constraints}
 \usage{
-parse_constraints(constraints)
+parse_constraints(constraints, obsnames)
 }
 \arguments{
 \item{constraints}{A list of character strings}
+
+\item{obsnames}{Vector of names of the observed variables in the graph}
 }
 \value{
 A data frame

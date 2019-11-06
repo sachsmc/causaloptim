@@ -134,7 +134,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     if(!is.null(constraints)) {
       
       
-      parsed.constraints <- parse_constraints(constraints) 
+      parsed.constraints <- parse_constraints(constraints, names(obsvars)) 
       
       ### apply parsed constraints
       

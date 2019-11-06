@@ -249,6 +249,8 @@ function(input, output) {
         error <- NULL
         
         parsed.test <- tryCatch(parse_effect(effecttext), error = function(e) "fail")
+        
+        
         if(!is.list(parsed.test)) {
           
           error <- "Unable to parse effect!"
@@ -262,6 +264,31 @@ function(input, output) {
                                             "\\.")))
           
           graph <- igraphFromList()
+          
+          ## check that children of intervention sets are on the right
+          find.iset <- function(l) {
+            
+            lapply(1:length(l), function(i) {
+              if(is.numeric(l[[i]])){ 
+                return(names(l)[i]) 
+              } else {
+                find.iset(l[[i]])
+              }
+            })
+          }
+          
+          interven.vars <- unique(unlist(lapply(parsed.test$vars, find.iset)))
+          any.children.onleft <- sapply(interven.vars, function(v) {
+            
+            children <- neighbors(graph, V(graph)[v], mode = "out")
+            any(children$leftside == 1)
+            
+          })
+          
+          if(any(any.children.onleft) == TRUE) {
+            error <- "No children of variables in the intervention set allowed on the leftside!"
+          }
+          
           if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
             error <- sprintf("Operator '%s' not allowed!", chk0["oper"])
           }

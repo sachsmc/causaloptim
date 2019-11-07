@@ -4,7 +4,7 @@
 
 - button to print latex code in shiny app
 - Checking for intervention set children to be on rightside
-- Other error checks
+- Other error checks and bugfixes
 
 # causaloptim 0.5.0
 

@@ -15,10 +15,10 @@ This package is in early development. The interface is subject to change at any 
 remotes::install_github("sachsmc/causaloptim")
 ```
 
-Or download the Windows binary from the releases section and install with 
+Or download the Windows binary from the releases section (https://github.com/sachsmc/causaloptim/releases) and install with 
 
 ```{r}
-install.packages('causaloptim_0.5.0.zip', repos = NULL)
+install.packages('causaloptim_0.5.1.zip', repos = NULL)
 ```
 
 
@@ -34,4 +34,4 @@ results <- specify_graph()
 
 A. Balke and J. Pearl, "Counterfactual Probabilities: Computational Methods,Bounds, and Applications"  UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). 
 In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. 
-\url{https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf}.
+https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf.

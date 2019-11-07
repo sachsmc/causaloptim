@@ -173,20 +173,24 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x000000001209d988&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000016a4d9b8&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(sim)</a>
 <a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.016853114  -0.3489046   0.2658325</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.002273033  -0.3776790   0.3179013</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.017238918  -0.3403636   0.3170701</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.002434435  -0.3420855   0.2928383</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.047602790  -0.4276349   0.3932261</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.043087069  -0.2835738   0.4006181</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.008039111  -0.2813779   0.2899684</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.089853690  -0.3148778   0.4005899</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.038456856  -0.2211707   0.2660449</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.312793732  -0.4663448   0.2121955</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5  0.057363040  -0.1589599   0.4196732</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.184996562  -0.2591095   0.4586432</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/cat">cat</a></span>(<span class="kw"><a href="../reference/latex_bounds.html">latex_bounds</a></span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
-<p><span class="math display">\[ \mbox{Lower bound} = P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) \]</span> <span class="math display">\[ \mbox{Upper bound} = - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) + 1 \]</span> </p>
+<p><span class="math display">\[ 
+ \mbox{Lower bound} = P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) 
+ \]</span> <span class="math display">\[ 
+ \mbox{Upper bound} = - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) + 1 
+ \]</span></p>
 <p>Please sends any bugs or feedback to <a href="mailto:michael.sachs@ki.se" class="email">michael.sachs@ki.se</a> or file an issue on <a href="https://github.com/sachsmc/causaloptim" class="uri">https://github.com/sachsmc/causaloptim</a> .</p>
 </div>
   </div>

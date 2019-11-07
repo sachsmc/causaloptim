@@ -315,7 +315,7 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
         
     } else {
         
-        l0 <- paste(bnd3$lower, collapse = "\\\\ \\n ")
+        l0 <- paste(bnd3$lower, collapse = "\\\\ \n ")
         lwr <- sprintf("\\mbox{MAX} \\left. \\begin{cases} %s \\end{cases} \\right\\}", l0)
         
         
@@ -327,14 +327,14 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
         
     } else {
         
-        r0 <- paste(bnd3$upper, collapse = "\\\\ \\n ")
+        r0 <- paste(bnd3$upper, collapse = "\\\\ \n ")
         upr <- sprintf("\\mbox{MIN} \\left. \\begin{cases} %s \\end{cases} \\right\\}", r0)
         
         
     }
     
     
-    return(sprintf("\\[ \\mbox{Lower bound} = %s \\] \\n \\[ \\mbox{Upper bound} = %s \\] \\n", lwr, upr))
+    return(sprintf("\\[ \n \\mbox{Lower bound} = %s \n \\] \n \\[ \n \\mbox{Upper bound} = %s \n \\] \n", lwr, upr))
     
     
 }

@@ -377,10 +377,12 @@ function(input, output) {
     observeEvent(input$parseconstraint, {
       
       constrainttext <- strsplit(input$constraintfield, "\n", fixed = TRUE)[[1]]
+      graph <- igraphFromList()
+      obsnames <- names(V(graph)[!names(V(graph)) %in% c("Ur", "Ul")])
       
       error <- NULL
       
-      parsed.ctest <- tryCatch(parse_constraints(constrainttext), error = function(e) "fail")
+      parsed.ctest <- tryCatch(parse_constraints(constrainttext, obsnames), error = function(e) "fail")
       if(!is.list(parsed.ctest)) {
         
         error <- "Unable to parse constraints!"
@@ -390,7 +392,7 @@ function(input, output) {
         allnmes <- unique(c(parsed.ctest$leftout, parsed.ctest$rightout, 
                             gsub("=(0|1)", "", c(parsed.ctest$leftcond, parsed.ctest$rightcond))))
         
-        graph <- igraphFromList()
+        
         if(any(!parsed.ctest$operator %in% c("==", "<", ">", "<=", ">="))) {
           error <- "Operator not allowed!"
         }

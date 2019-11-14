@@ -143,6 +143,11 @@ function(input, output) {
     
     observeEvent(input$analyze, {
       
+      removeUI(selector = "#effect")
+      removeUI(selector = "#constraintsdiv")
+      removeUI(selector = "#myplot")
+      removeUI(selector = "#results")
+      
         myin <- edgeList()
         
         
@@ -169,11 +174,6 @@ function(input, output) {
               
               } else {
              
-            
-            
-            removeUI(selector = "#myplot")
-            removeUI(selector = "#results")
-            
             insertUI(selector = "#analyze", 
                      where = "afterEnd", 
                      ui = tags$div(id = "myplot", 

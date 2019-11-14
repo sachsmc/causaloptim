@@ -1,3 +1,9 @@
+# causaloptim 0.5.2
+
+## Bugfixes
+
+- Better reset functionality in shiny app
+
 # causaloptim 0.5.1
 
 ## New features

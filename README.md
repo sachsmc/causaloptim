@@ -1,5 +1,8 @@
 [![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 [![CRAN Status](https://www.r-pkg.org/badges/version/causaloptim)](https://cran.r-project.org/package=causaloptim)
+[![Travis build status](https://travis-ci.org/sachsmc/causaloptim.svg?branch=master)](https://travis-ci.org/sachsmc/causaloptim)
+
+
 
 # causaloptim: An Interface to Specify Causal Graphs and Compute Balke Bounds
 

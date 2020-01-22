@@ -1,6 +1,8 @@
 
 #' Paste with asterix sep
 #' 
+#' @param ... Things to paste together
+#' 
 pastestar <- function(...) paste(..., sep = "*")
 
 
@@ -316,7 +318,7 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
     } else {
         
         l0 <- paste(bnd3$lower, collapse = "\\\\ \n ")
-        lwr <- sprintf("\\mbox{MAX} \\left. \\begin{cases} %s \\end{cases} \\right\\}", l0)
+        lwr <- sprintf("\\mbox{max} \\left. \\begin{cases} %s \\end{cases} \\right\\}", l0)
         
         
     }
@@ -328,7 +330,7 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
     } else {
         
         r0 <- paste(bnd3$upper, collapse = "\\\\ \n ")
-        upr <- sprintf("\\mbox{MIN} \\left. \\begin{cases} %s \\end{cases} \\right\\}", r0)
+        upr <- sprintf("\\mbox{min} \\left. \\begin{cases} %s \\end{cases} \\right\\}", r0)
         
         
     }

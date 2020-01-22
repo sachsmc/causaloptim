@@ -1,9 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+LICENSE\.md
+build\.R
+docs/*
+^doc$
 ^Meta$
 ^_pkgdown\.yml$
-^docs$
-^pkgdown$
-^LICENSE\.md$
-build\.R
-^doc$
+^\.travis\.yml$

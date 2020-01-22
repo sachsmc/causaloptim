@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Balke Bounds
-Version: 0.5.2
-Date: 2019-11-14
+Version: 0.5.3
+Date: 2020-01-22
 Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 
@@ -26,7 +26,7 @@ Depends: shiny,
     igraph,
     markdown
 LinkingTo: Rcpp
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: 
     knitr
 VignetteBuilder: knitr

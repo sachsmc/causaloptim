@@ -5,12 +5,5 @@
 src/*.o
 src/*.so
 src/*.dll
-src-i386/*
-src-i386/*
-src-i386/*
-src-x64/*
-src-x64/*
-src-x64/*
-inst/doc
-Meta
 doc
+Meta

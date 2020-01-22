@@ -24,7 +24,7 @@ optimize_effect <- function(obj) {
     
     test <- COptimization_$new()
     fileParseSuccess <- test$ParseFileWrap(tbl.file[1])
-    stopifnot(fileParseSuccess == 0)
+    stopifnot(fileParseSuccess == 1)
     
     test$CategorizeConstraints()
     test$GaussianElimination()
@@ -48,7 +48,7 @@ optimize_effect <- function(obj) {
     
     test2 <- COptimization_$new()
     file2ParseSuccess <- test2$ParseFileWrap(tbl.file[2])
-    stopifnot(file2ParseSuccess == 0)
+    stopifnot(file2ParseSuccess == 1)
     
     test2$CategorizeConstraints()
     test2$GaussianElimination()

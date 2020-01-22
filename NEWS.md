@@ -1,3 +1,12 @@
+# causaloptim 0.5.3
+
+## Bugfixes
+
+- Fixed warnings on CRAN check
+- Added travis ci
+- Lowercase min and max in latex
+
+
 # causaloptim 0.5.2
 
 ## Bugfixes

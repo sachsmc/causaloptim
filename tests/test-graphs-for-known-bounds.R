@@ -3,7 +3,7 @@ library(causaloptim)
 
 ## simple unconfounded X -> Y
 
-b <- readRDS("tests/test-graphs/simple-unconfounded.RData")
+b <- readRDS("test-graphs/simple-unconfounded.RData")
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
@@ -12,7 +12,7 @@ all(bound$bounds == c("\nMAX {\np0_0 - p0_1\n}\n\n", "\nMIN {\np0_0 - p0_1\n}\n\
 
 ## simple confounded X -> Y
 
-b <- readRDS("tests/test-graphs/simple-confounded.RData")
+b <- readRDS("test-graphs/simple-confounded.RData")
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
@@ -21,7 +21,7 @@ all(bound$bounds == c("\nMAX {\n- p10_ - p01_\n}\n\n", "\nMIN {\n- p10_ - p01_ +
 
 ## instrument Z -> X -> Y
 
-b <- readRDS("tests/test-graphs/instrument.RData")
+b <- readRDS("test-graphs/instrument.RData")
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
@@ -50,7 +50,7 @@ all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\
 ## bounds should match https://onlinelibrary.wiley.com/doi/full/10.1111/j.1541-0420.2007.00949.x
 
 
-b <- readRDS("tests/test-graphs/mediator.RData")
+b <- readRDS("test-graphs/mediator.RData")
 
 ## controlled direct effect
 

@@ -7,7 +7,7 @@
 analyze_graph(graph, constraints, effectt)
 }
 \arguments{
-\item{graph}{An \link[igraph]{igraph} object that represents a directed acyclic graph}
+\item{graph}{An \link[igraph]{aaa-igraph-package} object that represents a directed acyclic graph}
 
 \item{constraints}{A vector of character strings that represent the constraints}
 

@@ -10,7 +10,7 @@ NULL
 #' that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
 #' The shiny app returns a graph in this format. 
 #' 
-#' @param graph An \link[igraph]{igraph} object that represents a directed acyclic graph
+#' @param graph An \link[igraph]{aaa-igraph-package} object that represents a directed acyclic graph
 #' @param constraints A vector of character strings that represent the constraints
 #' @param effectt A character string that represents the causal effect of interest
 #' 

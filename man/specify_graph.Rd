@@ -8,13 +8,13 @@ specify_graph()
 }
 \value{
 If the button "Exit and return graph object" is clicked, then only the 
-    graph is returned as an \link[igraph]{igraph} object. 
+    graph is returned as an \link[igraph]{aaa-igraph-package} object. 
     
     If the bounds are computed and the button "Exit and return objects to R" is clicked, 
     then a list is returned with the following elements: 
     
     \describe{
-       \item{graphres}{The graph as drawn and interpreted, an \link[igraph]{igraph} object.}
+       \item{graphres}{The graph as drawn and interpreted, an \link[igraph]{aaa-igraph-package} object.}
        \item{obj}{The objective and all necessary supporting information. This object is 
        documented in \link{analyze_graph}. This can be passed directly to \link{optimize_effect}.}
        \item{bounds.obs}{Object of class 'balkebound' as returned by \link{optimize_effect}.}

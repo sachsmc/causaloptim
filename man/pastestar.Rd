@@ -6,6 +6,9 @@
 \usage{
 pastestar(...)
 }
+\arguments{
+\item{...}{Things to paste together}
+}
 \description{
 Paste with asterix sep
 }

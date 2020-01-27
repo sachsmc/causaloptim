@@ -215,6 +215,7 @@ function(input, output) {
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
+                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ... where Vij are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes."),
                             fluidRow(id = "effecttext",
                                  column(8, textAreaInput("effect", NULL, default.effect)), 
                                  column(1, actionButton("parseeffect", "Parse", style="background-color: #69fb82"))
@@ -224,6 +225,7 @@ function(input, output) {
                      where = "afterEnd", 
                      ui = list(effectUI,
                                div(id = "constraintsdiv", h3("Constraints (optional)"),
+                                   helpText("Here you can specify potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example, X(Z = 1) >= X(Z = 0)."),
                                    fluidRow(
                                         column(1, actionButton("constraints", "Specify constraints"))
                                         )),

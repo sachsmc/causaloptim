@@ -1,4 +1,4 @@
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://www.tidyverse.org/lifecycle/#stable)
 [![CRAN Status](https://www.r-pkg.org/badges/version/causaloptim)](https://cran.r-project.org/package=causaloptim)
 [![Travis build status](https://travis-ci.org/sachsmc/causaloptim.svg?branch=master)](https://travis-ci.org/sachsmc/causaloptim)
 
@@ -10,7 +10,7 @@ When causal quantities are not identifiable from the observed data, it still may
 
 ## Development status
 
-This package is in early development. The interface is subject to change at any time, and there is a limited amount of error checking and testing. 
+This package is in stable development. The interface is unlikey to have major changes at this time. New features may be added over time.  
 
 ## Installation
 

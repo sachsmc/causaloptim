@@ -5,6 +5,7 @@
 - Fixed warnings on CRAN check
 - Added travis ci
 - Lowercase min and max in latex
+- Additional documentation on shiny app
 
 
 # causaloptim 0.5.2

@@ -271,6 +271,7 @@ CTableau :: CTableau (FILE * p_pFile)
 	int			nConst;
 
 	int			ScanRslt;
+	char* objGet;
 
 	//*****************************************************************
 	// Determine whether to Minimize or Maximize the objective
@@ -368,7 +369,7 @@ CTableau :: CTableau (FILE * p_pFile)
 	// Copy the objective function
 	//
 
-	fgets (szObjective, LINE_LEN, p_pFile);
+	objGet = fgets (szObjective, LINE_LEN, p_pFile);
 
 
 

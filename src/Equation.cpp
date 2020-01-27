@@ -134,11 +134,11 @@ WORD CEquation_ :: Parse (char * szString)
 
 	pChar = szString;
 
-	while (*pChar != NULL)
+	while (*pChar != '\0')
 	{
 		while (isspace (*pChar))
 			pChar++;
-		if (*pChar == NULL)
+		if (*pChar == '\0')
 			break;
 
 		switch (State)
@@ -422,7 +422,7 @@ char * CEquation_ :: BuildOutput
 	/*
 	 * Clear the output string.
 	 */
-	*p_szString = NULL;
+	*p_szString = '\0';
 
 	/*
 	 * Determine the leeway between coefficients.
@@ -615,7 +615,7 @@ char * CEquation_ :: BuildOutput
 		break;
 
 	  default:
-	  	*szTerm = NULL;
+	  	*szTerm = '\0';
 	  	break;
 	}
 	strcat (p_szString, szTerm);

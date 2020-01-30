@@ -1,3 +1,9 @@
+# causaloptim 0.6.0
+
+## New features
+
+- Allow for observed variables in the causal effect. E.g., for the treatment effect among the treated `p{Y(X = 1) = 1; X = 1} - p{Y(X = 0) = 1; X = 1}`
+
 # causaloptim 0.5.3
 
 ## Bugfixes

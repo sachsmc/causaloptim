@@ -215,7 +215,7 @@ function(input, output) {
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
-                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ... where Vij are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes."),
+                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."),
                             fluidRow(id = "effecttext",
                                  column(8, textAreaInput("effect", NULL, default.effect)), 
                                  column(1, actionButton("parseeffect", "Parse", style="background-color: #69fb82"))
@@ -259,27 +259,20 @@ function(input, output) {
           
         } else {
           
-          chk0 <- unlist(parsed.test)
           
-          allnmes <- unique(unlist(strsplit(gsub("(vars\\.|values\\.)", "", 
-                                                 names(chk0[-which(names(chk0) == "oper")])), 
-                                            "\\.")))
+          
+          chk0 <- lapply(parsed.test$vars, function(x) lapply(x, function(y){
+            if(is.list(y)) names(y)
+            }))
+          
+          
+          
+          interven.vars <- unique(unlist(chk0))
           
           graph <- igraphFromList()
           
           ## check that children of intervention sets are on the right
-          find.iset <- function(l) {
-            
-            lapply(1:length(l), function(i) {
-              if(is.numeric(l[[i]])){ 
-                return(names(l)[i]) 
-              } else {
-                find.iset(l[[i]])
-              }
-            })
-          }
           
-          interven.vars <- unique(unlist(lapply(parsed.test$vars, find.iset)))
           any.children.onleft <- sapply(interven.vars, function(v) {
             
             children <- neighbors(graph, V(graph)[v], mode = "out")
@@ -295,6 +288,8 @@ function(input, output) {
           if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
             error <- sprintf("Operator '%s' not allowed!", chk0["oper"])
           }
+          
+          allnmes <- unique(unlist(lapply(parsed.test$vars, names)))
           
           realnms <- names(V(graph))
           if(any(!allnmes %in% realnms)) {

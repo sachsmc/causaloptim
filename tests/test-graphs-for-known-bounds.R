@@ -48,7 +48,7 @@ all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\
 
 ## treatment effect among the treated?
 
-eff <- "p{X(Z = 1) = 1; X = 1} - p{X(Z = 1) = 0; X = 1}"
+eff <- "p{Y(X = 1) = 1; X = 1} - p{Y(X = 0) = 1; X = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
 

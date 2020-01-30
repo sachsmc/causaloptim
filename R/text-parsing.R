@@ -167,7 +167,7 @@ parse_effect <- function(text) {
         
     })
     
-    res.effs <- res.vals <- vector(mode = "list", length= length(termssplit))
+    res.effs <- res.vals <- res.pcheck <- vector(mode = "list", length= length(termssplit))
     
     for(j in 1:length(termssplit)) {
         terms0 <- termssplit[[j]]
@@ -183,20 +183,32 @@ parse_effect <- function(text) {
         terms <- lapply(parse1, "[[", 2)
         vals <- lapply(parse1, "[[", 1)
         
+        pcheck <- grepl("(", terms, fixed = TRUE)
         pterms <- gsub("(", " = list(", terms, fixed = TRUE)
-        parsedEffect <-
-            eval(parse(text = paste(
-                "list(", paste(pterms, collapse = ","), ")"
-            ), keep.source = FALSE))
         
+        parsedEffect <- vector(mode = "list", length = length(pterms))
+        for(k in 1:length(parsedEffect)) {
+            if(pcheck[k] == TRUE) {
+            parsedEffect[[k]] <- 
+                eval(parse(text = pterms[k], keep.source = FALSE))
+            names(parsedEffect)[[k]] <- strsplit(pterms, " = ")[[1]][1]
+        
+            } else {
+                
+                parsedEffect[[k]] <- pterms[k]
+                names(parsedEffect)[[k]] <- pterms[k]
+                
+            }
+        }
+    
         names(vals) <- names(parsedEffect)
-        
         res.effs[[j]] <- parsedEffect
         res.vals[[j]] <- vals
+        res.pcheck[[j]] <- pcheck
         
     }
     
-    list(vars = res.effs, oper = opers, values = res.vals)
+    list(vars = res.effs, oper = opers, values = res.vals, pcheck = res.pcheck)
     
 }
 

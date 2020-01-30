@@ -46,6 +46,14 @@ bound <- optimize_effect(obj)
 
 all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n"))
 
+## treatment effect among the treated?
+
+eff <- "p{X(Z = 1) = 1; X = 1} - p{X(Z = 1) = 0; X = 1}"
+obj <- analyze_graph(b, constraints = NULL, effectt = eff)
+bound <- optimize_effect(obj)
+
+
+
 ## mediator X -> Z -> Y
 ## bounds should match https://onlinelibrary.wiley.com/doi/full/10.1111/j.1541-0420.2007.00949.x
 

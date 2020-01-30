@@ -301,6 +301,48 @@ analyze_graph <- function(graph, constraints, effectt) {
       outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
       intervene <- vector(mode = "list")
       
+      if(effect$pcheck[[v]][v2] == FALSE) { ## observation
+        
+        
+        gee_r <- function(r, i) {
+          
+          parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+          parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+          
+          
+          if (length(parents) == 0){
+            
+            x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+            do.call(x, list())
+            
+          } else {
+            
+            lookin <- lapply(names(parents), function(gu) {
+              
+              as.numeric(gee_r(r, which(names(obsvars) == gu)))
+              
+            })
+            names(lookin) <- names(parents)
+            inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+            do.call(inres, lookin)
+            
+          }
+        }
+        
+        
+        res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
+        for(k in 1:nrow(q.vals.all)) {
+          for(j in 1:ncol(q.vals.all)) {
+            res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+            
+          }
+        }
+        colnames(res.mat) <- names(obsvars)
+        
+        res.mat.list[[v2]] <- res.mat
+        
+        
+      } else { ## intervention
       
       for(ll in 1:length(thisvar)){
 
@@ -314,8 +356,8 @@ analyze_graph <- function(graph, constraints, effectt) {
             
           }
         
-        }
-
+      }
+      
       gee_r <- function(r, i, childcall = NULL) {
 
         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
@@ -358,6 +400,9 @@ analyze_graph <- function(graph, constraints, effectt) {
       colnames(res.mat) <- names(obsvars)
      
       res.mat.list[[v2]] <- res.mat
+      
+      }
+      
       }
       
     

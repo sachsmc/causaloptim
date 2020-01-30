@@ -358,7 +358,7 @@ analyze_graph <- function(graph, constraints, effectt) {
         
       }
       
-      gee_r <- function(r, i, childcall = NULL) {
+      gee_rA <- function(r, i, childcall = NULL) {
 
         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
         parents <- parents[!names(parents) %in% c("Ul", "Ur")]
@@ -379,7 +379,7 @@ analyze_graph <- function(graph, constraints, effectt) {
 
           lookin <- lapply(names(parents), function(gu) {
 
-            as.numeric(gee_r(r, which(names(obsvars) == gu), childcall = names(obsvars[i])))
+            as.numeric(gee_rA(r, which(names(obsvars) == gu), childcall = names(obsvars[i])))
 
           })
           names(lookin) <- names(parents)
@@ -393,7 +393,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
       for(k in 1:nrow(q.vals.all)) {
         for(j in 1:ncol(q.vals.all)) {
-          res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+          res.mat[k, j] <- gee_rA(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
 
         }
       }

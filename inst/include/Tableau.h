@@ -9,7 +9,7 @@
 
 #define		LEN_STRING		256
 
-#define		MAX_VERTICES	100
+#define		MAX_VERTICES	1000
 
 typedef char String_ [LEN_STRING + 1];
 

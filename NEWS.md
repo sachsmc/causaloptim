@@ -1,3 +1,11 @@
+# causaloptim 0.6.1
+
+## Minor updates
+
+- Allow user interrupt in long-running c++ loops
+- Increase maximum number of vertices
+- Added progress indicator to shiny app
+
 # causaloptim 0.6.0
 
 ## New features

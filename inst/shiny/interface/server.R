@@ -330,10 +330,12 @@ function(input, output) {
       
       constraints <- fixedConstraints$constraints
       
-      
+      withProgress(message = "Computing bounds", value = .1, expr = {
     
       obj <- analyze_graph(graphres, constraints, effectt = effecttext)
       
+      
+      incProgress(.4)
       if(obj$objective == "") {
         
         showNotification("Objective is NULL, nothing to optimize.", type = "error")
@@ -347,6 +349,7 @@ function(input, output) {
            constraints = constraints, effect = effecttext)
       
       }
+      })
       
     })
  

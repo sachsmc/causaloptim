@@ -987,6 +987,7 @@ std::string CTableau :: VertexEnumerate ()
 //			printf (" %4s", m_pVarLabels [pNonBasics [nNonBasis]]);
 //		}
 //		printf ("\n");
+    R_CheckUserInterrupt();
 
 		GenerateTableau (pNonBasics);
 
@@ -1032,6 +1033,7 @@ std::string CTableau :: VertexEnumerate ()
 
 			for (PivotBasis = 1; PivotBasis < m_BasisCnt; PivotBasis++)
 			{
+			    R_CheckUserInterrupt();
 				if (m_pTable [PivotBasis] [nVar] <= LEEWAY)
 					continue;
 

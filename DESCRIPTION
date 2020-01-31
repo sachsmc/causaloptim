@@ -21,10 +21,8 @@ Description: When causal quantities are not identifiable from the observed data,
             DAG to meet their specific problem. The program converts this user defined DAG and constraints, 
             and, using Balke's algorithm, returns tight bounds.
 License: MIT + file LICENSE
-Imports: methods, Rcpp (>= 1.0.1)
-Depends: shiny, 
-    igraph,
-    markdown
+Imports: methods, Rcpp (>= 1.0.1), shiny
+Depends: igraph
 LinkingTo: Rcpp
 RoxygenNote: 7.0.2
 Suggests: 

@@ -1,4 +1,4 @@
-#' @import igraph markdown shiny
+#' @import igraph shiny
 #' @importFrom graphics legend plot
 #' @importFrom stats runif
 NULL

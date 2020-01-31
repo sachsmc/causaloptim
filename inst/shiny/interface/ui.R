@@ -24,6 +24,5 @@ shinyUI(fluidPage(tags$head(
     headerPanel(a(href='shinyapp.html', target='_blank', 'Help and more information')),
     
     tags$script(src = "js/d3.v3.min.js"),
-    tags$script(src = "js/graph-creator.js"), 
-    tags$script(src = "js/FileSaver.min.js") 
+    tags$script(src = "js/graph-creator.js") 
 ))

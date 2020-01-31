@@ -18,11 +18,7 @@ This package is in stable development. The interface is unlikey to have major ch
 remotes::install_github("sachsmc/causaloptim")
 ```
 
-Or download the Windows binary from the releases section (https://github.com/sachsmc/causaloptim/releases) and install with 
-
-```{r}
-install.packages('causaloptim_0.5.1.zip', repos = NULL)
-```
+Or use the web application: https://sachsmc.shinyapps.io/causaloptimweb/
 
 
 ## Usage

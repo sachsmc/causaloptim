@@ -228,7 +228,7 @@ analyze_graph <- function(graph, constraints, effectt) {
             
             tmp.match[[i]] <- respvars[[i]]$index[matchobs]
           } else {
-            
+            print("Hello")
             missargs <- neededargs[!neededargs %in% names(tmpenvir)]
             fillin <- lapply(missargs, function(x) c("0", "1"))
             names(fillin) <- missargs
@@ -271,7 +271,7 @@ analyze_graph <- function(graph, constraints, effectt) {
           
           q.match <- merge(obsdex, q.vals.all.lookup)$vars
           if(length(q.match) == 0) q.match <- "0"
-          p.constraints[j + 1] <- paste(parameters[j], "=", paste(q.match, collapse = " + "))
+          p.constraints[j + 1] <- paste(parameters[j], "=", paste(unique(q.match), collapse = " + "))
           
         }
     }

@@ -1,3 +1,10 @@
+# causaloptim 0.6.2
+
+## Bugfixes
+
+- Fixed repeated qs bug that affects graphs with multiple variables on left side
+- Added citation file
+
 # causaloptim 0.6.1
 
 ## Minor updates

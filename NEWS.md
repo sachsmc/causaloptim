@@ -1,3 +1,10 @@
+# causaloptim 0.6.3
+
+## Bugfixes
+
+- Refactor algorithm 1 so that it works correctly for unobserved variables
+- Fix probability printing in shiny app for unobserved variables
+
 # causaloptim 0.6.2
 
 ## Bugfixes

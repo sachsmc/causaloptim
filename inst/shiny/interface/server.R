@@ -459,7 +459,8 @@ function(input, output) {
           probstate <- paste0("P(", paste(paste0(attr(b$obj$parameters, "rightvars"), " = ", lkey), collapse = ", "), ")")
         }
         
-        variabletext <- sprintf("The bounds are reported in terms of parameters of the form %s, which represents the probability %s.", sampparm, probstate)
+        variabletext <- sprintf("The bounds are reported in terms of parameters of the form %s, which represents the probability %s.", 
+                                sampparm, probstate)
         
         if(!is.null(b$constraints)) {
           constrainttext <- sprintf("This following constraints have been specifed: \n %s", paste(b$constraints, collapse = "\n"))

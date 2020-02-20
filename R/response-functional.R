@@ -48,7 +48,8 @@ analyze_graph <- function(graph, constraints, effectt) {
     cond <- do.call(paste0, p.vals[, names(cond.vars[cond.vars$latent == 0]), drop = FALSE])
     
     parameters <- paste0("p", paste(jd, cond, sep = "_"))
-    parameters.key <- paste(paste(names(right.vars), collapse = ""), paste(names(cond.vars), collapse = ""), sep = "_")
+    parameters.key <- paste(paste(names(right.vars[right.vars$latent == 0]), collapse = ""), 
+                            paste(names(cond.vars[cond.vars$latent == 0]), collapse = ""), sep = "_")
     
     
     ## response variable for each variable observed or unobserved
@@ -196,84 +197,66 @@ analyze_graph <- function(graph, constraints, effectt) {
     
     variables <- paste0("q", do.call(paste0, q.vals))
     
-    q.vals.tmp <- cbind(q.vals, vars = variables)
+    q.vals.tmp <- cbind(q.vals, vars = variables, stringsAsFactors = FALSE)
     q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp, by = names(right.vars), sort = TRUE)
     
     variables <- as.character(unique(q.vals.all.lookup$vars))
     ## constraints identify set of qs that correspond to observed p.vals
     
+    
+    gee_r <- function(r, i) {
+      
+      parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+      parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+      
+      
+      if (length(parents) == 0){
+        
+        x <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+        do.call(x, list())
+        
+      } else {
+        
+        lookin <- lapply(names(parents), function(gu) {
+          
+          as.numeric(gee_r(r, which(names(obsvars) == gu)))
+          
+        })
+        names(lookin) <- names(parents)
+        inres <- respvars[[names(obsvars[[i]])]]$values[[which(respvars[[names(obsvars[[i]])]]$index == r[i])]]
+        do.call(inres, lookin)
+        
+      }
+    }
+    
+    
+    res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
+    for(k in 1:nrow(q.vals.all)) {
+      for(j in 1:ncol(q.vals.all)) {
+        res.mat[k, j] <- gee_r(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+        
+      }
+    }
+    colnames(res.mat) <- names(obsvars)
+    
     removeprows <- rep(0, nrow(p.vals))
     p.constraints <- rep(NA, nrow(p.vals) + 1)
     p.constraints[1] <- paste(paste(variables, collapse= " + "), " = 1")
-    for(j in 1:nrow(p.vals)) {
-        tmpenvir <- p.vals[j, ]
+    for(pj in 1:nrow(p.vals)) {
+      
+      p.chk <- do.call(rbind, lapply(1:nrow(res.mat), function(i) p.vals[pj, ]))
+      inp <- apply(res.mat[, colnames(p.chk)] == p.chk, 1, all)
+      
+      if(!any(inp)) {
+        removeprows[pj] <- 1
+        next
         
-        tmp.match <- vector("list", length = length(obsvars))
-        names(tmp.match) <- names(obsvars)
-        for(i in 1:length(obsvars)) {
-            
-          neededargs <- names(formals(respvars[[names(obsvars)[i]]]$values[[1]]))
-          
-          if(all(neededargs %in% names(tmpenvir))) {
-          
-            cf.vals <- unlist(lapply(respvars[[i]]$values, function(x) {
-                arg.names <- names(tmpenvir) %in% names(formals(x))
-                
-                do.call(x, tmpenvir[arg.names])
-            }))
-            
-            if(names(obsvars)[i] %in% names(tmpenvir)) {
-              matchobs <- cf.vals == tmpenvir[,names(obsvars)[i] ]
-            } else matchobs <- rep(TRUE, length(cf.vals))
-            
-            tmp.match[[i]] <- respvars[[i]]$index[matchobs]
-          } else {
-            print("Hello")
-            missargs <- neededargs[!neededargs %in% names(tmpenvir)]
-            fillin <- lapply(missargs, function(x) c("0", "1"))
-            names(fillin) <- missargs
-            
-            rownames(tmpenvir) <- NULL
-            newtmpenv <- data.frame(tmpenvir, do.call(expand.grid, fillin))
-            tmp.match.k <- NULL
-            for(k in 1:nrow(newtmpenv)) {
-              
-              tmpenvir2 <- newtmpenv[k, ]
-              cf.vals <- unlist(lapply(respvars[[i]]$values, function(x) {
-                arg.names <- names(tmpenvir2) %in% names(formals(x))
-                
-                do.call(x, tmpenvir2[arg.names])
-              }))
-              
-              if(names(obsvars)[i] %in% names(tmpenvir2)) {
-                matchobs <- cf.vals == tmpenvir2[, names(obsvars)[i]]
-              } else matchobs <- rep(TRUE, length(cf.vals))
-              
-              
-              tmp.match.k <- c(tmp.match.k, respvars[[i]]$index[matchobs])
-              
-            }
-            tmp.match[[i]] <- sort(unique(tmp.match.k))
-            
-            
-          }
-            
-        }
+      } else {
+        q.match <- q.vals.all.lookup[inp, ncol(q.vals.all.lookup)]
+        if(length(q.match) == 0) q.match <- "0"
+        p.constraints[pj + 1] <- paste(parameters[pj], "=", paste(unique(q.match), collapse = " + "))
         
-        obsdex <- expand.grid(tmp.match)
-        
-        if(nrow(obsdex) == 0) {
-          
-          removeprows[j] <- 1
-          next
-          
-        } else {
-          
-          q.match <- merge(obsdex, q.vals.all.lookup)$vars
-          if(length(q.match) == 0) q.match <- "0"
-          p.constraints[j + 1] <- paste(parameters[j], "=", paste(unique(q.match), collapse = " + "))
-          
-        }
+      }
     }
     
     p.vals <- p.vals[removeprows == 0,]
@@ -474,8 +457,8 @@ analyze_graph <- function(graph, constraints, effectt) {
   
     
     attr(parameters, "key") <- parameters.key
-    attr(parameters, "rightvars") <- names(right.vars)
-    attr(parameters, "condvars") <- names(cond.vars)
+    attr(parameters, "rightvars") <- names(right.vars[right.vars$latent == 0])
+    attr(parameters, "condvars") <- names(cond.vars[cond.vars$latent == 0])
     
     list(variables = red.sets$variables, parameters = parameters, constraints = c(red.sets$constr, p.constraints[special.terms]), 
          objective = objective.fin, p.vals = p.vals, q.vals = q.vals)

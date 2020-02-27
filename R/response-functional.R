@@ -244,8 +244,8 @@ analyze_graph <- function(graph, constraints, effectt) {
     p.constraints[1] <- paste(paste(variables, collapse= " + "), " = 1")
     for(pj in 1:nrow(p.vals)) {
       
-      p.chk <- do.call(rbind, lapply(1:nrow(res.mat), function(i) p.vals[pj, ]))
-      inp <- apply(res.mat[, colnames(p.chk)] == p.chk, 1, all)
+      p.chk <- do.call(rbind, lapply(1:nrow(res.mat), function(i) p.vals[pj, , drop = FALSE]))
+      inp <- apply(res.mat[, colnames(p.chk), drop = FALSE] == p.chk, 1, all)
       
       if(!any(inp)) {
         removeprows[pj] <- 1
@@ -259,7 +259,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       }
     }
     
-    p.vals <- p.vals[removeprows == 0,]
+    p.vals <- p.vals[removeprows == 0, , drop = FALSE]
     parameters <- parameters[removeprows == 0]
     p.constraints <- p.constraints[!is.na(p.constraints)]
     

@@ -191,7 +191,7 @@ parse_effect <- function(text) {
             if(pcheck[k] == TRUE) {
             parsedEffect[[k]] <- 
                 eval(parse(text = pterms[k], keep.source = FALSE))
-            names(parsedEffect)[[k]] <- strsplit(pterms, " = ")[[1]][1]
+            names(parsedEffect)[[k]] <- strsplit(pterms[k], " = ")[[1]][1]
         
             } else {
                 

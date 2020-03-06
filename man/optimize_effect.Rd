@@ -13,5 +13,16 @@ optimize_effect(obj)
 An object of class "balkebound" that contains the bounds and logs as character strings
 }
 \description{
-Run the Balke optimizer
+Given a object with the linear programming problem set up, compute the bounds
+using the c++ code developed by Alex Balke. Bounds are returned as text but can
+be converted to R functions using \link{interpret_bounds}, or latex code using
+\link{latex_bounds}.
+}
+\examples{
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+optimize_effect(obj)
 }

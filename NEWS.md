@@ -3,6 +3,8 @@
 ## Bugfixes
 
 - Parse effect fixed for joint outcome probabilities.
+- Added examples
+- Update description
 
 # causaloptim 0.6.3
 

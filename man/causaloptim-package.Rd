@@ -4,15 +4,15 @@
 \name{causaloptim-package}
 \alias{causaloptim-package}
 \alias{causaloptim}
-\title{causaloptim: An Interface to Specify Causal Graphs and Compute Balke Bounds}
+\title{An Interface to Specify Causal Graphs and Compute Linear Bounds}
 \description{
 Specify causal graphs using a visual interactive interface and then analyze them and compute symbolic bounds for the causal effects in terms of the observable parameters.
 }
 \details{
-Run the shiny app by results <- specify_graph(). See detailed instructions in the vignett browseVignettes("causaloptim").
+Run the shiny app by results <- specify_graph(). See detailed instructions in the vignette browseVignettes("causaloptim").
 }
 \references{
-A. Balke and J. Pearl, "Counterfactual Probabilities: Computational Methods,Bounds, and Applications"  UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. \url{https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf}.
+A. Balke and J. Pearl, "Counterfactual Probabilities: Computational Methods,Bounds, and Applications"  UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. \url{https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf} .
 }
 \seealso{
 \code{browseVignettes('causaloptim')}

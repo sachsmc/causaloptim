@@ -21,3 +21,12 @@ Run a simple simulation based on the bounds. For each simulation, sample the set
 from a uniform distribution, translate into a multinomial distribution, and then compute the objective and the 
 bounds in terms of the observable variables.
 }
+\examples{
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+bounds <- optimize_effect(obj)
+simulate_bounds(obj, bounds, nsim = 5)
+}

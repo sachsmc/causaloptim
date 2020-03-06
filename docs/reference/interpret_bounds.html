@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
       </span>
     </div>
 
@@ -148,12 +148,29 @@
 
     <p>A function that takes arguments for the parameters, i.e., the observed probabilites and returns a vector of length 2: the lower bound and the upper bound.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='no'>b</span> <span class='kw'>&lt;-</span> <span class='fu'>graph_from_literal</span>(<span class='no'>X</span> -+ <span class='no'>Y</span>, <span class='no'>Ur</span> -+ <span class='no'>X</span>, <span class='no'>Ur</span> -+ <span class='no'>Y</span>)
+<span class='fu'>V</span>(<span class='no'>b</span>)$<span class='no'>leftside</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>)
+<span class='fu'>V</span>(<span class='no'>b</span>)$<span class='no'>latent</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
+<span class='fu'>E</span>(<span class='no'>b</span>)$<span class='no'>rlconnect</span> <span class='kw'>&lt;-</span> <span class='fu'>E</span>(<span class='no'>b</span>)$<span class='no'>edge.monotone</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
+<span class='no'>obj</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='analyze_graph.html'>analyze_graph</a></span>(<span class='no'>b</span>, <span class='kw'>constraints</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>effectt</span> <span class='kw'>=</span> <span class='st'>"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span>)
+<span class='no'>bounds</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='optimize_effect.html'>optimize_effect</a></span>(<span class='no'>obj</span>)
+<span class='no'>bounds_func</span> <span class='kw'>&lt;-</span> <span class='fu'>interpret_bounds</span>(<span class='no'>bounds</span>$<span class='no'>bounds</span>, <span class='no'>obj</span>$<span class='no'>parameters</span>)
+<span class='fu'>bounds_func</span>(<span class='fl'>.1</span>, <span class='fl'>.1</span>, <span class='fl'>.4</span>, <span class='fl'>.3</span>)</div><div class='output co'>#&gt;   lower upper
+#&gt; 1  -0.5   0.5</div><div class='input'><span class='co'># vectorized</span>
+<span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span>(<span class='no'>bounds_func</span>, <span class='fu'><a href='https://rdrr.io/r/base/lapply.html'>lapply</a></span>(<span class='fl'>1</span>:<span class='fl'>4</span>, <span class='kw'>function</span>(<span class='no'>i</span>) <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>5</span>)))</div><div class='output co'>#&gt;        lower       upper
+#&gt; 1 -1.3409942 -0.34099416
+#&gt; 2 -0.6727180  0.32728198
+#&gt; 3 -0.3240086  0.67599142
+#&gt; 4 -1.0532677 -0.05326772
+#&gt; 5 -1.1748497 -0.17484975</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
   </div>

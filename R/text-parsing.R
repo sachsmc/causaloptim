@@ -266,7 +266,15 @@ parse_constraints <- function(constraints, obsnames) {
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
 #' @export
-#' 
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+#' bounds <- optimize_effect(obj)
+#' latex_bounds(bounds$bounds, obj$parameters)
+#' latex_bounds(bounds$bounds, obj$parameters, "Pr")
 latex_bounds <- function(bounds, parameters, prob.sym = "P") {
     
     lkeyup <- do.call(expand.grid, c(lapply(1:length(attr(parameters, "rightvars")), function(x) c("0", "1")), stringsAsFactors = FALSE))

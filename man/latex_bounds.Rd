@@ -16,3 +16,13 @@ latex_bounds(bounds, parameters, prob.sym = "P")
 \description{
 Latex bounds equations
 }
+\examples{
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+bounds <- optimize_effect(obj)
+latex_bounds(bounds$bounds, obj$parameters)
+latex_bounds(bounds$bounds, obj$parameters, "Pr")
+}

@@ -17,3 +17,15 @@ A function that takes arguments for the parameters, i.e., the observed probabili
 \description{
 Convert bounds string to a function
 }
+\examples{
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+bounds <- optimize_effect(obj)
+bounds_func <- interpret_bounds(bounds$bounds, obj$parameters)
+bounds_func(.1, .1, .4, .3)
+# vectorized
+do.call(bounds_func, lapply(1:4, function(i) runif(5)))
+}

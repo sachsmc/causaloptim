@@ -1,10 +1,22 @@
 #' Run the Balke optimizer
 #' 
+#' Given a object with the linear programming problem set up, compute the bounds
+#' using the c++ code developed by Alex Balke. Bounds are returned as text but can
+#' be converted to R functions using \link{interpret_bounds}, or latex code using
+#' \link{latex_bounds}.
+#' 
 #' @param obj Object as returned by \link{analyze_graph}
 #' 
 #' @return An object of class "balkebound" that contains the bounds and logs as character strings
 #' 
 #' @export
+#' @examples 
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+#' optimize_effect(obj)
 
 
 optimize_effect <- function(obj) {
@@ -84,6 +96,17 @@ print.balkebound <- function(x, ...){
 #' @return A function that takes arguments for the parameters, i.e., the observed probabilites and returns a vector of length 2: the lower bound and the upper bound. 
 #' 
 #' @export
+#' @examples 
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+#' bounds <- optimize_effect(obj)
+#' bounds_func <- interpret_bounds(bounds$bounds, obj$parameters)
+#' bounds_func(.1, .1, .4, .3)
+#' # vectorized
+#' do.call(bounds_func, lapply(1:4, function(i) runif(5)))
 
 interpret_bounds <- function(bounds, parameters) {
     
@@ -108,7 +131,7 @@ interpret_bounds <- function(bounds, parameters) {
     
     f <- function() {}
     formals(f) <- as.pairlist(args)
-    body(f) <- parse(text = paste0("c(lower = ", bcalls[1], ", upper = ", bcalls[2], ") \n"))
+    body(f) <- parse(text = paste0("data.frame(lower = ", bcalls[1], ", upper = ", bcalls[2], ") \n"))
     environment(f) <- parent.frame()
     
     f
@@ -156,6 +179,14 @@ shortentxt <- function(x) {
 #' @return A data frame with columns: objective, bound.lower, bound.upper
 #' 
 #' @export
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+#' bounds <- optimize_effect(obj)
+#' simulate_bounds(obj, bounds, nsim = 5)
 
 simulate_bounds <- function(obj, bounds, nsim = 1e3) {
     
@@ -186,7 +217,7 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
         params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
         names(params) <- obj$parameters
         
-        bees <- do.call(f.bounds, params)
+        bees <- c(unlist(do.call(f.bounds, params)))
         result[i, ] <- c(objective, bees)
         
         if(objective < bees[1] | objective > bees[2]) {

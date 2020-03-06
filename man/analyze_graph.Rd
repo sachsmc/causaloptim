@@ -29,3 +29,11 @@ The graph must contain edge attributes named "leftside" and "lrconnect"
 that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
 The shiny app returns a graph in this format.
 }
+\examples{
+### confounded exposure and outcome
+b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+}

@@ -93,7 +93,7 @@ print.balkebound <- function(x, ...){
 #' @param bounds The bounds element as returned by \link{optimize_effect}
 #' @param parameters Character vector defining parameters, as returned by \link{analyze_graph}
 #' 
-#' @return A function that takes arguments for the parameters, i.e., the observed probabilites and returns a vector of length 2: the lower bound and the upper bound. 
+#' @return A function that takes arguments for the parameters, i.e., the observed probabilities and returns a vector of length 2: the lower bound and the upper bound. 
 #' 
 #' @export
 #' @examples 

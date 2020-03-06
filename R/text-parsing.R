@@ -1,5 +1,5 @@
 
-#' Paste with asterix sep
+#' Paste with asterisk sep
 #' 
 #' @param ... Things to paste together
 #' 
@@ -30,7 +30,7 @@ expand_cond <- function(cond, obsnames) {
     
 }
 
-#' Translate lists of contraints to lists of vectors
+#' Translate lists of constraints to lists of vectors
 #' 
 #' @param constr List of constraint terms as character strings
 #' @param objterms Vector of terms in the objective function

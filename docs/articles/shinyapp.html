@@ -131,7 +131,7 @@
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statments:</p>
+<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -173,17 +173,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000013e14768&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000013e14668&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(sim)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.086320153  -0.4156224   0.3760260</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.008075656  -0.3394194   0.2758576</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.171820184  -0.5285607   0.1943694</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.016164988  -0.3183796   0.2789362</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.077760193  -0.3430746   0.2667317</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.171325078  -0.2233988   0.4612786</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;     objective bound.lower bound.upper</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1 -0.13552261  -0.3349197   0.2855322</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.05671128  -0.3853780   0.2119402</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.01157279  -0.3465860   0.4037433</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.04364869  -0.3855189   0.2204576</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5  0.11673186  -0.2030344   0.5311919</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.11390809  -0.4286097   0.2880000</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="kw"><a href="../reference/latex_bounds.html">latex_bounds</a></span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

@@ -10,7 +10,7 @@ When causal quantities are not identifiable from the observed data, it still may
 
 ## Development status
 
-This package is in stable development. The interface is unlikey to have major changes at this time. New features may be added over time.  
+This package is in stable development. The interface is unlikely to have major changes at this time. New features may be added over time.  
 
 ## Installation
 

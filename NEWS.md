@@ -70,7 +70,7 @@
 ## Bug fixes
 
 + Bugfixes in parsing bounds
-+ Cran checks
++ CRAN checks
 
 ## New features 
 

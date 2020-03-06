@@ -20,7 +20,7 @@ NULL
 #'         \item{parameters}{Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation}
 #'         \item{constraints}{Character vector of parsed constraints}
 #'         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
-#'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of paramters.}
+#'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
 #'         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
 #'     }
 #' 

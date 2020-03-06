@@ -2,7 +2,7 @@
 % Please edit documentation in R/text-parsing.R
 \name{pastestar}
 \alias{pastestar}
-\title{Paste with asterix sep}
+\title{Paste with asterisk sep}
 \usage{
 pastestar(...)
 }
@@ -10,5 +10,5 @@ pastestar(...)
 \item{...}{Things to paste together}
 }
 \description{
-Paste with asterix sep
+Paste with asterisk sep
 }

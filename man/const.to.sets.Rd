@@ -2,7 +2,7 @@
 % Please edit documentation in R/text-parsing.R
 \name{const.to.sets}
 \alias{const.to.sets}
-\title{Translate lists of contraints to lists of vectors}
+\title{Translate lists of constraints to lists of vectors}
 \usage{
 const.to.sets(constr, objterms)
 }
@@ -12,5 +12,5 @@ const.to.sets(constr, objterms)
 \item{objterms}{Vector of terms in the objective function}
 }
 \description{
-Translate lists of contraints to lists of vectors
+Translate lists of constraints to lists of vectors
 }

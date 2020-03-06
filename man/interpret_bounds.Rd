@@ -12,7 +12,7 @@ interpret_bounds(bounds, parameters)
 \item{parameters}{Character vector defining parameters, as returned by \link{analyze_graph}}
 }
 \value{
-A function that takes arguments for the parameters, i.e., the observed probabilites and returns a vector of length 2: the lower bound and the upper bound.
+A function that takes arguments for the parameters, i.e., the observed probabilities and returns a vector of length 2: the lower bound and the upper bound.
 }
 \description{
 Convert bounds string to a function

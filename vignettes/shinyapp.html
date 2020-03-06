@@ -8,7 +8,7 @@
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
 
@@ -115,9 +115,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -286,7 +283,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -337,7 +335,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statments:</p>
+<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -377,17 +375,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x00000000154f4388&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x000000001af50ad0&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw">simulate_bounds</span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw">head</span>(sim)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.135059262 -0.24905352   0.4072133</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.129342319 -0.38648824   0.3616691</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.176005455 -0.46951773   0.3677856</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.328267135 -0.01821371   0.6014554</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.005429209 -0.35510691   0.4042864</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.079413979 -0.33361675   0.3076079</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;     objective bound.lower bound.upper</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.14150802  -0.2673488   0.4494096</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.03230935  -0.3976478   0.3044864</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.08538359  -0.1550034   0.3484268</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.17852108  -0.4256448   0.1846752</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.22185536  -0.5076814   0.2094012</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.06160534  -0.3209147   0.3077257</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">cat</span>(<span class="kw">latex_bounds</span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

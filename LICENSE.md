@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2019 Michael C Sachs
+Copyright (c) 2020 Michael C Sachs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -4,7 +4,7 @@
 \name{causaloptim-package}
 \alias{causaloptim-package}
 \alias{causaloptim}
-\title{An Interface to Specify Causal Graphs and Compute Linear Bounds}
+\title{An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects}
 \description{
 Specify causal graphs using a visual interactive interface and then analyze them and compute symbolic bounds for the causal effects in terms of the observable parameters.
 }

@@ -4,7 +4,7 @@
 
 
 
-# causaloptim: An Interface to Specify Causal Graphs and Compute Balke Bounds
+# causaloptim: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects
 
 When causal quantities are not identifiable from the observed data, it still may be possible to bound these quantities using the observed data. We outline a class of problems for which the derivation of tight bounds is always a linear programming problem and can therefore, at least theoretically, be solved using a symbolic linear optimizer. We provide a user friendly graphical interface for setting up such problems via DAGs, which only allow for problems within this class to be depicted. The user can then define linear constraints to further refine their assumptions to meet their specific problem, and then specify a causal query using a text interface. The program converts this user defined DAG, query, and constraints, and returns tight bounds. The bounds can be converted to R functions to evaluate them for specific datasets, and to latex code for publication. 
 

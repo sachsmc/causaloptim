@@ -28,7 +28,8 @@ Depends: igraph
 LinkingTo: Rcpp
 RoxygenNote: 7.0.2
 Suggests: 
-    knitr
+    knitr,
+    rmarkdown
 VignetteBuilder: knitr
 URL: https://github.com/sachsmc/causaloptim
 BugReports: https://github.com/sachsmc/causaloptim/issues

@@ -7,3 +7,4 @@ src/*.so
 src/*.dll
 doc
 Meta
+inst/doc

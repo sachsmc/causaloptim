@@ -1,0 +1,199 @@
+---
+title: "Code from examples in manuscript"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Code from examples in manuscript}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(causaloptim)
+library(igraph)
+```
+
+
+## confounded exposure and outcome
+
+```{r}
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+optimize_effect(obj)
+```
+
+## multiple instruments
+
+Not run, this takes a very long time to compute.
+
+```{r, eval = FALSE}
+b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2,
+                        X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
+V(b)$latent <- c(0, 0, 0, 1, 0, 1)
+E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
+E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
+
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+
+bounds.multi <- optimize_effect(obj)
+
+b2 <- graph_from_literal(Z1 -+ X, Ul -+ Z1,
+                         X -+ Y, Ur -+ X, Ur -+ Y)
+V(b2)$leftside <- c(1, 0, 1, 0, 0)
+V(b2)$latent <- c(0, 0, 1, 0, 1)
+E(b2)$rlconnect <- c(0, 0,  0, 0, 0)
+E(b2)$edge.monotone <- c(0, 0, 0, 0, 0)
+
+
+## single instrument
+obj2 <- analyze_graph(b2, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+bounds.sing <- optimize_effect(obj2)
+
+
+joint <- function(df, alpha, pUr, pUl) {
+
+  Z1 <- df$Z1
+  Z2 <- df$Z2
+  X <- df$X
+  Y <- df$Y
+
+  pUr * pUl * (((pnorm(alpha[1] + alpha[2] * 1)) ^ Z1 * (1 - pnorm(alpha[1] + alpha[2] * 1)) ^ (1 - Z1)) *
+                 ((pnorm(alpha[3] + alpha[4] * 1 + alpha[5] * Z1)) ^ Z2 *
+                    (1 - pnorm(alpha[3] + alpha[4] * 1 + alpha[5] * Z1)) ^ (1 - Z2)) *
+                 ((pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 1)) ^ X *
+                    (1 - pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 1)) ^ (1 - X)) *
+                 (pnorm(alpha[10] + alpha[11] * X + alpha[12] * 1)) ^ Y *
+                 (1 - pnorm(alpha[10] + alpha[11] * X + alpha[12] * 1)) ^ (1 - Y)) +
+    pUr * (1 - pUl) * (((pnorm(alpha[1] + alpha[2] * 0)) ^ Z1 * (1 - pnorm(alpha[1] + alpha[2] * 0)) ^ (1 - Z1)) *
+                         ((pnorm(alpha[3] + alpha[4] * 0 + alpha[5] * Z1)) ^ Z2 *
+                            (1 - pnorm(alpha[3] + alpha[4] * 0 + alpha[5] * Z1)) ^ (1 - Z2)) *
+                         ((pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 1)) ^ X *
+                            (1 - pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 1)) ^ (1 - X)) *
+                         (pnorm(alpha[10] + alpha[11] * X + alpha[12] * 1)) ^ Y *
+                         (1 - pnorm(alpha[10] + alpha[11] * X + alpha[12] * 1)) ^ (1 - Y)) +
+    (1 - pUr) * pUl * (((pnorm(alpha[1] + alpha[2] * 1)) ^ Z1 * (1 - pnorm(alpha[1] + alpha[2] * 1)) ^ (1 - Z1)) *
+                         ((pnorm(alpha[3] + alpha[4] * 1 + alpha[5] * Z1)) ^ Z2 *
+                            (1 - pnorm(alpha[3] + alpha[4] * 1 + alpha[5] * Z1)) ^ (1 - Z2)) *
+                         ((pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 0)) ^ X *
+                            (1 - pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 0)) ^ (1 - X)) *
+                         (pnorm(alpha[10] + alpha[11] * X + alpha[12] * 0)) ^ Y *
+                         (1 - pnorm(alpha[10] + alpha[11] * X + alpha[12] * 0)) ^ (1 - Y)) +
+    (1 - pUr) * (1 - pUl) * (((pnorm(alpha[1] + alpha[2] * 0)) ^ Z1 * (1 - pnorm(alpha[1] + alpha[2] * 0)) ^ (1 - Z1)) *
+                               ((pnorm(alpha[3] + alpha[4] * 0 + alpha[5] * Z1)) ^ Z2 *
+                                  (1 - pnorm(alpha[3] + alpha[4] * 0 + alpha[5] * Z1)) ^ (1 - Z2)) *
+                               ((pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 0)) ^ X *
+                                  (1 - pnorm(alpha[6] + alpha[7] * Z1 + alpha[8] * Z2 + alpha[9] * 0)) ^ (1 - X)) *
+                               (pnorm(alpha[10] + alpha[11] * X + alpha[12] * 0)) ^ Y *
+                               (1 - pnorm(alpha[10] + alpha[11] * X + alpha[12] * 0)) ^ (1 - Y))
+
+
+}
+
+
+## get conditional probabilities
+## key = XY_Z1Z2
+
+get_cond_probs <- function(p.vals) {
+
+  z1z2.joint <- unique(p.vals[, c("Z1", "Z2")])
+  for(j in 1:nrow(z1z2.joint)) {
+    z1z2.joint$Prob.condz1z2[j] <- sum(subset(p.vals, Z1 == z1z2.joint[j, "Z1"] & Z2 == z1z2.joint[j, "Z2"])$Prob)
+
+  }
+
+  p.vals.2 <- merge(p.vals, z1z2.joint, by = c("Z1", "Z2"), sort = FALSE)
+
+  p.vals.2$Prob.cond.fin <- ifelse(p.vals.2$Prob ==0, 0.0, p.vals.2$Prob / p.vals.2$Prob.condz1z2)
+  res <- as.list(p.vals.2$Prob.cond.fin)
+  names(res) <- with(p.vals.2, paste0("p", X, Y, "_", Z1, Z2))
+
+  ## conditional on Z1 only
+
+  xyz1.joint <- unique(p.vals[, c("Z1", "X", "Y")])
+  for(j in 1:nrow(xyz1.joint)) {
+
+    xyz1.joint$Prob.xyz1[j] <- sum(subset(p.vals, Z1 == xyz1.joint$Z1[j] &
+                                            X == xyz1.joint$X[j] & Y == xyz1.joint$Y[j])$Prob)
+
+  }
+
+  z1.marg0 <- sum(subset(xyz1.joint, Z1 == 0)$Prob.xyz1)
+  z1.marg1 <-   sum(subset(xyz1.joint, Z1 == 1)$Prob.xyz1)
+
+  xyz1.joint$Prob.z1[xyz1.joint$Z1 == 0] <- z1.marg0
+  xyz1.joint$Prob.z1[xyz1.joint$Z1 == 1] <- z1.marg1
+
+  xyz1.joint$Prob.cond <- with(xyz1.joint, Prob.xyz1 / Prob.z1)
+  res2 <- as.list(xyz1.joint$Prob.cond)
+  names(res2) <- with(xyz1.joint, paste0("p", X, Y, "_", Z1))
+
+  list(multi = res, sing = res2)
+
+}
+
+
+
+## simulate and compare the two
+nsim <- 50000
+f.multi <- interpret_bounds(bounds.multi$bounds, obj$parameters)
+f.single <- interpret_bounds(bounds.sing$bounds, obj2$parameters)
+result <- matrix(NA, ncol = 6, nrow = nsim)
+
+
+for (i in 1:nsim) {
+
+  alpha <- rnorm(12, sd = 2)
+  pUr <- runif(1)
+  pUl <- runif(1)
+
+  p.vals.joint <- obj$p.vals
+  p.vals.joint$Prob <- joint(p.vals.joint, alpha, pUr, pUl)
+  if(any(p.vals.joint$Prob == 0)) next
+
+  condprobs <- get_cond_probs(p.vals.joint)
+
+  bees <- do.call(f.multi, condprobs$multi)
+  bees.sing <- do.call(f.single, condprobs$sing)
+
+  result[i, ] <- c(sort(bees), abs(bees[2] - bees[1]), sort(bees.sing), abs(bees.sing[2]- bees.sing[1]))
+
+}
+colnames(result) <- c("bound.lower",
+                      "bound.upper", "width.multi",
+                      "bound.lower.single", "bound.upper.single", "width.single")
+bounds.comparison <- as.data.frame(result)
+
+plot(width.multi ~ width.single, data = bounds.comparison, pch = 20, cex = .3,
+     xlim = c(0, 1), ylim = c(0, 1), xlab= "Single IV", ylab = "Two IV",
+     main = "Comparison of width of bounds intervals")
+abline(0, 1, lty = 3)
+
+```
+
+
+
+## measurement error in the outcome
+
+```{r}
+b <- graph_from_literal(Ul -+ X -+ Y -+ Y2, Ur -+ Y, Ur -+ Y2)
+V(b)$leftside <- c(1, 1, 0, 0, 0)
+V(b)$latent <- c(1, 0, 1, 0, 1)
+E(b)$rlconnect <- c(0, 0, 0, 0, 0)
+E(b)$edge.monotone <- c(0, 0, 0, 0, 0)
+
+obj <- analyze_graph(b, constraints = "Y2(Y = 1) >= Y2(Y = 0)",
+                     effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+
+optimize_effect(obj)
+```

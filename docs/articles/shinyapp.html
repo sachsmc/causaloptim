@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+    </li>
+    <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
     </li>
     <li>
@@ -176,17 +179,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000014b6ba98&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000013e14270&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(sim)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1 -0.201300244 -0.52054477   0.1617491</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2  0.336542737 -0.07242897   0.7039714</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.005490978 -0.28513743   0.3975865</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.007669715 -0.41966860   0.2799068</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.020880742 -0.25209704   0.2704227</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.114386792 -0.37860822   0.3373946</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;     objective bound.lower bound.upper</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.19896725  -0.1264174   0.4976255</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2  0.11313623  -0.2267550   0.5249595</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.14235770  -0.3426968   0.4646516</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.27368339  -0.2238632   0.4741622</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.05909589  -0.3215179   0.3180185</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.17531008  -0.4471584   0.1534308</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="kw"><a href="../reference/latex_bounds.html">latex_bounds</a></span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

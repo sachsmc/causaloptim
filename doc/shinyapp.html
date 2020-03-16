@@ -8,7 +8,7 @@
 <meta name="generator" content="pandoc" />
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
 
@@ -115,9 +115,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -286,7 +283,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -303,18 +301,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(causaloptim)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Loading required package: shiny</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; Loading required package: igraph</span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Attaching package: &#39;igraph&#39;</span></a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt;     decompose, spectrum</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; The following object is masked from &#39;package:base&#39;:</span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt;     union</span></a>
-<a class="sourceLine" id="cb1-12" title="12"><span class="co">#&gt; Loading required package: markdown</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(causaloptim)</a></code></pre></div>
 <p>Run the Shiny application like so. The result is assigned to an objected called <code>results</code> so that you can save the results that are produced in the web interface.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">results &lt;-<span class="st"> </span><span class="kw">specify_graph</span>()</a></code></pre></div>
 <p>A new window in your system’s default web browser is opened with the following interface:</p>
@@ -348,7 +335,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statments:</p>
+<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -388,17 +375,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000014dbd420&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x00000000145093b0&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw">simulate_bounds</span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw">head</span>(sim)</a>
 <a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.070486218  -0.2923361   0.3505765</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.008061645  -0.2904251   0.4594298</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.087912337  -0.3894330   0.3398412</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.132499276  -0.2854685   0.4366334</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.049808135  -0.3576243   0.3247731</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.155468162  -0.1844500   0.4044026</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.001087430  -0.2629875   0.3725002</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2  0.138519998  -0.3388650   0.2935128</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.118178476  -0.3966300   0.1951217</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.007191703  -0.2055111   0.4191887</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5  0.045983402  -0.3375766   0.3304200</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.154412474  -0.3070226   0.4210038</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">cat</span>(<span class="kw">latex_bounds</span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

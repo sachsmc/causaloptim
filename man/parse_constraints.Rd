@@ -12,7 +12,7 @@ parse_constraints(constraints, obsnames)
 \item{obsnames}{Vector of names of the observed variables in the graph}
 }
 \value{
-A data frame
+A data frame with columns indicating the variables being constrained, what the values of their parents are for the constraints, and the operator defining the constraint (equality or inequalities).
 }
 \description{
 Parse text that defines a the constraints

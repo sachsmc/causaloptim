@@ -150,7 +150,16 @@ symb.subtract <- function(x1, x2) {
 #' Parse text that defines a causal effect
 #' 
 #' @param text Character string
-#' @return A list
+#' @return A nested list that contains the following components:
+#' \describe{
+#'        \item{vars}{For each element of the causal query, this 
+#'        indicates potential outcomes as names of the list elements, 
+#'        the variables that they depend on, and the values that any variables are being fixed to.}
+#'        \item{oper}{The vector of operators (addition or subtraction) that combine the terms of the causal query.}
+#'        \item{values}{The values that the potential outcomes are set to in the query (0 or 1).}
+#'        \item{pcheck}{List of logicals for each element of the query that are TRUE if the element 
+#'        is a potential outcome and FALSE if it is an observational quantity.}
+#'        }
 #' @export
 parse_effect <- function(text) {
     
@@ -216,7 +225,7 @@ parse_effect <- function(text) {
 #' 
 #' @param constraints A list of character strings
 #' @param obsnames Vector of names of the observed variables in the graph
-#' @return A data frame
+#' @return A data frame with columns indicating the variables being constrained, what the values of their parents are for the constraints, and the operator defining the constraint (equality or inequalities).
 #' @export
 parse_constraints <- function(constraints, obsnames) {
     
@@ -265,6 +274,7 @@ parse_constraints <- function(constraints, obsnames) {
 #' @param bounds Vector of bounds as returned by \link{optimize_effect}
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
+#' @return A character string with latex code for the bounds
 #' @export
 #' @examples
 #' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)

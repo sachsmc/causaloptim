@@ -92,6 +92,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+    </li>
+    <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
     </li>
     <li>
@@ -145,7 +148,17 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list</p>
+    <p>A nested list that contains the following components:</p><dl class='dl-horizontal'>
+       <dt>vars</dt><dd><p>For each element of the causal query, this 
+       indicates potential outcomes as names of the list elements, 
+       the variables that they depend on, and the values that any variables are being fixed to.</p></dd>
+       <dt>oper</dt><dd><p>The vector of operators (addition or subtraction) that combine the terms of the causal query.</p></dd>
+       <dt>values</dt><dd><p>The values that the potential outcomes are set to in the query (0 or 1).</p></dd>
+       <dt>pcheck</dt><dd><p>List of logicals for each element of the query that are TRUE if the element 
+       is a potential outcome and FALSE if it is an observational quantity.</p></dd>
+       
+</dl>
+
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

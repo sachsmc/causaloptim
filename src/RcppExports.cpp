@@ -7,11 +7,9 @@ using namespace Rcpp;
 
 
 RcppExport SEXP _rcpp_module_boot_coptim();
-RcppExport SEXP _rcpp_module_boot_stdVector();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rcpp_module_boot_coptim", (DL_FUNC) &_rcpp_module_boot_coptim, 0},
-    {"_rcpp_module_boot_stdVector", (DL_FUNC) &_rcpp_module_boot_stdVector, 0},
     {NULL, NULL, 0}
 };
 

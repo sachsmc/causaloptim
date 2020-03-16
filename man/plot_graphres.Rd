@@ -9,6 +9,9 @@ plot_graphres(graphres)
 \arguments{
 \item{graphres}{an igraph object}
 }
+\value{
+None
+}
 \description{
 Special plotting method for igraphs of this type
 }

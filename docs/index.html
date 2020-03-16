@@ -14,13 +14,17 @@
 <meta property="og:description" content="When causal quantities are not identifiable from the observed data, it still may be possible 
             to bound these quantities using the observed data. We outline a class of problems for which the 
             derivation of tight bounds is always a linear programming problem and can therefore, at least 
-            theoretically, be solved using a symbolic linear optimizer. We provide a user friendly 
-            graphical interface for setting up such problems via directed acyclic graphs (DAG), which only 
-            allow for problems within this class to be depicted. The user can then define linear constraints 
-            to further refine their assumptions to meet their specific problem, and then specify a causal 
-            query using a text interface. The program converts this user defined DAG, query, and constraints, 
-            and returns tight bounds. The bounds can be converted to R functions to evaluate them for 
-            specific datasets, and to latex code for publication. ">
+            theoretically, be solved using a symbolic linear optimizer. We extend and generalize the 
+            approach of Balke and Pearl (1994) &lt;doi:10.1016/B978-1-55860-332-5.50011-0&gt; and we provide 
+            a user friendly graphical interface for setting up such problems via directed acyclic 
+            graphs (DAG), which only allow for problems within this class to be depicted. The user can 
+            then define linear constraints to further refine their assumptions to meet their specific 
+            problem, and then specify a causal query using a text interface. The program converts this 
+            user defined DAG, query, and constraints, and returns tight bounds. The bounds can be 
+            converted to R functions to evaluate them for specific datasets, and to latex code for 
+            publication. The methods and proofs of tightness and validity of the bounds are described in
+            a preprint by Sachs, Gabriel, and Sjölander (2020) 
+            &lt;https:sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf&gt;.">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -63,6 +67,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+    </li>
+    <li>
       <a href="articles/example-code.html">Code from examples in manuscript</a>
     </li>
     <li>
@@ -119,7 +126,8 @@
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<p>A. Balke and J. Pearl, “Counterfactual Probabilities: Computational Methods,Bounds, and Applications” UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. <a href="https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf" class="uri">https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf</a>.</p>
+<p>M.C. Sachs, E.E. Gabriel, and A. Sjölander, “Symbolic Computation of Tight Causal Bounds”, 2020. Preprint available at <a href="https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf" class="uri">https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf</a> .</p>
+<p>A. Balke and J. Pearl, “Counterfactual Probabilities: Computational Methods,Bounds, and Applications” UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. <a href="https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf" class="uri">https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf</a> .</p>
 </div>
 </div>
 

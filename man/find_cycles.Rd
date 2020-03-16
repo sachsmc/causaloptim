@@ -9,6 +9,9 @@ find_cycles(g)
 \arguments{
 \item{g}{an igraph object}
 }
+\value{
+A list of vectors of integers, indicating the vertex sequences for the cycles found in the graph
+}
 \description{
 Find cycles in a graph
 }

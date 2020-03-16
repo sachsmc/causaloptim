@@ -13,6 +13,9 @@ latex_bounds(bounds, parameters, prob.sym = "P")
 
 \item{prob.sym}{Symbol to use for probability statements in latex, usually "P" or "pr"}
 }
+\value{
+A character string with latex code for the bounds
+}
 \description{
 Latex bounds equations
 }

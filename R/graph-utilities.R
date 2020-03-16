@@ -4,7 +4,7 @@
 #' Special plotting method for igraphs of this type
 #' 
 #' @param graphres an igraph object
-#' 
+#' @return None
 #' @export
 
 plot_graphres <- function(graphres) {
@@ -24,6 +24,7 @@ plot_graphres <- function(graphres) {
 #' Find cycles in a graph
 #' 
 #' @param g an igraph object
+#' @return A list of vectors of integers, indicating the vertex sequences for the cycles found in the graph
 #' @export
 find_cycles = function(g) {
     Cycles = NULL

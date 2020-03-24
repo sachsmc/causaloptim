@@ -2,6 +2,7 @@
 
 ## Bugfixes
 
+- Fixed mismatched new/delete/delete[] in C++ code
 - Parse effect fixed for joint outcome probabilities.
 - Added examples
 - Update description

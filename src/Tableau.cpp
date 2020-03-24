@@ -484,36 +484,36 @@ CTableau :: ~CTableau ()
 
 	for (int nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 	{
-		delete m_pOrigTable [nBasis];
-		delete m_pTable [nBasis];
+		delete [] m_pOrigTable [nBasis];
+		delete [] m_pTable [nBasis];
 	}
-	delete m_pTable;
-	delete m_pOrigTable;
+	delete [] m_pTable;
+	delete [] m_pOrigTable;
 
-	delete m_pBasisVars;
-	delete m_pOrigBasisVars;
+	delete [] m_pBasisVars;
+	delete [] m_pOrigBasisVars;
 
-	delete m_pSolution;
-	delete m_pOrigSolution;
+	delete [] m_pSolution;
+	delete [] m_pOrigSolution;
 
-	delete m_pCj;
-	delete m_pSlackFlag;
+	delete [] m_pCj;
+	delete [] m_pSlackFlag;
 
 //	delete m_pConstraints;
 //	delete m_pObjective;
 
-	delete [] m_pVarLabels;
-	delete [] m_pParamNames;
+	delete m_pVarLabels;
+	delete m_pParamNames;
 
 	for (int nVertex = 0; nVertex < MAX_VERTICES; nVertex++)
 		if (m_pVertices [nVertex])
-			delete m_pVertices [nVertex];
+			delete [] m_pVertices [nVertex];
 			
 	pEnumRcd = m_pEnumList;
 	while (pEnumRcd)
 	{
 		pNextRcd = pEnumRcd-> m_pNext;
-		delete pEnumRcd-> Contents ();
+		delete [] pEnumRcd-> Contents ();
 		delete pEnumRcd;
 		pEnumRcd = pNextRcd;
 	}
@@ -849,7 +849,7 @@ WORD * CTableau :: PopFirst ()
 //			printf ("\n");
 
 			pNextRcd = pEnumRcd-> m_pNext;
-			delete pEnumRcd-> Contents ();
+			delete [] pEnumRcd-> Contents ();
 			delete pEnumRcd;
 			pEnumRcd = pNextRcd;
 			m_EnumListLen--;
@@ -895,7 +895,7 @@ void CTableau :: AddUnique (double p_Value, WORD * p_pNonBasics)
 			if (nNonBasis == m_VarCnt - m_BasisCnt)
 			{
 				// NonBasis is not unique; do not add to list.
-				delete p_pNonBasics;
+				delete [] p_pNonBasics;
 				return;
 			}
 		}
@@ -1129,7 +1129,7 @@ std::string CTableau :: VertexEnumerate ()
 		}
 	}
 
-	delete pNewSol;
+	delete [] pNewSol;
     return result;
 }  /* CTableau :: VertexEnumerate () */
 
@@ -1268,7 +1268,7 @@ void CTableau :: AddEnumRcd (int * p_pBasisVars, double p_Value)
 
 	//printf (":%d", m_EnumListLen);
 
-	delete pbBasis;
+	delete [] pbBasis;
 
 //	printf ("\nAdding Enum Record: %6.3lf :", p_Value);
 //	for (nNonBasis = 0; nNonBasis < m_VarCnt - m_BasisCnt; nNonBasis++)
@@ -1318,7 +1318,7 @@ void CTableau :: AddVertex (int * p_pBasisVars, double * p_pSolution)
 	{
 		if (pVertex [nVertex] > MAX_SOL)
 		{
-			delete pVertex;
+			delete [] pVertex;
 			//printf ("-");
 			return;
 		}
@@ -1355,7 +1355,7 @@ void CTableau :: AddVertex (int * p_pBasisVars, double * p_pSolution)
 	}
 	else
 	{
-		delete pVertex;
+		delete [] pVertex;
 		//printf ("\n+");
 	}
 

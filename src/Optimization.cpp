@@ -52,7 +52,7 @@ COptimization_::~COptimization_ ()
 	if (m_pVertices)
 	{
 		for (int nVertex = 0; nVertex < m_VertexCount; nVertex++)
-			delete m_pVertices [nVertex];
+			delete [] m_pVertices [nVertex];
 		delete [] m_pVertices;
 		m_pVertices = NULL;
 	}
@@ -456,7 +456,7 @@ ClearParseData:
 		delete [] szString;
 
 	if (szObjective)
-		delete szObjective;
+		delete [] szObjective;
 	
 	return bStatus;
 }  /* COptimization_ :: ParseFile () */

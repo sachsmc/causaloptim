@@ -4,3 +4,5 @@ for the ASAN and valgrind checks. I made the necessary changes to fix
 Mismatched free() / delete / delete [] errors and I checked it using
 valgrind running on rocker/r-devel-san. I was able to reproduce the 
 original errors and fix them all on that platform. 
+
+Bumped version to 0.6.5

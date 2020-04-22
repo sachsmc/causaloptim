@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
       </span>
     </div>
 
@@ -99,33 +99,34 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(causaloptim)</a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Loading required package: igraph</span></a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; Attaching package: 'igraph'</span></a>
-<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; The following objects are masked from 'package:stats':</span></a>
-<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt;     decompose, spectrum</span></a>
-<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt; The following object is masked from 'package:base':</span></a>
-<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt;     union</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; Warning: package 'causaloptim' was built under R version 3.6.3</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; Loading required package: igraph</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="co">#&gt; Attaching package: 'igraph'</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="co">#&gt; The following objects are masked from 'package:stats':</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-8" title="8"><span class="co">#&gt;     decompose, spectrum</span></a>
+<a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; The following object is masked from 'package:base':</span></a>
+<a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt;     union</span></a></code></pre></div>
 <p>Run the Shiny application like so. The result is assigned to an objected called <code>results</code> so that you can save the results that are produced in the web interface.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/specify_graph.html">specify_graph</a></span>()</a></code></pre></div>
 <p>A new window in your system’s default web browser is opened with the following interface:</p>
 <div class="figure">
-<img src="screen1.png" alt="Startup"><p class="caption">Startup</p>
+<img src="../../../../Box%20Sync/R%20projects/causaloptim/vignettes/screen1.png" alt="Startup"><p class="caption">Startup</p>
 </div>
 <p>The instructions at the top provide details on how to specify the graph. The graph is divided into a left side and a right side. There is no confounding allowed between the left and right sides. All variables on the right side are confounded. Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. On the left side, arbitrary connections are allowed and the model assumes that all nodes are observed and connected. On the right side, unmeasured variables are allowed, and the procedure assumes unmeasured confounding between all nodes. These restrictions are sufficient to ensure that the problem can be solved analytically using linear optimization.</p>
 <p>In the main window below the text, Shift+click to add nodes. When a node is added, you are prompted to give it a name. Make sure that you use a valid R variable name. This means it cannot start with a number, and cannot contain spaces or special characters. Single capital letters are good choices, possibly with trailing numbers.</p>
 <div class="figure">
-<img src="screen2.png" alt="Naming nodes"><p class="caption">Naming nodes</p>
+<img src="../../../../Box%20Sync/R%20projects/causaloptim/vignettes/screen2.png" alt="Naming nodes"><p class="caption">Naming nodes</p>
 </div>
 <p>Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press ‘u’ to mark it as unobserved/latent. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.</p>
 <div class="figure">
-<img src="screen3.png" alt="Connections"><p class="caption">Connections</p>
+<img src="../../../../Box%20Sync/R%20projects/causaloptim/vignettes/screen3.png" alt="Connections"><p class="caption">Connections</p>
 </div>
 <p>Once we have our graph specified, we can optionally make some annotations. You must specify the outcome of interest, and the exposure of interest. Select the outcome node and press ‘y’ to mark it as the outcome of interest, and then select the exposure node and press ‘e’ to mark it as the exposure of interest. The default causal contrast is the total effect. The exposure will be colored blue, and the outcome colored red.</p>
 <div class="figure">
-<img src="screen4.png" alt="Final graph"><p class="caption">Final graph</p>
+<img src="../../../../Box%20Sync/R%20projects/causaloptim/vignettes/screen4.png" alt="Final graph"><p class="caption">Final graph</p>
 </div>
 <p>We now have a graph specified that is ready to be analyzed. Optionally, click an edge and press ‘m’ to enforce monotonicity for that connection. If you are ready to analyze the object click on the “Press to analyze the graph button”. The program interprets the graph, converts it to an <code>igraph</code> object with annotations, and prints the result from R. Inspect the resulting graph carefully so that you understand what is being analyzed.</p>
 <div id="specifying-the-causal-effect-of-interest" class="section level2">
@@ -133,7 +134,7 @@
 <a href="#specifying-the-causal-effect-of-interest" class="anchor"></a>Specifying the causal effect of interest</h2>
 <p>The next step is to use the text box to specify the causal effect of interest. In our current example, we are interested in the causal risk difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The optimizer will compute bounds for the expected value of this quantity.</p>
 <div class="figure">
-<img src="screen5.png" alt="Interpreted graph"><p class="caption">Interpreted graph</p>
+<img src="../../../../Box%20Sync/R%20projects/causaloptim/vignettes/screen5.png" alt="Interpreted graph"><p class="caption">Interpreted graph</p>
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
@@ -179,17 +180,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000013e14270&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x00000000130e5ba8&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(sim)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;     objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.19896725  -0.1264174   0.4976255</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2  0.11313623  -0.2267550   0.5249595</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.14235770  -0.3426968   0.4646516</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.27368339  -0.2238632   0.4741622</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.05909589  -0.3215179   0.3180185</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.17531008  -0.4471584   0.1534308</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.004149717  -0.2670438   0.3588354</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2  0.053117655  -0.2739226   0.3364005</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.119891415  -0.3248161   0.3079480</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4 -0.105062684  -0.4054214   0.2302963</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5  0.011366601  -0.3578719   0.3696915</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.017099869  -0.2931203   0.3128265</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="kw"><a href="../reference/latex_bounds.html">latex_bounds</a></span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

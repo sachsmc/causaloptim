@@ -1,6 +1,6 @@
 ---
 title: "Symbolic Computation of Tight Causal Bounds"
-subtitle: "Preprint, Submitted to JRSS-B in March 2020"
+subtitle: "Preprint, Under Review as of March 2020"
 output: 
     rmarkdown::pdf_document:
       extra_dependencies: pdfpages
@@ -13,4 +13,4 @@ pkgdown:
   extension: pdf
 ---
 
-\includepdf[pages=-, fitpaper=true]{Linear_Optimization_of_Causal_Bounds.pdf}
+\includepdf[pages=-, fitpaper=true]{Linear_Optimization_of_Causal_Bounds_Draft.pdf}

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Deriving Causal Bounds with causaloptim</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Michael C Sachs, Erin E Gabriel, Arvid Sjölander" />
+    <meta name="date" content="2020-04-22" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Deriving Causal Bounds with <code>causaloptim</code>
+## 🔨<br/>EuroCIM 2020
+### Michael C Sachs, Erin E Gabriel, Arvid Sjölander
+### 2020-04-22
+
+---
+
+
+
+
+
+# The Identification Problem is Solved
+
+Given a graph and a causal query, there are algorithms to determine whether that query is estimable. If so, the algorithm returns an estimand. 
+
+# Pearl's recipe
+
+1. Commit to a graph
+2. Specify a query
+3. Determine whether query is identified
+4. If so, determine estimand
+5. Specify statistical model for estimand
+6. Fit the model
+
+If the query is not identified? Compute bounds!
+
+---
+
+## Previous work
+
+- Balke and Pearl (1994) demonstrate that the noncompliance graph implies an optimization problem with a linear objective and linear constraints
+- Balke implemented a general vertex enumeration algorithm to solve this symbolically to get bounds on a causal effect in terms of the observed probabilities
+
+## Our contributions
+
+- Describe a class of problems (graphs plus causal queries) that are alway linear
+- Extend the concept of intervention sets to allow for arbitrarily complex counterfactual queries
+- Develop a general algorithm for translating the graph+query into a linear program
+- Prove that the resulting bounds are valid and tight
+- Implement it all in a user friendly R package
+
+---
+
+
+# Response function representation
+
+![g1](graph1.png) ![g2](graph2.png)
+
+These are equivalent representations of the assumptions. When `\(W_1, W_2, W_3\)` are binary, all possible values of the response function varibles can be enumerated. 
+
+The values of the response function variables determine the manner in which the variables are determined from their parents.
+
+---
+
+# Response functions
+
+
+Let `\(\mathbf{R} = (R_{w_1}, \ldots, R_{w_n})\)` represent the set of response-function random variables for all observed variables in the model. Given a particular value of `\(\mathbf{r}\)`, values of any variable `\(W_i \in \mathbf{W}\)` is functionally determined according to the recursive function:
+
+`$$w_i = f_{W_i}(\mathbf{r}) = f_{W_i}(f_{W_{i1}}(\mathbf{r}), \ldots, f_{W_{ik}}(\mathbf{r}), r_{W_i})$$`
+
+where `\(\{W_{i1}, \ldots, W_{ik}\}\)` are the parents of `\(W_i\)`.
+
+---
+
+# Relating observed probabilities to the response variables
+
+Any observed probability can be related to the distribution of response function variables as follows:
+
+`$$P\{w_1=W_1; \ldots; W_{n}=w_{n}\} = \sum_{\mathbf{r}: \forall_{j \in 1,\ldots,n} [w_j = f_{W_j}(\mathbf{r})]} P\{\mathbf{R} = \mathbf{r}\}$$`
+
+That is, 
+
+1. cycle through all possible values of `\(\mathbf{r}\)`,
+2. recursively evaluate the response functions, and 
+3. keep track of the values that match the outcomes in the probability statement
+
+
+---
+
+
+# Incorporating interventions
+
+![eg](poutgraph.png)
+
+Define sets of interventions `\(A\)` and a function `\(f^A\)` that can be recursively evaluated under those intervention sets. 
+
+__Key extension__: Intervention sets depend on the full path from the potential outcome to the variable intervened upon. 
+
+---
+
+# Describing the causal query
+
+The functions `\(f\)` and `\(f^A\)` now give us the recipe for obtaining observations given `\(\mathbf{r}\)` and `\(A\)`. 
+
+For any factual or counterfactual probabilities we have
+
+`$$P\{W_{i_1}(A_{w_{i_1}}) = w_1, \ldots, W_{i_p}(A_{i_p}) = w_{i_p}, W_{j_1} = w_{j_1}, \ldots, W_{j_o} = w_{j_o}\} = \sum_{\mathbf{r} \in \mathbf{\Gamma}} P(\mathbf{r}).$$`
+
+where
+
+`$$\mathbf{\Gamma} = \{\mathbf{r}: \forall_{j \in O} [w_j = f_{w_j}(\mathbf{r})] \mbox{ and }  \forall_{i \in P} [w_i = f^A_{w_i}(\mathbf{r}, i)]\}.$$`
+
+---
+
+# Recap
+
+- Every observed probability `\(p_j\)` can be written in terms of probabilities of the response function variables `\(P(\mathbf{R} = \mathbf{r})\)`
+- The causal query `\(Q\)` can also be written in terms of the `\(P(\mathbf{R} = \mathbf{r})\)`
+- The goal is to find the extremum of `\(Q\)` in terms of the `\(p_j\)`
+- When is this feasible? 
+
+---
+
+# Guaranteeing linearity 
+
+## The right side ![](leftright.png)
+
+- In graphs where all observed variables have a common unmeasured cause, we have `\(P(r_i, r_j) \neq P(r_i)P(r_j)\)`
+- Necessary to use `\(\prod_{i = 1} ^ n 2^{2^{k_i-1}}\)` parameters to specify the distribution of `\(\mathbf{R}\)`, say `\(\mathbf{q}\)`
+- This implies that the observed probabilities are linear functions of the response variables: `\(\mathbf{p} = \overline{P} \mathbf{q}\)` for some matrix `\(\overline{P}\)`.
+
+## The left side
+
+- Unconfounded arrows from left to right, but no children of the intervention set `\(A\)` are on the left
+- Observed probabilities conditional on all variables on the left side suffice
+- This preserves the linearity of the constraints and the causal query.
+
+---
+
+# The optimization problem now
+
+Minimize (maximize): `\(Q\)` 
+
+Subject to: 
+
+$$
+`\begin{eqnarray*}
+\sum q_j &amp;=&amp; 1 \\
+\overline{P} \mathbf{q} = \mathbf{p} \\
+q_j, p_i &amp; \geq &amp; 0
+\end{eqnarray*}`
+$$
+
+and optionally some additional linear constraints specified by the user, e.g., monotonicity, there are no defiers of treatment assignment.
+
+---
+
+
+Consider the objective `\(Q = p_1 q_1 + p_2 q_2\)`, and constraints `\(q_1, q_2 \geq 0\)`; `\(q_1 \leq 0.75\)`; `\(q_2 \leq -0.5 q_1 + 0.75\)`.
+
+![](index_files/figure-html/unnamed-chunk-1-1.gif)&lt;!-- --&gt;
+
+---
+
+# Conclusion
+
+Package and preprint at https://sachsmc.github.io/causaloptim and on CRAN/ArXiv
+
+- Preprint describes the approach formally and proves validity/tightness of bounds 
+- Balke's program has been useful for statisticians
+- This project takes a few steps towards making it more broadly accessible and easier to use
+- Draw DAGs interactively, specify queries with text, get bounds as R functions and LaTeX code
+
+![qr](qr.png)
+
+---
+
+class: inverse, center, middle
+
+# Demo
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

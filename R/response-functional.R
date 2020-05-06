@@ -310,8 +310,6 @@ analyze_graph <- function(graph, constraints, effectt) {
       
     }
     
-    ## check if children of intervention variables
-    
     
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
@@ -371,6 +369,26 @@ analyze_graph <- function(graph, constraints, effectt) {
       } else { ## intervention
       
         thisintervene <- unlist(list_to_path(thisvar, names(outcome)))
+        basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
+        ## check for missing paths from intervention sets to outcome
+        
+        isets <- unique(btm_var(thisvar))
+        missingpaths <- lapply(isets, function(cc) {
+          allpaths <- all_simple_paths(graph, from = cc, to = names(outcome), mode = "out")
+          paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
+          setdiff(paths2, names(thisintervene))
+        })
+        for(pp in 1:length(missingpaths)) {
+          
+          if(length(missingpaths[[pp]]) == 0) {
+            next
+          }
+          addval <- thisintervene[which(isets[pp] == basevars)[1]]
+          addval2 <- rep(addval, length(missingpaths[[pp]]))
+          names(addval2) <- missingpaths[[pp]]
+          thisintervene <- c(thisintervene, addval2)
+            
+        }
         
       
       gee_rA <- function(r, i, path = NULL) {

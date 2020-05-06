@@ -281,7 +281,7 @@ function(input, output) {
           })
           
           if(any(any.children.onleft) == TRUE) {
-            error <- sprintf("Cannot intervent on %s because it has children on the leftside!", 
+            error <- sprintf("Cannot intervene on %s because it has children on the leftside!", 
                              paste(interven.vars[which(any.children.onleft)], collapse = ", "))
           }
           

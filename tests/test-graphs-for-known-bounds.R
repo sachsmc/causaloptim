@@ -60,6 +60,18 @@ bound <- optimize_effect(obj)
 
 b <- readRDS("test-graphs/mediator.RData")
 
+## total effect: identifiable
+
+eff <- "p{Y(X = 1) = 1}"
+obj <- analyze_graph(b, constraints = NULL, effectt = eff)
+bound1 <- optimize_effect(obj)
+
+eff <- "p{Y(X = 1, Z(X = 1)) = 1}"
+obj <- analyze_graph(b, constraints = NULL, effectt = eff)
+bound2 <- optimize_effect(obj)
+
+all(bound1$bounds == bound2$bounds)
+
 ## controlled direct effect
 
 eff <- "p{Y(X = 1, Z = 0) = 1} - p{Y(X = 0, Z = 0) = 1}"

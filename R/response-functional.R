@@ -278,6 +278,41 @@ analyze_graph <- function(graph, constraints, effectt) {
 
     effect <- parse_effect(effectt)
     
+    chk0 <- lapply(effect$vars, btm_var)
+    
+    interven.vars <- unique(unlist(chk0))
+    
+    ## check that children of intervention sets are on the right
+    
+    any.children.onleft <- sapply(interven.vars, function(v) {
+      
+      children <- neighbors(graph, V(graph)[v], mode = "out")
+      any(children$leftside == 1)
+      
+    })
+    
+    if(any(any.children.onleft) == TRUE) {
+      stop(sprintf("Cannot intervene on %s because it has children on the leftside!", 
+                       paste(interven.vars[which(any.children.onleft)], collapse = ", ")))
+    }
+    
+    if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
+      stop(sprintf("Operator '%s' not allowed!", chk0["oper"]))
+    }
+    
+    allnmes <- unique(unlist(lapply(effect$vars, names)))
+    
+    realnms <- names(V(graph))
+    if(any(!allnmes %in% realnms)) {
+      
+      stop(sprintf("Names %s in effect not specified in graph!", 
+                       paste(allnmes[which(!allnmes %in% realnms)], collapse = ", ")))
+      
+    }
+    
+    ## check if children of intervention variables
+    
+    
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
 
@@ -335,31 +370,20 @@ analyze_graph <- function(graph, constraints, effectt) {
         
       } else { ## intervention
       
-      for(ll in 1:length(thisvar)){
-
-          if(is.list(thisvar[[ll]])) {
-            
-            intervene[[names(thisvar)[ll]]][[names(thisvar[[ll]])]] <- as.numeric(thisvar[[ll]])
-            
-          } else {
-            
-            intervene[[names(thisterm)[v2]]][[names(thisvar)[ll]]] <- as.numeric(thisvar[[ll]])
-            
-          }
+        thisintervene <- unlist(list_to_path(thisvar, names(outcome)))
         
-      }
       
-      gee_rA <- function(r, i, childcall = NULL) {
+      gee_rA <- function(r, i, path = NULL) {
 
         parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
         parents <- parents[!names(parents) %in% c("Ul", "Ur")]
         
-        if(!is.null(childcall)){
-          thisintervene <- intervene[[childcall]]
+        if(!is.null(path)){
+          #thisintervene <- intervene[[childcall]]
         }
-        if(!is.null(childcall) && names(obsvars)[i] %in% names(thisintervene)) {
+        if(!is.null(path) && path %in% names(thisintervene)) {
 
-          as.numeric(thisintervene[[names(obsvars[i])]])
+          as.numeric(thisintervene[[path]])
 
         } else if (length(parents) == 0){
 
@@ -370,7 +394,7 @@ analyze_graph <- function(graph, constraints, effectt) {
 
           lookin <- lapply(names(parents), function(gu) {
 
-            as.numeric(gee_rA(r, which(names(obsvars) == gu), childcall = names(obsvars[i])))
+            as.numeric(gee_rA(r, which(names(obsvars) == gu), path = paste(gu, "->", path)))
 
           })
           names(lookin) <- names(parents)
@@ -384,7 +408,8 @@ analyze_graph <- function(graph, constraints, effectt) {
       res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
       for(k in 1:nrow(q.vals.all)) {
         for(j in 1:ncol(q.vals.all)) {
-          res.mat[k, j] <- gee_rA(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j)
+          res.mat[k, j] <- gee_rA(r = unlist(q.vals.all.lookup[k, -ncol(q.vals.all.lookup)]), i = j, 
+                                  path = names(obsvars)[j])
 
         }
       }

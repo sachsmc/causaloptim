@@ -22,6 +22,8 @@ A list with the following components. This list can be passed to \link{optimize_
         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
+        \item{objective.nonreduced}{The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.}
+        \item{response.functions}{List of response functions.}
     }
 }
 \description{

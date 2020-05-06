@@ -1,3 +1,16 @@
+# causaloptim 0.7.0
+
+## Bugfixes
+
+- Propogation of intervention set when not all paths are defined
+- Checking for violations of condition 5 in effect
+
+## New features
+
+- Additional information returned from analyze_graph
+- Better printing for analyze_graph objects (TODO)
+
+
 # causaloptim 0.6.5
 
 ## Bugfixes

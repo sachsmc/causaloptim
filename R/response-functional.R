@@ -22,6 +22,8 @@ NULL
 #'         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
 #'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
 #'         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
+#'         \item{objective.nonreduced}{The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.}
+#'         \item{response.functions}{List of response functions.}
 #'     }
 #' 
 #' @export
@@ -511,8 +513,10 @@ analyze_graph <- function(graph, constraints, effectt) {
     attr(parameters, "rightvars") <- names(right.vars[right.vars$latent == 0])
     attr(parameters, "condvars") <- names(cond.vars[cond.vars$latent == 0])
     
-    list(variables = red.sets$variables, parameters = parameters, constraints = c(red.sets$constr, p.constraints[special.terms]), 
-         objective = objective.fin, p.vals = p.vals, q.vals = q.vals)
+    list(variables = red.sets$variables, parameters = parameters, 
+         constraints = c(red.sets$constr, p.constraints[special.terms]), 
+         objective = objective.fin, p.vals = p.vals, q.vals = q.vals, 
+         objective.nonreduced = objective, response.functions = respvars)
     
     
 }

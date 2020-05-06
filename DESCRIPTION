@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects
-Version: 0.6.5
-Date: 2020-03-24
+Version: 0.7.0
+Date: 2020-05-06
 Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 

@@ -17,7 +17,3 @@ a list of characters describing the path sequence
 \description{
 Recursive function to translate an effect list to a path sequence
 }
-\examples{
-
-list_to_path(list(W3 = list(W2 = list(W1 = 1))), "Y")
-}

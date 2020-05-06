@@ -3,8 +3,6 @@
 #' @param x a list
 #' @param name name of the top element of the list
 #' @return The name of the deepest nested list element
-#' @examples
-#' btm_var(list(W3 = list(W2 = list(W1 = 1))), "Y")
 
 btm_var <- function(x, name = NULL) {
     
@@ -24,9 +22,6 @@ btm_var <- function(x, name = NULL) {
 #' @param x A list of vars as returned by parse_effect
 #' @param name The name of the outcome variable
 #' @return a list of characters describing the path sequence
-#' @examples 
-#' 
-#' list_to_path(list(W3 = list(W2 = list(W1 = 1))), "Y")
 
 list_to_path <- function(x, name = NULL) {
     

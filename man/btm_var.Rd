@@ -17,6 +17,3 @@ The name of the deepest nested list element
 \description{
 Recursive function to get the last name in a list
 }
-\examples{
-btm_var(list(W3 = list(W2 = list(W1 = 1))), "Y")
-}

@@ -14,7 +14,7 @@ NULL
 #' @param constraints A vector of character strings that represent the constraints
 #' @param effectt A character string that represents the causal effect of interest
 #' 
-#' @return A list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code: 
+#' @return A an object of class "linearcausalproblem", which is a list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code. Print and plot methods are also available. 
 #'     \describe{
 #'         \item{variables}{Character vector of variable names of potential outcomes, these start with 'q' to match Balke's notation} 
 #'         \item{parameters}{Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation}
@@ -22,8 +22,10 @@ NULL
 #'         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
 #'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
 #'         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
+#'         \item{parsed.query}{A nested list containing information on the parsed causal query.}
 #'         \item{objective.nonreduced}{The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.}
 #'         \item{response.functions}{List of response functions.}
+#'         \item{graph}{The graph as passed to the function.}
 #'     }
 #' 
 #' @export
@@ -312,6 +314,22 @@ analyze_graph <- function(graph, constraints, effectt) {
       
     }
     
+    if(length(names(cond.vars)) > 0) {
+      
+      chkpaths <- unlist(lapply(cond.vars, function(x){ 
+        pths <- all_simple_paths(graph, from = x, to = allnmes, mode = "out")
+        unlist(lapply(pths, function(pth) {
+          any(interven.vars %in% names(pth))
+          
+        }))
+      }))
+      
+      if(any(!chkpaths)) {
+        stop(sprintf("Leftside variables %s not ancestors of intervention sets. Condition 6 violated.", 
+                     paste(names(chkpaths)[!chkpaths], collapse = ", ")))
+      }
+      
+    }
     
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
@@ -325,7 +343,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       
       thisvar <- thisterm[[v2]]
       outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
-      intervene <- vector(mode = "list")
+      #intervene <- vector(mode = "list")
       
       if(effect$pcheck[[v]][v2] == FALSE) { ## observation
         
@@ -513,10 +531,76 @@ analyze_graph <- function(graph, constraints, effectt) {
     attr(parameters, "rightvars") <- names(right.vars[right.vars$latent == 0])
     attr(parameters, "condvars") <- names(cond.vars[cond.vars$latent == 0])
     
-    list(variables = red.sets$variables, parameters = parameters, 
+    res <- list(variables = red.sets$variables, parameters = parameters, 
          constraints = c(red.sets$constr, p.constraints[special.terms]), 
          objective = objective.fin, p.vals = p.vals, q.vals = q.vals, 
-         objective.nonreduced = objective, response.functions = respvars)
-    
+         parsed.query = effect, unparsed.query = effectt, 
+         user.constraints = constraints, 
+         objective.nonreduced = objective, response.functions = respvars, 
+         graph = graph)
+    class(res) <- "linearcausalproblem"
+    res
     
 }
+
+#' Plot the graph from the causal problem
+#' 
+#' @param x object of class "linearcausaloptim"
+#' @param ... Not used
+#' @return Nothing
+#' @export
+
+plot.linearcausalproblem <- function(x, ...) {
+  
+  plot_graphres(x$graph)
+  
+}
+
+
+
+#' Print the causal problem
+#' 
+#' @param x object of class "linearcausaloptim"
+#' @param ... Not used
+#' @return x, invisibly
+#' @export
+
+print.linearcausalproblem <- function(x, ...) {
+  
+  effecttext <- sprintf("Ready to compute bounds for the effect %s", x$unparsed.query)
+  
+  lkey <- letters[1:length(attr(x$parameters, "rightvars"))]
+  rkey <- letters[(length(attr(x$parameters, "rightvars")) + 1):(length(attr(x$parameters, "rightvars")) + 
+                                                                       length(attr(x$parameters, "condvars")))]
+  
+  if(length(attr(x$parameters, "condvars")) == 0) rkey <- NULL
+  
+  sampparm <- paste0("p", paste(lkey, collapse = ""), "_", 
+                     paste(rkey, collapse = ""))
+  
+  probstate <- paste0("P(", paste(paste0(attr(x$parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
+                      paste0(attr(x$parameters, "condvars"), " = ", rkey, collapse = ", "), ")")
+  
+  if(length(attr(x$parameters, "condvars")) == 0) {
+    probstate <- paste0("P(", paste(paste0(attr(x$parameters, "rightvars"), " = ", lkey), collapse = ", "), ")")
+  }
+  
+  variabletext <- sprintf("The bounds will be reported in terms of parameters of the form %s, which represents the probability %s.", 
+                          sampparm, probstate)
+  
+  if(!is.null(x$user.constraints)) {
+    constrainttext <- sprintf("This following constraints have been specifed: \n %s", paste(x$user.constraints, collapse = "\n"))
+  } else constrainttext <- "No constraints have been specified"
+  
+  cat(effecttext, "\n Under the assumption encoded in the graph: ")
+  print(E(x$graph))
+  cat(constrainttext, "\n", variabletext, "\n")
+  
+  cat("Additional information is available in the following list elements:")
+  print(names(x))
+  
+  invisible(x)
+}
+
+
+

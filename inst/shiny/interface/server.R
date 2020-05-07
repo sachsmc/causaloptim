@@ -215,7 +215,7 @@ function(input, output) {
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
-                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."),
+                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and if there is nothing on the left side, they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."),
                             fluidRow(id = "effecttext",
                                  column(8, textAreaInput("effect", NULL, default.effect)), 
                                  column(1, actionButton("parseeffect", "Parse", style="background-color: #69fb82"))
@@ -261,15 +261,11 @@ function(input, output) {
           
           
           
-          chk0 <- lapply(parsed.test$vars, function(x) lapply(x, function(y){
-            if(is.list(y)) names(y)
-            }))
+          graph <- igraphFromList()
           
-          
+          chk0 <- lapply(parsed.test$vars, causaloptim:::btm_var)
           
           interven.vars <- unique(unlist(chk0))
-          
-          graph <- igraphFromList()
           
           ## check that children of intervention sets are on the right
           
@@ -280,13 +276,16 @@ function(input, output) {
             
           })
           
+          
+          
           if(any(any.children.onleft) == TRUE) {
             error <- sprintf("Cannot intervene on %s because it has children on the leftside!", 
                              paste(interven.vars[which(any.children.onleft)], collapse = ", "))
           }
           
-          if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
-            error <- sprintf("Operator '%s' not allowed!", chk0["oper"])
+          if("oper" %in% names(parsed.test) & any(!unlist(parsed.test$oper) %in% c("+", "-"))) {
+            whoper <- unlist(parsed.test$oper)[!unlist(parsed.test$oper) %in% c("+", "-")]
+            error <- sprintf("Operator '%s' not allowed!", whoper)
           }
           
           allnmes <- unique(unlist(lapply(parsed.test$vars, names)))
@@ -296,6 +295,23 @@ function(input, output) {
             
             error <- sprintf("Names %s in effect not specified in graph!", 
                              paste(allnmes[which(!allnmes %in% realnms)], collapse = ", "))
+            
+          }
+          
+          if(any(V(graph)$leftside == 1 & names(V(graph)) != "Ul")) {
+            cond.vars <- names(V(graph)[V(graph)$leftside == 1 & names(V(graph)) != "Ul"])
+            chkpaths <- unlist(lapply(cond.vars, function(x){ 
+              pths <- all_simple_paths(graph, from = x, to = allnmes, mode = "out")
+              unlist(lapply(pths, function(pth) {
+                all(interven.vars %in% names(pth))
+                
+              }))
+            }))
+            
+            if(any(!chkpaths)) {
+              error <- sprintf("Leftside variables %s not ancestors of intervention sets. Condition 6 violated.", 
+                           paste(names(chkpaths)[!chkpaths], collapse = ", "))
+            }
             
           }
           

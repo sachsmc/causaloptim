@@ -65,7 +65,7 @@ Use the text box to describe your causal effect of interest. The effects must be
 p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...
 ```
 
-where `Vij` are names of variables in the graph, `a, b` are either 0 or 1, and `op` are either `-` or `+`. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by `;`. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statements: 
+where `Vij` are names of variables in the graph, `a, b` are either 0 or 1, and `op` are either `-` or `+`. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by `;`. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as `p{Y = 1}` are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements: 
 
 ```
 p{Y(X = 1) = 1} - p{Y(X = 0) = 1}

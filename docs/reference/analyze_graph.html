@@ -71,7 +71,7 @@ The shiny app returns a graph in this format." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
       </span>
     </div>
 
@@ -160,13 +160,17 @@ The shiny app returns a graph in this format.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list with the following components. This list can be passed to <a href='optimize_effect.html'>optimize_effect</a> which interfaces with Balke's code:</p><dl class='dl-horizontal'>
+    <p>A an object of class "linearcausalproblem", which is a list with the following components. This list can be passed to <a href='optimize_effect.html'>optimize_effect</a> which interfaces with Balke's code. Print and plot methods are also available.</p><dl class='dl-horizontal'>
         <dt>variables</dt><dd><p>Character vector of variable names of potential outcomes, these start with 'q' to match Balke's notation</p></dd> 
         <dt>parameters</dt><dd><p>Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation</p></dd>
         <dt>constraints</dt><dd><p>Character vector of parsed constraints</p></dd>
         <dt>objective</dt><dd><p>Character string defining the objective to be optimized in terms of the variables</p></dd>
         <dt>p.vals</dt><dd><p>Matrix of all possible values of the observed data vector, corresponding to the list of parameters.</p></dd>
         <dt>q.vals</dt><dd><p>Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.</p></dd>
+        <dt>parsed.query</dt><dd><p>A nested list containing information on the parsed causal query.</p></dd>
+        <dt>objective.nonreduced</dt><dd><p>The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.</p></dd>
+        <dt>response.functions</dt><dd><p>List of response functions.</p></dd>
+        <dt>graph</dt><dd><p>The graph as passed to the function.</p></dd>
     
 </dl>
 
@@ -177,46 +181,15 @@ The shiny app returns a graph in this format.</p>
 <span class='fu'>V</span>(<span class='no'>b</span>)$<span class='no'>leftside</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span>)
 <span class='fu'>V</span>(<span class='no'>b</span>)$<span class='no'>latent</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span>)
 <span class='fu'>E</span>(<span class='no'>b</span>)$<span class='no'>rlconnect</span> <span class='kw'>&lt;-</span> <span class='fu'>E</span>(<span class='no'>b</span>)$<span class='no'>edge.monotone</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span>)
-<span class='fu'>analyze_graph</span>(<span class='no'>b</span>, <span class='kw'>constraints</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>effectt</span> <span class='kw'>=</span> <span class='st'>"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span>)</div><div class='output co'>#&gt; $variables
-#&gt; [1] "q00" "q01" "q02" "q03" "q10" "q11" "q12" "q13"
-#&gt; 
-#&gt; $parameters
-#&gt; [1] "p00_" "p10_" "p01_" "p11_"
-#&gt; attr(,"key")
-#&gt; [1] "XY_"
-#&gt; attr(,"rightvars")
-#&gt; [1] "X" "Y"
-#&gt; attr(,"condvars")
-#&gt; character(0)
-#&gt; 
-#&gt; $constraints
-#&gt; [1] "q00 + q01 + q02 + q03 + q10 + q11 + q12 + q13  =  1"
-#&gt; [2] "q00 + q02  =  p00_"                                 
-#&gt; [3] "q10 + q11  =  p10_"                                 
-#&gt; [4] "q01 + q03  =  p01_"                                 
-#&gt; [5] "q12 + q13  =  p11_"                                 
-#&gt; 
-#&gt; $objective
-#&gt; [1] "q02 + q12 - q01 - q11"
-#&gt; 
-#&gt; $p.vals
-#&gt;   X Y
-#&gt; 1 0 0
-#&gt; 2 1 0
-#&gt; 3 0 1
-#&gt; 4 1 1
-#&gt; 
-#&gt; $q.vals
-#&gt;   X Y
-#&gt; 1 0 0
-#&gt; 2 1 0
-#&gt; 3 0 1
-#&gt; 4 1 1
-#&gt; 5 0 2
-#&gt; 6 1 2
-#&gt; 7 0 3
-#&gt; 8 1 3
-#&gt; </div></pre>
+<span class='fu'>analyze_graph</span>(<span class='no'>b</span>, <span class='kw'>constraints</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>effectt</span> <span class='kw'>=</span> <span class='st'>"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span>)</div><div class='output co'>#&gt; Ready to compute bounds for the effect p{Y(X = 1) = 1} - p{Y(X = 0) = 1} 
+#&gt;  Under the assumption encoded in the graph: + 3/3 edges from 9c0709e (vertex names):
+#&gt; [1] X -&gt;Y Ur-&gt;X Ur-&gt;Y
+#&gt; No constraints have been specified 
+#&gt;  The bounds will be reported in terms of parameters of the form pab_, which represents the probability P(X = a, Y = b). 
+#&gt; Additional information is available in the following list elements: [1] "variables"            "parameters"           "constraints"         
+#&gt;  [4] "objective"            "p.vals"               "q.vals"              
+#&gt;  [7] "parsed.query"         "unparsed.query"       "user.constraints"    
+#&gt; [10] "objective.nonreduced" "response.functions"   "graph"               </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

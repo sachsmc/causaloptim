@@ -19,6 +19,7 @@ bound <- optimize_effect(obj)
 
 all(bound$bounds == c("\nMAX {\n- p10_ - p01_\n}\n\n", "\nMIN {\n- p10_ - p01_ + 1\n}\n\n"))
 
+
 ## instrument Z -> X -> Y
 
 b <- readRDS("test-graphs/instrument.RData")
@@ -28,6 +29,7 @@ obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
 
 all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p10_0 - 2 p10_1 - 2 p01_1\n- p00_0 + p00_1 - p10_0 - p01_0\n- p00_0 + p00_1 - 2 p10_0 + p10_1 - 2 p01_0\np00_0 - p00_1 - p10_1 - p01_1\n- p10_0 - p01_0\n- p10_1 - p01_1\np00_0 - p00_1 - p10_0 - p10_1 - p01_0\n- p00_0 + p00_1 - p10_0 - p10_1 - p01_1\n}\n\n", "\nMIN {\n- p00_0 - p10_0 - p10_1 - 2 p01_1 + 2\n- p00_1 - p10_0 - p10_1 - 2 p01_0 + 2\n- p10_0 - p01_1 + 1\np00_1 - 2 p10_0 + p10_1 - p01_0 + 1\n- p10_0 - p01_0 + 1\n- p10_1 - p01_0 + 1\n- p10_1 - p01_1 + 1\np00_0 + p10_0 - 2 p10_1 - p01_1 + 1\n}\n\n" ))
+
 
 ## with monotonocity
 
@@ -46,12 +48,11 @@ bound <- optimize_effect(obj)
 
 all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n"))
 
-## treatment effect among the treated?
+## treatment effect among the treated? This one is not actually liner under the dag
 
 eff <- "p{Y(X = 1) = 1; X = 1} - p{Y(X = 0) = 1; X = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
-
 
 
 ## mediator X -> Z -> Y
@@ -71,6 +72,8 @@ obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound2 <- optimize_effect(obj)
 
 all(bound1$bounds == bound2$bounds)
+
+
 
 ## controlled direct effect
 
@@ -114,3 +117,15 @@ bound <- optimize_effect(obj)
 
 obj <- analyze_graph(b, constraints = list("Z(X=0)<=Z(X=1)"), effectt = eff)
 bound <- optimize_effect(obj)
+
+## error check
+
+graph <- graph_from_literal(Ul -+ X -+ Y, Ur -+ Y, W -+ Y, Ur -+ W)
+V(graph)$leftside <- c(1, 1, 0, 0, 0)
+V(graph)$latent <- c(1, 0, 0, 1, 0)
+E(graph)$rlconnect <- c(0, 0, 0, 0, 0)
+E(graph)$edge.monotone <- c(0, 0, 0, 0, 0)
+
+tryerror <- tryCatch(analyze_graph(graph, NULL, 'p{Y(W = 1) = 0}'), 
+                     error = function(e) TRUE)
+tryerror

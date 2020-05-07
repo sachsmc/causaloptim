@@ -335,7 +335,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. All of the following are valid effect statements:</p>
+<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code>-</code> or <code>+</code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as <code>p{Y = 1}</code> are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -375,17 +375,17 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <a class="sourceLine" id="cb7-18" title="18"><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></a>
 <a class="sourceLine" id="cb7-19" title="19"><span class="co">#&gt; c(lower = pmax(p00_0 - p00_1 - p10_1 - p01_1), upper = pmin(-p10_1 - </span></a>
 <a class="sourceLine" id="cb7-20" title="20"><span class="co">#&gt;     p01_0 + 1))</span></a>
-<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x0000000017172a80&gt;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-21" title="21"><span class="co">#&gt; &lt;environment: 0x00000000159c14b8&gt;</span></a></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">sim &lt;-<span class="st"> </span><span class="kw">simulate_bounds</span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw">head</span>(sim)</a>
-<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;      objective bound.lower bound.upper</span></a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1  0.047559639  -0.2985205   0.4608260</span></a>
-<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.004262497  -0.3485228   0.3152446</span></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3  0.131045078  -0.1727323   0.4333538</span></a>
-<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.032913922  -0.4240109   0.1760522</span></a>
-<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5 -0.090075630  -0.4488554   0.3631349</span></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6  0.127541216  -0.2501900   0.4369972</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-3" title="3"><span class="co">#&gt;     objective bound.lower bound.upper</span></a>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; 1 -0.07737107  -0.3690866   0.3198212</span></a>
+<a class="sourceLine" id="cb8-5" title="5"><span class="co">#&gt; 2 -0.06440692  -0.3668546   0.2343133</span></a>
+<a class="sourceLine" id="cb8-6" title="6"><span class="co">#&gt; 3 -0.07733357  -0.4654949   0.2000033</span></a>
+<a class="sourceLine" id="cb8-7" title="7"><span class="co">#&gt; 4  0.12869842  -0.3146200   0.4143929</span></a>
+<a class="sourceLine" id="cb8-8" title="8"><span class="co">#&gt; 5  0.01206151  -0.2453367   0.2803823</span></a>
+<a class="sourceLine" id="cb8-9" title="9"><span class="co">#&gt; 6 -0.04362154  -0.3211736   0.2580051</span></a></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw">cat</span>(<span class="kw">latex_bounds</span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</a></code></pre></div>
 <p><span class="math display">\[ 

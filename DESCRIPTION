@@ -30,7 +30,7 @@ License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.1), shiny
 Depends: igraph
 LinkingTo: Rcpp
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 Suggests: 
     knitr,
     rmarkdown

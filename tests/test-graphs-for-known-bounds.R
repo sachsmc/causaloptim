@@ -65,11 +65,11 @@ b <- readRDS("test-graphs/mediator.RData")
 
 eff <- "p{Y(X = 1) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound1 <- optimize_effect(obj)
+bound1 <- optimize_effect_2(obj)
 
 eff <- "p{Y(X = 1, Z(X = 1)) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound2 <- optimize_effect(obj)
+bound2 <- optimize_effect_2(obj)
 
 all(bound1$bounds == bound2$bounds)
 
@@ -79,7 +79,7 @@ all(bound1$bounds == bound2$bounds)
 
 eff <- "p{Y(X = 1, Z = 0) = 1} - p{Y(X = 0, Z = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound <- optimize_effect(obj)
+bound <- optimize_effect_2(obj)
 
 
 ## check against equation (3)
@@ -96,7 +96,7 @@ mono2 <- list("Z(X = 1) >= Z(X = 0)",
               "Y(X = 1, Z = 1) >= Y(X = 1, Z = 0)")
 
 obj <- analyze_graph(b, constraints = mono2, effectt = eff)
-bound <- optimize_effect(obj)
+bound <- optimize_effect_2(obj)
 
 ## check againts equation (5)
 all(bound$bounds == c("\nMAX {\n- p01_0 + p01_1\n0\n}\n\n", "\nMIN {\n- p00_1 - p10_1 - p01_0 + 1\n}\n\n"))
@@ -107,16 +107,16 @@ all(bound$bounds == c("\nMAX {\n- p01_0 + p01_1\n0\n}\n\n", "\nMIN {\n- p00_1 - 
 eff <- "p{Y(X = 1, Z(X = 0)) = 1} - p{Y(X = 0, Z(X = 0)) = 1}"
 
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound <- optimize_effect(obj)
+bound <- optimize_effect_2(obj)
 
 obj <- analyze_graph(b, constraints = mono2, effectt = eff)
-bound <- optimize_effect(obj)
+bound <- optimize_effect_2(obj)
 
 ## compare to Arvids paper 2009 
 
 
 obj <- analyze_graph(b, constraints = list("Z(X=0)<=Z(X=1)"), effectt = eff)
-bound <- optimize_effect(obj)
+bound <- optimize_effect_2(obj)
 
 ## error check
 

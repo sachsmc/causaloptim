@@ -210,7 +210,7 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
         }
         res <- lapply(as.list(obj$constraints[-1]), function(x){
             x1 <- strsplit(x, " = ")[[1]]
-            x0 <- paste(x1[2], " = ", x1[1])
+            x0 <- paste(x1[1], " = ", x1[2])
             eval(parse(text = x0), envir = inenv)
         })
         

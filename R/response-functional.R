@@ -1,6 +1,7 @@
 #' @import igraph shiny
 #' @importFrom graphics legend plot
 #' @importFrom stats runif
+#' @importFrom rcdd makeH scdd
 NULL
 
 

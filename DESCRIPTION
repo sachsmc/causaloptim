@@ -27,7 +27,7 @@ Description: When causal quantities are not identifiable from the observed data,
             a preprint by Sachs, Gabriel, and Sjölander (2020) 
             <https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf>.
 License: MIT + file LICENSE
-Imports: methods, Rcpp (>= 1.0.1), shiny
+Imports: methods, Rcpp (>= 1.0.1), shiny, rcdd
 Depends: igraph
 LinkingTo: Rcpp
 RoxygenNote: 7.1.1

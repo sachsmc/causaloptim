@@ -87,7 +87,8 @@ print.balkebound <- function(x, ...){
     
 }
 
-# Use same documentation as original optimize_effect above.
+# Use the documentation of the original optimize_effect once we switch.
+#' @export
 optimize_effect_2 <- function(obj) {
     lower_bound <- opt_effect(opt = "min", obj = obj)
     upper_bound <- opt_effect(opt = "max", obj = obj)
@@ -98,119 +99,60 @@ optimize_effect_2 <- function(obj) {
 
 #' Compute a bound on the average causal effect
 #' 
-#' This helper function does the heavy lifting for the main function \code{\link{optimize_effect}}.
-#' For a given casual query, it computes either a lower bound or an upper bound on the corresponding causal effect.
-#' @param opt A string. Either \code{"min"} or \code{"max"}. 
-#' Determines whether we want respectively the minimum/lower bound or the maximum/upper bound od the average causal effect.
+#' This helper function does the heavy lifting for \code{\link{optimize_effect}}.
+#' For a given casual query, it computes either a lower or an upper bound on the corresponding causal effect.
+#' @param opt A string. Either \code{"min"} or \code{"max"} for a lower or an upper bound, respectively.
 #' @param obj An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.
-#' @return An object/instance of type/class \code{optbound}. This is a list with the following named components/attributes: 
+#' @return An object of class \code{optbound}; a list with the following named components: 
 #' \itemize{
-#'   \item \code{expr} (a single string) is the \emph{main} output; an expression of the bound as a print-friendly string,
-#'   \item \code{type} (a single string; either \code{"lower"} or \code{"upper"}) indicates whether it is a \emph{lower} (if \code{opt=="min"}) bound or an \emph{upper} (if \code{opt=="max"}) bound,
-#'   \item \code{dual_vertices} (a numeric matrix) is a matrix whose rows are the vertices of the convex polytope of the dual,
-#'   \item \code{dual_vrep} (an object representing the dual polytope in vertex representation form, with some extra data) e.g. for debugging purposes.
+#'   \item \code{expr} is the \emph{main} output; an expression of the bound as a print-friendly string,
+#'   \item \code{type} is either \code{"lower"} or \code{"upper"} according to the type of the bound,
+#'   \item \code{dual_vertices} is a numeric matrix whose rows are the vertices of the convex polytope of the dual LP,
+#'   \item \code{dual_vrep} is a V-representation of the dual convex polytope, including some extra data.
 #' }
-# @export
-# @examples
-# b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
-# V(b)$leftside <- c(0,0,0)
-# V(b)$latent <- c(0,0,1)
-# E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
-# obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
-# opt_effect("min", obj)
 opt_effect <- function(opt, obj) {
-    
     # The Primal LP
-    # opt t(c0) %*% q
-    # st  all(A_e %*% q == b_e)
-    # &   all(q >= 0)
-    # &   all(A_l %*% q <= b_l)
-    # where
-    # ncol(c0) == nrow(b_e) == ncol(q) == 1
-    # nrow(c0) == ncol(A_e) == nrow(q) == n == ncol(A_l)
-    # nrow(A_e) == nrow(b_e) == m_e
-    # nrow(A_l) == nrow(b_l) == m_l
-    c0 <- obj$c0 # the gradient column vector (an n\times1 matrix) of the linear objective function
-    n <- nrow(c0) # the dimension/length of the variable q to optimize the objective function over
-    A_e <- obj$R # the linear equality constraint coefficient matrix (m_e\times n)
-    if (ncol(A_e) != n) stop("Dimension mismatch of equality constraints.") # not really needed
-    p <- obj$parameters # a vector of the p-parameters as character strings (a "plain" vector; _not_ a column matrix)
-    # b_e <- matrix(data=c("1", # actually b_e is not used anywhere
-    #                      p), ncol = 1) # the matrix equality right hand side column vector (an m_e\times1 matrix)
-    m_e <- nrow(A_e) # the number of equality constraints
-    # if (nrow(b_e) != m_e) stop("Dimension mismatch of equality constaints.") # not really needed
-    # User-provided inequality constraint(s)
-    A_l <- obj$iqR # a user-provided inequality constraint coefficient matrix
-    # A_l <- NULL # only temporary!
-    if (is.null(A_l)) A_l <- matrix(data = 0, nrow = 0, ncol = n) # needed?
-    b_l <- obj$iqb # a user-provided inequality constraint right hand side vector (as a column matrix?)
-    # b_l <- NULL # only temporary!
-    if (is.null(b_l)) b_l <- matrix(data = 0, nrow = 0, ncol = 1) # needed?
+    c0 <- obj$c0
+    n <- nrow(c0)
+    A_e <- obj$R
+    p <- obj$parameters
+    m_e <- nrow(A_e)
+    A_l <- obj$iqR
+    if (is.null(A_l)) A_l <- matrix(data = 0, nrow = 0, ncol = n)
+    b_l <- obj$iqb
+    if (is.null(b_l)) b_l <- matrix(data = 0, nrow = 0, ncol = 1)
     if (!is.numeric(A_l) || !is.numeric(b_l)) stop("Inequality entries must be numeric.")
     if (ncol(A_l) != n) stop("Dimension mismatch of inequality constaints.")
-    m_l <- nrow(A_l) # the number of inequality constraints
+    m_l <- nrow(A_l)
     if (nrow(b_l) != m_l) stop("Dimension mismatch of inequality constaints.")
-    m <- m_l + m_e # the total number of linear constraints
-    
+    m <- m_l + m_e
     # The Dual LP
-    # opt' t(c1) %*% y
-    # s.t. all(a1 %*% y <= b1)
-    # where c1, a1 and b1 are given below and 
-    # ncol(c1) == nrow(b1) == ncol(y) == 1
-    # nrow(c1) == ncol(a1) == nrow(y) == m
-    # nrow(a1) == nrow(b1) == n
-    # c1 <- rbind(b_l, # actually c1 is not used anywhere
-    #             b_e) # the gradient column vector (an m\times1 matrix) c1 := b of the linear objective function $y \mapsto b^t y$
-    # if (nrow(c1) != m) stop("Dimension mismatch in dual objective.") # not really needed
     a1 <- rbind(cbind(t(A_l), t(A_e)),
-                cbind(diag(x = 1, nrow = m_l, ncol = m_l), matrix(data = 0, nrow = m_l, ncol = m_e))) # the linear inequality constraint coefficient matrix
+                cbind(diag(x = 1, nrow = m_l, ncol = m_l), matrix(data = 0, nrow = m_l, ncol = m_e)))
     b1 <- rbind(c0,
-                matrix(data = 0, nrow = m_l, ncol = 1)) # the matrix inequality constraint right hand side column vector
-    # N.b. If we have no user-provided (A_l, b_l) then (c1, a1, b1) reduces to c1 = b_e, a1 = t(A_e) and b1 = c0.
+                matrix(data = 0, nrow = m_l, ncol = 1))
     if (opt == "max") {
         a1 <- -a1
         b1 <- -b1
     }
-    hrep <- makeH(a1 = a1, b1 = b1) # the H-representation (half-space description) of the constraint space
-    # Enumerate the vertices of the convex polytope (given as the H-representation 'hrep'). The vertices of the convex polytope are its extreme points.
-    vrep <- scdd(input = hrep, adjacency = TRUE, inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE) # the corresponding V-representation of the same m-dimensional convex polytope
+    hrep <- makeH(a1 = a1, b1 = b1)
+    vrep <- scdd(input = hrep, adjacency = TRUE, inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE)
     matrix_of_vrep <- vrep$output
     indices_of_vertices <- matrix_of_vrep[ , 1] == 0 & matrix_of_vrep[ , 2] == 1
     vertices <- matrix_of_vrep[indices_of_vertices, -c(1, 2), drop = FALSE] # the rows of this matrix are the vertices of the convex polytope
-    if (ncol(vertices) != m) stop("Dimension mismatch in dual constraint space.") # not really needed
-    
-    # The Bounds
-    # K <- nrow(vertices) # the number of vertices of the convex polytope
-    # We let {ybar_1,...,ybar_K} be the set of rows of the matrix 'vertices'.
-    # The length of each vertex ybar_k is m = m_l + m_e.
-    # Extract each vertex ybar as a row vector from the matrix 'vertices' 
-    # and plug it into the linear objective function t(c1) %*% t(y) = t(b) %*% t(y), 
-    # to get its value as an affine expression in the p's of the column vector c1 = b.
-    # indices_of_numbers_in_c1 <- 1:(m_l + 1)
-    # indices_of_parameters_in_c1 <- (m_l + 2):m
-    c1_num <- rbind(b_l, 1) # the _numeric_ column vector (an (m_l + 1)\times1 matrix) consisting of 
-    # the first m_l + 1 entries of the (m\times1) column vector c1, so we have c1 == c(c1_num, p)
-    if (nrow(c1_num) != m_l + 1) stop("Wrong dimension of sub-vector.") # not really needed
-    if (ncol(c1_num) != 1) stop("Wrong dimension of sub-vector.") # not really needed
-    if (!is.numeric(c1_num)) stop("Wrong entry-type of sub-vector.") # not really needed
+    # The Bound
+    c1_num <- rbind(b_l, 1)
     expressions <- apply(vertices, 1, function(y) evaluate_objective(c1_num = c1_num, p = p, y = y))
     elements <- paste(expressions, sep = ",", collapse = ",\n")
     opt_bound <- paste0(if (opt == "min") "min-bound: MAX {\n" else "max-bound: MIN {\n", elements, "\n}\n")
-    opt_bound <- structure(list(expr = opt_bound, # an expression of the bound as a print-friendly string
-                                type = if (opt == "min") "lower" else "upper", # the kind of extremum/optimum of the bound
-                                dual_vertices = vertices, # a matrix whose rows are the vertices (in lexicographic order) of the dual constraint set
-                                dual_vrep = vrep), # a V-description (including some extra information) of the dual constraint set
+    opt_bound <- structure(list(expr = opt_bound,
+                                type = if (opt == "min") "lower" else "upper",
+                                dual_vertices = vertices,
+                                dual_vrep = vrep),
                            class = "optbound")
     return(opt_bound)
 }
 
-#' @export
-
-print.optbound <- function(x, ...){
-    
-    cat(x$expr, ...)
-    
-}
 
 #' Convert bounds string to a function
 #' 

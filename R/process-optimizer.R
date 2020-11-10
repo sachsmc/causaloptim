@@ -87,6 +87,7 @@ print.balkebound <- function(x, ...){
     
 }
 
+# Use same documentation as original optimize_effect above.
 optimize_effect_2 <- function(obj) {
     lower_bound <- opt_effect(opt = "min", obj = obj)
     upper_bound <- opt_effect(opt = "max", obj = obj)
@@ -95,6 +96,28 @@ optimize_effect_2 <- function(obj) {
     structure(list(bounds = bounds, logs = vreps_of_duals), class = "balkebound")
 }
 
+#' Compute a bound on the average causal effect
+#' 
+#' This helper function does the heavy lifting for the main function \code{\link{optimize_effect}}.
+#' For a given casual query, it computes either a lower bound or an upper bound on the corresponding causal effect.
+#' @param opt A string. Either \code{"min"} or \code{"max"}. 
+#' Determines whether we want respectively the minimum/lower bound or the maximum/upper bound od the average causal effect.
+#' @param obj An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.
+#' @return An object/instance of type/class \code{optbound}. This is a list with the following named components/attributes: 
+#' \itemize{
+#'   \item \code{expr} (a single string) is the \emph{main} output; an expression of the bound as a print-friendly string,
+#'   \item \code{type} (a single string; either \code{"lower"} or \code{"upper"}) indicates whether it is a \emph{lower} (if \code{opt=="min"}) bound or an \emph{upper} (if \code{opt=="max"}) bound,
+#'   \item \code{dual_vertices} (a numeric matrix) is a matrix whose rows are the vertices of the convex polytope of the dual,
+#'   \item \code{dual_vrep} (an object representing the dual polytope in vertex representation form, with some extra data) e.g. for debugging purposes.
+#' }
+# @export
+# @examples
+# b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+# V(b)$leftside <- c(0,0,0)
+# V(b)$latent <- c(0,0,1)
+# E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+# obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+# opt_effect("min", obj)
 opt_effect <- function(opt, obj) {
     
     # The Primal LP

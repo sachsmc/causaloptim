@@ -37,6 +37,15 @@ list_to_path <- function(x, name = NULL) {
     
 }
 
+#' Compute the scalar product of two numeric vectors of the same length
+#' 
+#' A helper function for \code{\link{opt_effect}}, where it is used to compute a part of a bound.
+#' @param numbers1 A numeric vector of finite length.
+#' @param numbers2 A numeric vector of the same length as \code{numbers1}.
+#' @return A string consisting of the numeric scalar (in decimal form) product of the two numeric vectors \code{numbers1} and \code{numbers2}.
+# @export
+# @examples
+# constant_term(c(1,2,3),c(4,5,6)) # returns the string "32"
 constant_term <- function(numbers1, numbers2) {
     if (is.null(numbers1) || is.null(numbers2)) stop("A null argument was given to the constant_term function.") # not really needed
     if (!is.numeric(numbers1) || !is.numeric(numbers2)) stop("Incorrect type in argument. Numeric vector required.") # not really needed
@@ -44,6 +53,15 @@ constant_term <- function(numbers1, numbers2) {
     as.character(sum(numbers1*numbers2))
 }
 
+#' Compute the product of a single numeric scalar and a single string
+#' 
+#' A helper function for \code{\link{opt_effect}}, where it is used to compute a part of a bound.
+#' @param number A numeric vector of length 1.
+#' @param string A character vector of length 1.
+#' @return A string consisting of the concatenation of the decimal representation of the scalar \code{number} and the variable-name \code{string}, with its sign explicitly prefixed surrounded by single white-space characters.
+# @export
+# @examples
+# linear_term(3.14,"x") # returns the string " + 3.14x"
 linear_term <- function(number, string) {
     if (is.null(number) || is.null(string)) stop("A null argument was given to the linear_term function.") # not really needed
     if (!is.numeric(number) || !is.character(string)) stop("Incorrect type in argument to linear_term.") # not really needed
@@ -54,6 +72,15 @@ linear_term <- function(number, string) {
     return(paste0(" - ", abs(number), string))
 }
 
+#' Compute the scalar product of a vector of numbers and a vector of strings
+#' 
+#' A helper function for \code{\link{opt_effect}}, where it is used to compute a part of a bound.
+#' @param numbers A numeric vector of finite length.
+#' @param strings A character vector of the same length as \code{numbers}.
+#' @return A string consisting of the corresponding linear combination as an expression with an explicit sign even for the first term even if it is positive.
+# @export
+# @examples
+# linear_expression(c(1,2,3),c("x","y","z")) # returns the string " + x + 2y + 3z"
 linear_expression <- function(numbers, strings) {
     if (is.null(numbers) || is.null(strings)) stop("A null argument was given to the linear_expression function.") # not really needed
     if (length(numbers) != length(strings)) stop("Dimension mismatch.") # not really needed
@@ -61,6 +88,22 @@ linear_expression <- function(numbers, strings) {
     paste0(mapply(linear_term, numbers, strings), collapse = "")
 }
 
+#' Compute the scalar product of a vector of numbers and a vector of both numbers and strings
+#' 
+#' A helper function for \code{\link{opt_effect}}, where it is used to compute a part of a bound.
+#' Evaluate the linear combination t(c1) %*% y, where 
+#' c1 == rbind(c1_num, p) (an m\eqn{\times}1 column matrix), is the gradient vector where 
+#' c1_num = rbind(b_l, 1) (an (m_e + 1)\eqn{\times}1 column vector of type "numeric"), and 
+#' p is the vector of parameters (an (m_e + 1)\eqn{\times}1 column vector of type "character"), and 
+#' y is a variable (an m\eqn{\times}1 column vector) of of length m.
+#' Returns the result as an affine expression in/of the parameters of/in the vector \code{p}.
+#' @param c1_num a numeric column matrix
+#' @param p a character vector
+#' @param y a numeric vector whose length is the sum of the lengths of the vectors c1_num and p
+#' @return a string consisting of an affine expression in p corresponding to the scalar multiplication of the vectors c(c1_num,p) and y
+# @export
+# @examples
+# evaluate_objective(matrix(c(1,2)),c("a","b","c"),c(3,4,5,6,7)) # returns the string "  11 + 5a + 6b + 7c"
 evaluate_objective <- function(c1_num, p, y) {
     if (is.null(c1_num) || is.null(p) || is.null(y)) stop("A null argument was given to the evaluate_objective function.") # not really needed
     if (ncol(c1_num) != 1) stop("Argument has incorrect dimension.") # not really needed

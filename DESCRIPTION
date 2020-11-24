@@ -8,7 +8,7 @@ Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 
     person("Arvid", "Sjölander", role = "aut"), 
-    person("Gustav", "Jonzon", role = "ctb", commet = "(improved vertex enumeration)"),
+    person("Gustav", "Jonzon", role = "ctb", comment = "(improved vertex enumeration)"),
     person("Alexander A", "Balke", role = "ctb",comment ="(C++ code)"), 
     person("Colorado", "Reed", role = "ctb", comment = "(graph-creator.js)")
     )

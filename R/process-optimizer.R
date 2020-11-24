@@ -179,15 +179,15 @@ interpret_bounds <- function(bounds, parameters) {
     bcalls <- c("", "")
     for(i in 1:2) {
         bound <- bounds[i]
-        ilines <- strsplit(bound, "\n")[[1]]
+        ilines <- strsplit(bound, ",\n")[[1]]
         ilines <- ilines[ilines != ""]
         
-        if(ilines[1] == "MAX {") {
+        if(grepl("MAX", ilines[1])) {
             type <- "pmax"
         } else type <- "pmin"
         
         elems <- ilines[c(-1, -length(ilines))]
-        intotype <- gsub("([0-9])( )(p)", "\\1 * p", elems, fixed = FALSE)
+        intotype <- gsub("([0-9])()(p)", "\\1 * p", elems, fixed = FALSE)
         
         bcalls[i] <- paste0(type, "(", paste(intotype, collapse = ", \n"), ")")
     }

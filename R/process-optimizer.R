@@ -87,6 +87,72 @@ print.balkebound <- function(x, ...){
     
 }
 
+# Use the documentation of the original optimize_effect once we switch.
+#' @export
+optimize_effect_2 <- function(obj) {
+    lower_bound <- opt_effect(opt = "min", obj = obj)
+    upper_bound <- opt_effect(opt = "max", obj = obj)
+    bounds <- c(lower = lower_bound$expr, upper = upper_bound$expr)
+    vreps_of_duals <- list(lower = lower_bound$dual_vrep, upper = upper_bound$dual_vrep)
+    structure(list(bounds = bounds, logs = vreps_of_duals), class = "balkebound")
+}
+
+#' Compute a bound on the average causal effect
+#' 
+#' This helper function does the heavy lifting for \code{\link{optimize_effect}}.
+#' For a given casual query, it computes either a lower or an upper bound on the corresponding causal effect.
+#' @param opt A string. Either \code{"min"} or \code{"max"} for a lower or an upper bound, respectively.
+#' @param obj An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.
+#' @return An object of class \code{optbound}; a list with the following named components: 
+#' \itemize{
+#'   \item \code{expr} is the \emph{main} output; an expression of the bound as a print-friendly string,
+#'   \item \code{type} is either \code{"lower"} or \code{"upper"} according to the type of the bound,
+#'   \item \code{dual_vertices} is a numeric matrix whose rows are the vertices of the convex polytope of the dual LP,
+#'   \item \code{dual_vrep} is a V-representation of the dual convex polytope, including some extra data.
+#' }
+opt_effect <- function(opt, obj) {
+    # The Primal LP
+    c0 <- obj$c0
+    n <- nrow(c0)
+    A_e <- obj$R
+    p <- obj$parameters
+    m_e <- nrow(A_e)
+    A_l <- obj$iqR
+    if (is.null(A_l)) A_l <- matrix(data = 0, nrow = 0, ncol = n)
+    b_l <- obj$iqb
+    if (is.null(b_l)) b_l <- matrix(data = 0, nrow = 0, ncol = 1)
+    if (!is.numeric(A_l) || !is.numeric(b_l)) stop("Inequality entries must be numeric.")
+    if (ncol(A_l) != n) stop("Dimension mismatch of inequality constaints.")
+    m_l <- nrow(A_l)
+    if (nrow(b_l) != m_l) stop("Dimension mismatch of inequality constaints.")
+    m <- m_l + m_e
+    # The Dual LP
+    a1 <- rbind(cbind(t(A_l), t(A_e)),
+                cbind(diag(x = 1, nrow = m_l, ncol = m_l), matrix(data = 0, nrow = m_l, ncol = m_e)))
+    b1 <- rbind(c0,
+                matrix(data = 0, nrow = m_l, ncol = 1))
+    if (opt == "max") {
+        a1 <- -a1
+        b1 <- -b1
+    }
+    hrep <- makeH(a1 = a1, b1 = b1)
+    vrep <- scdd(input = hrep, adjacency = TRUE, inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE)
+    matrix_of_vrep <- vrep$output
+    indices_of_vertices <- matrix_of_vrep[ , 1] == 0 & matrix_of_vrep[ , 2] == 1
+    vertices <- matrix_of_vrep[indices_of_vertices, -c(1, 2), drop = FALSE] # the rows of this matrix are the vertices of the convex polytope
+    # The Bound
+    c1_num <- rbind(b_l, 1)
+    expressions <- apply(vertices, 1, function(y) evaluate_objective(c1_num = c1_num, p = p, y = y))
+    elements <- paste(expressions, sep = ",", collapse = ",\n")
+    opt_bound <- paste0(if (opt == "min") "min-bound: MAX {\n" else "max-bound: MIN {\n", elements, "\n}\n")
+    opt_bound <- structure(list(expr = opt_bound,
+                                type = if (opt == "min") "lower" else "upper",
+                                dual_vertices = vertices,
+                                dual_vrep = vrep),
+                           class = "optbound")
+    return(opt_bound)
+}
+
 
 #' Convert bounds string to a function
 #' 
@@ -113,15 +179,15 @@ interpret_bounds <- function(bounds, parameters) {
     bcalls <- c("", "")
     for(i in 1:2) {
         bound <- bounds[i]
-        ilines <- strsplit(bound, "\n")[[1]]
+        ilines <- strsplit(bound, "(\n|,\n)")[[1]]
         ilines <- ilines[ilines != ""]
         
-        if(ilines[1] == "MAX {") {
+        if(grepl("MAX", ilines[1])) {
             type <- "pmax"
         } else type <- "pmin"
         
         elems <- ilines[c(-1, -length(ilines))]
-        intotype <- gsub("([0-9])( )(p)", "\\1 * p", elems, fixed = FALSE)
+        intotype <- gsub("([0-9])()(p)", "\\1 * p", elems, fixed = FALSE)
         
         bcalls[i] <- paste0(type, "(", paste(intotype, collapse = ", \n"), ")")
     }
@@ -210,7 +276,7 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
         }
         res <- lapply(as.list(obj$constraints[-1]), function(x){
             x1 <- strsplit(x, " = ")[[1]]
-            x0 <- paste(x1[2], " = ", x1[1])
+            x0 <- paste(x1[1], " = ", x1[2])
             eval(parse(text = x0), envir = inenv)
         })
         
@@ -235,4 +301,5 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
 
 #' @useDynLib causaloptim
 #' @import Rcpp methods
+#' @importFrom rcdd makeH scdd
 NULL

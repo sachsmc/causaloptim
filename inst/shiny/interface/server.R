@@ -359,7 +359,7 @@ function(input, output) {
         
       } else {
       
-      bounds.obs <- optimize_effect(obj)
+      bounds.obs <- optimize_effect_2(obj)
       
       list(graphres = graphres, obj = obj, bounds.obs = bounds.obs, 
            constraints = constraints, effect = effecttext)

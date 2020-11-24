@@ -14,19 +14,34 @@ analyze_graph(graph, constraints, effectt)
 \item{effectt}{A character string that represents the causal effect of interest}
 }
 \value{
-A an object of class "linearcausalproblem", which is a list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code. Print and plot methods are also available. 
-    \describe{
-        \item{variables}{Character vector of variable names of potential outcomes, these start with 'q' to match Balke's notation} 
-        \item{parameters}{Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation}
-        \item{constraints}{Character vector of parsed constraints}
-        \item{objective}{Character string defining the objective to be optimized in terms of the variables}
-        \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
-        \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
-        \item{parsed.query}{A nested list containing information on the parsed causal query.}
-        \item{objective.nonreduced}{The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.}
-        \item{response.functions}{List of response functions.}
-        \item{graph}{The graph as passed to the function.}
-    }
+A an object of class "linearcausalproblem", which is a list with the
+  following components. This list can be passed to \link{optimize_effect}
+  which interfaces with Balke's code. Print and plot methods are also
+  available. \describe{ 
+  \item{variables}{Character vector of variable names
+  of potential outcomes, these start with 'q' to match Balke's notation}
+  \item{parameters}{Character vector of parameter names of observed
+  probabilities, these start with 'p' to match Balke's notation}
+  \item{constraints}{Character vector of parsed constraints}
+  \item{objective}{Character string defining the objective to be optimized in
+  terms of the variables} 
+  \item{p.vals}{Matrix of all possible values of the
+  observed data vector, corresponding to the list of parameters.}
+  \item{q.vals}{Matrix of all possible values of the response function form
+  of the potential outcomes, corresponding to the list of variables.}
+  \item{parsed.query}{A nested list containing information on the parsed
+  causal query.} 
+  \item{objective.nonreduced}{The objective in terms of the
+  original variables, before algebraic variable reduction. The nonreduced
+  variables can be obtained by concatenating the columns of q.vals.}
+  \item{response.functions}{List of response functions.} 
+  \item{graph}{The graph as passed to the function.} 
+  \item{R}{A matrix with coefficients
+  relating the p.vals to the q.vals p = R * q} 
+  \item{c0}{A vector of coefficients relating the q.vals to the 
+  objective function theta = c0 * q} 
+  \item{iqR}{A matrix with coefficients to represent the inequality
+  constraints} }
 }
 \description{
 The graph must contain edge attributes named "leftside" and "lrconnect"

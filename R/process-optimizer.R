@@ -179,7 +179,7 @@ interpret_bounds <- function(bounds, parameters) {
     bcalls <- c("", "")
     for(i in 1:2) {
         bound <- bounds[i]
-        ilines <- strsplit(bound, ",\n")[[1]]
+        ilines <- strsplit(bound, "(\n|,\n)")[[1]]
         ilines <- ilines[ilines != ""]
         
         if(grepl("MAX", ilines[1])) {

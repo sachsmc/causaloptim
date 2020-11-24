@@ -331,7 +331,7 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
     
     ### apply the lookup table
     
-    bnd2 <- gsub("}\\n\\n", "", substr(bounds, 8, nchar(bounds)))
+    bnd2 <- gsub("\\n}\\n", "", substr(bounds, 20, nchar(bounds)))
     bnd3 <- strsplit(bnd2, "\\n")
     
     for(i in 1:length(probstate)) {

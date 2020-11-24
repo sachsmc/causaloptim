@@ -87,8 +87,25 @@ print.balkebound <- function(x, ...){
     
 }
 
-# Use the documentation of the original optimize_effect once we switch.
+#' Run the optimizer
+#' 
+#' Given an object with the linear programming problem set up, compute the bounds
+#' using rcdd. Bounds are returned as text but can
+#' be converted to R functions using \link{interpret_bounds}, or latex code using
+#' \link{latex_bounds}.
+#' 
+#' @param obj Object as returned by \link{analyze_graph}
+#' 
+#' @return An object of class "balkebound" that contains the bounds and logs as character strings
+#' 
 #' @export
+#' @examples 
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+#' optimize_effect_2(obj)
 optimize_effect_2 <- function(obj) {
     lower_bound <- opt_effect(opt = "min", obj = obj)
     upper_bound <- opt_effect(opt = "max", obj = obj)
@@ -99,7 +116,7 @@ optimize_effect_2 <- function(obj) {
 
 #' Compute a bound on the average causal effect
 #' 
-#' This helper function does the heavy lifting for \code{\link{optimize_effect}}.
+#' This helper function does the heavy lifting for \code{\link{optimize_effect_2}}.
 #' For a given casual query, it computes either a lower or an upper bound on the corresponding causal effect.
 #' @param opt A string. Either \code{"min"} or \code{"max"} for a lower or an upper bound, respectively.
 #' @param obj An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.

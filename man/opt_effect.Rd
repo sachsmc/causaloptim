@@ -21,6 +21,6 @@ An object of class \code{optbound}; a list with the following named components:
 }
 }
 \description{
-This helper function does the heavy lifting for \code{\link{optimize_effect}}.
+This helper function does the heavy lifting for \code{\link{optimize_effect_2}}.
 For a given casual query, it computes either a lower or an upper bound on the corresponding causal effect.
 }

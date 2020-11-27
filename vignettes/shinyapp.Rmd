@@ -1,5 +1,5 @@
 ---
-title: "How to use the Shiny app to analyze causal graphs"
+title: "How to use the causaloptim Shiny app to analyze graphs"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How to use the causaloptim Shiny app to analyze graphs}

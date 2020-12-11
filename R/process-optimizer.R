@@ -21,6 +21,29 @@
 
 optimize_effect <- function(obj) {
     
+    special.terms <- grepl("p(.*) = 0", obj$constraints)
+    
+    red.sets <- const.to.sets(obj$constraints[!special.terms], obj$objective.nonreduced)
+    objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
+    
+    if(!is.null(obj$parsed.query$oper) & length(obj$parsed.query$oper) > 0 & 
+       length(red.sets$objective.terms) > 1) {
+        
+        for(opp in 1:length(obj$parsed.query$oper)) {
+            
+            thiscol <- ifelse(obj$parsed.query$oper[[opp]] == "-", " - ", " + ")
+            objective.fin <- paste(objective.fin, obj$parsed.query$oper[[opp]], 
+                                   paste(red.sets$objective.terms[[opp + 1]], collapse = thiscol))
+            
+        }
+        
+    }
+    
+    obj$variables <- red.sets$variables
+    obj$constraints <- c(red.sets$constr, obj$constraints[special.terms])
+    obj$objective <- objective.fin
+    
+    
     tbl.file <- tempfile(pattern = c("max", "min"))
     cat("VARIABLES\n", file = tbl.file[1])
     cat(obj$variables, file = tbl.file[1], append = TRUE, sep = "\n")
@@ -83,7 +106,10 @@ optimize_effect <- function(obj) {
 
 print.balkebound <- function(x, ...){
     
-    cat(x$bounds, ...)
+    cat("lower bound = ", x$bounds["lower"], ...)
+    cat("----------------------------------------\n")
+    cat("upper bound = ", x$bounds["upper"], ...)
+    
     
 }
 
@@ -161,7 +187,7 @@ opt_effect <- function(opt, obj) {
     c1_num <- rbind(b_l, 1)
     expressions <- apply(vertices, 1, function(y) evaluate_objective(c1_num = c1_num, p = p, y = y))
     elements <- paste(expressions, sep = ",", collapse = ",\n")
-    opt_bound <- paste0(if (opt == "min") "min-bound: MAX {\n" else "max-bound: MIN {\n", elements, "\n}\n")
+    opt_bound <- paste0(if (opt == "min") "\nMAX {\n" else "\nMIN {\n", elements, "\n}\n")
     opt_bound <- structure(list(expr = opt_bound,
                                 type = if (opt == "min") "lower" else "upper",
                                 dual_vertices = vertices,
@@ -204,7 +230,7 @@ interpret_bounds <- function(bounds, parameters) {
         } else type <- "pmin"
         
         elems <- ilines[c(-1, -length(ilines))]
-        intotype <- gsub("([0-9])()(p)", "\\1 * p", elems, fixed = FALSE)
+        intotype <- gsub("([0-9])(| )(p)", "\\1 * p", elems, fixed = FALSE)
         
         bcalls[i] <- paste0(type, "(", paste(intotype, collapse = ", \n"), ")")
     }

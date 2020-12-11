@@ -526,10 +526,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     }
     
     
-    special.terms <- grepl("p(.*) = 0", p.constraints)
-    
-    #red.sets <- const.to.sets(p.constraints[!special.terms], objective)
-    
+   
     
     objective.fin <- paste(objective[[1]], collapse = " + ")
     c0 <- matrix(0, nrow = length(variables))

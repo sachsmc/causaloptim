@@ -12,7 +12,7 @@ all(bound$bounds == c("\nMAX {\np0_0 - p0_1\n}\n\n", "\nMIN {\np0_0 - p0_1\n}\n\
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  p0_0 - p0_1\n}\n", "max-bound: MIN {\n  p0_0 - p0_1\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  p0_0 - p0_1\n}\n", "\nMIN {\n  p0_0 - p0_1\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -28,7 +28,7 @@ all(bound$bounds == c("\nMAX {\n- p10_ - p01_\n}\n\n", "\nMIN {\n- p10_ - p01_ +
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  -p10_ - p01_\n}\n", "max-bound: MIN {\n  1 - p10_ - p01_\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  -p10_ - p01_\n}\n", "\nMIN {\n  1 - p10_ - p01_\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -45,7 +45,7 @@ all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p10_0 - 2 p10_1 - 2 p01_1\n- p00
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 - p10_0 - p10_1 - p01_0,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_1 - p01_1,\n  -p10_0 - p01_0,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1 - p01_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n", "max-bound: MIN {\n  1 - p10_1 - p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  2 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  2 - p00_0 - p10_0 - p10_1 - 2p01_1,\n  1 - p10_0 - p01_1\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 - p10_0 - p10_1 - p01_0,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_1 - p01_1,\n  -p10_0 - p01_0,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1 - p01_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n", "\nMIN {\n  1 - p10_1 - p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  2 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  2 - p00_0 - p10_0 - p10_1 - 2p01_1,\n  1 - p10_0 - p01_1\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -61,7 +61,7 @@ all(bound$bounds == c("\nMAX {\np00_0 - p00_1 - p10_1 - p01_1\n}\n\n", "\nMIN {\
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  p00_0 - p00_1 - p10_1 - p01_1\n}\n", "max-bound: MIN {\n  1 - p10_1 - p01_0\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1\n}\n", "\nMIN {\n  1 - p10_1 - p01_0\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -76,7 +76,7 @@ all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  p00_0 - p00_1 + p01_0 - p01_1\n}\n", "max-bound: MIN {\n  p00_0 - p00_1 + p01_0 - p01_1\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 + p01_0 - p01_1\n}\n", "\nMIN {\n  p00_0 - p00_1 + p01_0 - p01_1\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -89,7 +89,7 @@ bound <- optimize_effect(obj)
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-#all(new_version_bound$bounds == c("min-bound: MAX {\n  p00_0 - p00_1 - p10_0 - p10_1,\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_0 - p01_0,\n  -p10_1 - p01_1,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n", "max-bound: MIN {\n  1 - p10_1 - p01_0,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  1 - p10_0 - p01_1,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_1\n}\n"))
+#all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 - p10_0 - p10_1,\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_0 - p01_0,\n  -p10_1 - p01_1,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n", "\nMIN {\n  1 - p10_1 - p01_0,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  1 - p10_0 - p01_1,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_1\n}\n"))
 # visual comparison:
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
@@ -135,7 +135,7 @@ obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  -1 + p00_0 + p01_1\n}\n", "max-bound: MIN {\n  1 - p00_1 - p01_0\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  -1 + p00_0 + p01_1\n}\n", "\nMIN {\n  1 - p00_1 - p01_0\n}\n"))
 # visual comparison:
 #cat(bound$bounds) # old version output string
 cat("\nMAX {\np00_0 + p01_1 - 1\n}\n\n", "\nMIN {\n- p00_1 - p01_0 + 1\n}\n\n")#
@@ -158,7 +158,7 @@ obj <- analyze_graph(b, constraints = mono2, effectt = eff)
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
-all(new_version_bound$bounds == c("min-bound: MAX {\n  -p01_0 + p01_1,\n  0\n}\n", "max-bound: MIN {\n  1 - p00_1 - p10_1 - p01_0\n}\n"))
+all(new_version_bound$bounds == c("\nMAX {\n  -p01_0 + p01_1,\n  0\n}\n", "\nMIN {\n  1 - p00_1 - p10_1 - p01_0\n}\n"))
 # visual comparison:
 #cat(bound$bounds) # old version output string
 cat("\nMAX {\n- p01_0 + p01_1\n0\n}\n\n", "\nMIN {\n- p00_1 - p10_1 - p01_0 + 1\n}\n\n")#

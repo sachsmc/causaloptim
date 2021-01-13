@@ -426,34 +426,37 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; [5] &quot;effect&quot;         &quot;boundsFunction&quot;</span></span>
 <span id="cb7-4"><a href="#cb7-4"></a></span>
 <span id="cb7-5"><a href="#cb7-5"></a><span class="kw">print</span>(results<span class="op">$</span>bounds.obs)</span>
-<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; min-bound: MAX {</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; lower bound =  min-bound: MAX {</span></span>
 <span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt;   p00_0 - p00_1 - p10_1 - p01_1</span></span>
 <span id="cb7-8"><a href="#cb7-8"></a><span class="co">#&gt; }</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt;  max-bound: MIN {</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt; }</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a></span>
-<span id="cb7-13"><a href="#cb7-13"></a><span class="kw">print</span>(results<span class="op">$</span>boundsFunction)</span>
-<span id="cb7-14"><a href="#cb7-14"></a><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
-<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></span>
-<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt; data.frame(lower = pmax(), upper = pmin())</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; &lt;environment: 0x00000000151f10d8&gt;</span></span></code></pre></div>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">#&gt; ----------------------------------------</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="co">#&gt; upper bound =  max-bound: MIN {</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">#&gt; }</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="kw">print</span>(results<span class="op">$</span>boundsFunction)</span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
+<span id="cb7-16"><a href="#cb7-16"></a><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></span>
+<span id="cb7-17"><a href="#cb7-17"></a><span class="co">#&gt; data.frame(lower = pmax(), upper = pmin())</span></span>
+<span id="cb7-18"><a href="#cb7-18"></a><span class="co">#&gt; &lt;environment: 0x000000001dc0db60&gt;</span></span></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>sim &lt;-<span class="st"> </span><span class="kw">simulate_bounds</span>(results<span class="op">$</span>obj, results<span class="op">$</span>bounds.obs, <span class="dt">nsim =</span> <span class="dv">100</span>)</span>
 <span id="cb8-2"><a href="#cb8-2"></a><span class="kw">head</span>(sim)</span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
-<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; 1  0.01698592  -0.3531616   0.2942624</span></span>
-<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 2 -0.08130616  -0.3297348   0.2558837</span></span>
-<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 3  0.01497297  -0.3403075   0.3358582</span></span>
-<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; 4 -0.16489779  -0.4006478   0.1953311</span></span>
-<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; 5 -0.15452840  -0.4343426   0.1863182</span></span>
-<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; 6  0.13233701  -0.1981472   0.4663594</span></span></code></pre></div>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; 1 -0.01311042  -0.2723969   0.3632954</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt; 2 -0.11293189  -0.5362807   0.1770837</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt; 3 -0.23477624  -0.4767077   0.1450825</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt; 4 -0.04387357  -0.1836087   0.5039563</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt; 5 -0.01170809  -0.3210065   0.2821012</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt; 6  0.03326608  -0.3487774   0.3313888</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">cat</span>(<span class="kw">latex_bounds</span>(results<span class="op">$</span>bounds.obs<span class="op">$</span>bounds, results<span class="op">$</span>obj<span class="op">$</span>parameters))</span></code></pre></div>
 <p><span class="math display">\[ 
- \mbox{Lower bound} = P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) 
+ \mbox{Lower bound} = \mbox{max} \left. \begin{cases} nd: MAX {\\ 
+   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) \end{cases} \right\} 
  \]</span> <span class="math display">\[ 
- \mbox{Upper bound} = 1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) 
+ \mbox{Upper bound} = \mbox{min} \left. \begin{cases} nd: MIN {\\ 
+   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) \end{cases} \right\} 
  \]</span></p>
 <p>Please sends any bugs or feedback to <a href="mailto:michael.sachs@ki.se" class="email">michael.sachs@ki.se</a> or file an issue on <a href="https://github.com/sachsmc/causaloptim" class="uri">https://github.com/sachsmc/causaloptim</a> .</p>
 </div>

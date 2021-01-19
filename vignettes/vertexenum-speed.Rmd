@@ -2,6 +2,11 @@
 title: "Improving the speed of computing causal bounds"
 author: Gustav Jonzon
 output: rmarkdown::html_vignette
+resource_files:
+  - TwoIVs.png
+  - User_Input_DAG.png
+  - Causal_Graph.png
+  - Canonical_Partitions.png
 vignette: >
   %\VignetteIndexEntry{Improving the speed of computing causal bounds}
   %\VignetteEngine{knitr::rmarkdown}
@@ -54,7 +59,7 @@ Let's time the following simple enough looking multiple instrument problem.
 ```{r Multiple_Instruments_Image, echo = FALSE, fig.align = "center", out.width = "40%", fig.cap = "Benchmark Example. Multiple Instruments."}
 knitr::include_graphics("TwoIVs.png")
 ```
-```{r Multiple_Instruments_Code, eval = FALSE}
+```{r Multiple_Instruments_Code, eval = TRUE}
 library(causaloptim)
 library(igraph)
 b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y)
@@ -66,7 +71,7 @@ obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X =
 ```
 Using `causaloptim` version `0.7.1` to bound $\text{ACE}(X\rightarrow Y)$ we got (with a 3.3 GHz Quad-Core Intel Core i5; your mileage may vary) 
 ```{r Running_Time_Pre, eval = FALSE}
-system.time(optimize_effect(obj))
+system.time(oldbnds <- optimize_effect(obj))
 #>     user  system  elapsed 
 #> 31093.57   47.02 61368.22
 ```
@@ -76,12 +81,59 @@ And we spent more than $17$ hours waiting! 😴
 Correctness is not enough; having to wait until the next day is a bad user experience. 
 Using `causaloptim` version `0.8.0` however, we get 
 ```{r Running_Time_Post, eval = FALSE}
-system.time(optimize_effect_2(obj))
+system.time(newbnds <- optimize_effect_2(obj))
 #>  user  system  elapsed 
 #> 0.139   0.001    0.140
 ```
-Now this is acceptable! 😊 
-This was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let's first see how `causaloptim` sets up the optimization problem.
+Now this is acceptable! 😊 Of course, we need to verify that the results are the same. It is difficult to see upon visual inspection that they are the same, because the vertices are returned in a different order (and there are lots of them). Instead we can randomly generate some probability distributions that satisfy the graph, and compute the bounds and compare the results. First, we create the R functions that compute the bounds: 
+
+```{r, include = FALSE}
+
+oldbnds <- readRDS("MIV-bounds-result.RData")
+newbnds <- optimize_effect_2(obj)
+
+```
+
+
+```{r, eval = TRUE}
+eval_newbnds <- interpret_bounds(newbnds$bounds, obj$parameters)
+eval_oldbnds <- interpret_bounds(oldbnds$bounds, obj$parameters)
+```
+
+Then, we create a distribution by first randomly generating the counterfactual probabilities, and then calculating the observable probabilities by using the constraints implied by the DAG (which live in the `constraints` element of `obj`).
+
+```{r, eval = TRUE}
+sim.qs <- rbeta(length(obj$variables), .05, 1)
+sim.qs <- sim.qs / sum(sim.qs)
+
+names(sim.qs) <- obj$variables
+
+inenv <- new.env()
+for(j in 1:length(sim.qs)) {
+    
+    assign(names(sim.qs)[j], sim.qs[j], inenv)
+    
+}
+res <- lapply(as.list(obj$constraints[-1]), function(x){
+    x1 <- strsplit(x, " = ")[[1]]
+    x0 <- paste(x1[1], " = ", x1[2])
+    eval(parse(text = x0), envir = inenv)
+})
+
+params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
+names(params) <- obj$parameters
+```
+
+Then we pass the probabilities to the bounds functions and compare: 
+
+```{r, eval = TRUE}
+do.call(eval_newbnds, params) 
+do.call(eval_oldbnds, params)
+```
+
+Success!
+
+This improvement was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let's first see how `causaloptim` sets up the optimization problem.
 
 # How does `causaloptim` work?
 Given a DAG $D$, causally relating a set $\mathcal{V}$ of measured binary variables, suppose we can bipart $\mathcal{V}$ so that all association between the two parts is causal and directed from one part (which we call $\mathcal{L}$) to the other (called $\mathcal{R}$), and we want to determine the effect  $\text{ACE}(X\rightarrow Y)$ of some variable $X$ on a variable $Y\in\mathcal{R}$. 

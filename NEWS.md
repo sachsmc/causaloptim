@@ -3,6 +3,7 @@
 ## Big new features!
 
 - Major update to the vertex enumeration algorithm (thanks to @gjo11). There is a new function called `optimize_effect_2` which uses the `rcdd` package to enumerate the vertices. This is significantly faster than Balke's C++ code. This function is used by default in the shiny app. There are some minor differences in how the bounds are displayed, and note that the display of the vertices within MIN and MAX may differ from `optimize_effect`. The bounds are equivalent (just in a different order) in all of the test cases that we have looked at. 
+- New vignette explaining how the optimization was implemented (also thanks to @gjo11)
 
 # causaloptim 0.7.1
 

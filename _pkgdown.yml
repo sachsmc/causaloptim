@@ -11,9 +11,12 @@ reference:
     contents:
       - analyze_graph
       - optimize_effect
+      - optimize_effect_2
       - interpret_bounds
       - simulate_bounds
       - latex_bounds
+      - plot.linearcausalproblem
+      - print.linearcausalproblem
   - title: "Utilities"
     desc: "Internal functions"
     contents:
@@ -21,3 +24,16 @@ reference:
       - symb.subtract
       - parse_effect
       - shortentxt
+      - btm_var
+      - const.to.sets
+      - constant_term
+      - evaluate_objective
+      - expand_cond
+      - find_cycles
+      - linear_expression
+      - linear_term
+      - list_to_path
+      - opt_effect
+      - parse_constraints
+      - pastestar
+      - reduce.sets 

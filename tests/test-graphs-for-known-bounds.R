@@ -50,6 +50,20 @@ all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1,\n  
 cat(bound$bounds) # old version output string
 cat(new_version_bound$bounds) # new version output string
 
+## functional version
+
+f1 <- interpret_bounds(new_version_bound$bounds, obj$parameters)
+f1.new <- interpret_bounds(bound$bounds, obj$parameters)
+
+set.seed(12354)
+pr1 <- runif(length(obj$parameters))
+pr1[seq(1, 7, by = 2)] <- pr1[seq(1, 7, by = 2)] / sum(pr1[seq(1, 7, by = 2)])
+pr1[seq(2, 8, by = 2)] <- pr1[seq(2, 8, by = 2)] / sum(pr1[seq(2, 8, by = 2)])
+
+pr1 <- as.list(pr1)
+names(pr1) <- obj$parameters
+all(abs(do.call(f1, pr1) - do.call(f1.new, pr1)) < 1e-6)
+
 ## with monotonocity
 
 mono <- list("X(Z = 1) >= X(Z = 0)")
@@ -209,3 +223,43 @@ E(graph)$edge.monotone <- c(0, 0, 0, 0, 0)
 tryerror <- tryCatch(analyze_graph(graph, NULL, 'p{Y(W = 1) = 0}'), 
                      error = function(e) TRUE)
 tryerror
+
+
+## comparison of multiple IV bounds results
+b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
+V(b)$latent <- c(0, 0, 0, 1, 0, 1)
+E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
+E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
+obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+
+mivold <- readRDS("test-graphs/MIV-bounds-result.RData")
+mivnew <- optimize_effect_2(obj)
+
+f2new <- interpret_bounds(mivnew$bounds, obj$parameters)
+f2old <- interpret_bounds(mivold$bounds, obj$parameters)
+
+sim.qs <- rbeta(length(obj$variables), .05, 1)
+sim.qs <- sim.qs / sum(sim.qs)
+
+names(sim.qs) <- obj$variables
+
+inenv <- new.env()
+for(j in 1:length(sim.qs)) {
+    
+    assign(names(sim.qs)[j], sim.qs[j], inenv)
+    
+}
+res <- lapply(as.list(obj$constraints[-1]), function(x){
+    x1 <- strsplit(x, " = ")[[1]]
+    x0 <- paste(x1[1], " = ", x1[2])
+    eval(parse(text = x0), envir = inenv)
+})
+
+params <- lapply(obj$parameters, function(x) get(x, envir = inenv))
+names(params) <- obj$parameters
+
+
+all(abs(do.call(f2new, params) - do.call(f2old, params)) < 1e-6)
+
+

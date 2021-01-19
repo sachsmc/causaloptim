@@ -10,23 +10,27 @@
 
 
 <!-- jquery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
+
+<!-- bootstrap-toc -->
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script>
 
 <!-- headroom.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -53,7 +57,7 @@
 
   </head>
 
-  <body>
+  <body data-spy="scroll" data-target="#toc">
     <div class="container template-reference-index">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -67,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
       </span>
     </div>
 
@@ -96,7 +100,10 @@
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
     </li>
     <li>
-      <a href="../articles/shinyapp.html">How to use the Shiny app to analyze causal graphs</a>
+      <a href="../articles/shinyapp.html">How to use the causaloptim Shiny app to analyze graphs</a>
+    </li>
+    <li>
+      <a href="../articles/vertexenum-speed.html">Improving the speed of computing causal bounds</a>
     </li>
   </ul>
 </li>
@@ -106,7 +113,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/sachsmc/causaloptim">
+  <a href="https://github.com/sachsmc/causaloptim/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -142,6 +149,11 @@
           <p class="section-desc"><p>Most users will only need to use this function.</p></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
         
         <td>
@@ -162,6 +174,11 @@
           <p class="section-desc"><p>Functions for creating and interacting with Balke’s program.</p></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
         
         <td>
@@ -174,6 +191,12 @@
           <p><code><a href="optimize_effect.html">optimize_effect()</a></code> </p>
         </td>
         <td><p>Run the Balke optimizer</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="optimize_effect_2.html">optimize_effect_2()</a></code> </p>
+        </td>
+        <td><p>Run the optimizer</p></td>
       </tr><tr>
         
         <td>
@@ -192,6 +215,18 @@
           <p><code><a href="latex_bounds.html">latex_bounds()</a></code> </p>
         </td>
         <td><p>Latex bounds equations</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.linearcausalproblem.html">plot(<i>&lt;linearcausalproblem&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot the graph from the causal problem</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print.linearcausalproblem.html">print(<i>&lt;linearcausalproblem&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print the causal problem</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -200,6 +235,11 @@
           <p class="section-desc"><p>Internal functions</p></p>
         </th>
       </tr>
+      
+      
+    </tbody><tbody>
+      
+      
       <tr>
         
         <td>
@@ -224,18 +264,93 @@
           <p><code><a href="shortentxt.html">shortentxt()</a></code> </p>
         </td>
         <td><p>Shorten strings to 80 characters wide</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="btm_var.html">btm_var()</a></code> </p>
+        </td>
+        <td><p>Recursive function to get the last name in a list</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="const.to.sets.html">const.to.sets()</a></code> </p>
+        </td>
+        <td><p>Translate lists of constraints to lists of vectors</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="constant_term.html">constant_term()</a></code> </p>
+        </td>
+        <td><p>Compute the scalar product of two numeric vectors of the same length</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="evaluate_objective.html">evaluate_objective()</a></code> </p>
+        </td>
+        <td><p>Compute the scalar product of a vector of numbers and a vector of both numbers and strings</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="expand_cond.html">expand_cond()</a></code> </p>
+        </td>
+        <td><p>Expand potential outcome conditions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="find_cycles.html">find_cycles()</a></code> </p>
+        </td>
+        <td><p>Find cycles in a graph</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="linear_expression.html">linear_expression()</a></code> </p>
+        </td>
+        <td><p>Compute the scalar product of a vector of numbers and a vector of strings</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="linear_term.html">linear_term()</a></code> </p>
+        </td>
+        <td><p>Compute the product of a single numeric scalar and a single string</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="list_to_path.html">list_to_path()</a></code> </p>
+        </td>
+        <td><p>Recursive function to translate an effect list to a path sequence</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="opt_effect.html">opt_effect()</a></code> </p>
+        </td>
+        <td><p>Compute a bound on the average causal effect</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="parse_constraints.html">parse_constraints()</a></code> </p>
+        </td>
+        <td><p>Parse text that defines a the constraints</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="pastestar.html">pastestar()</a></code> </p>
+        </td>
+        <td><p>Paste with asterisk sep</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="reduce.sets.html">reduce.sets()</a></code> </p>
+        </td>
+        <td><p>Algebraically reduce sets</p></td>
       </tr>
     </tbody>
     </table>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Contents</h2>
-    <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-shiny-interface">Shiny interface</a></li>
-      <li><a href="#section-direct-interface">Direct interface</a></li>
-      <li><a href="#section-utilities">Utilities</a></li>
-    </ul>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
@@ -246,7 +361,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

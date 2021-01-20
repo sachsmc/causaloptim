@@ -1,6 +1,7 @@
 #' @import igraph shiny
 #' @importFrom graphics legend plot
 #' @importFrom stats runif
+#' @importFrom rcdd makeH scdd
 NULL
 
 
@@ -14,20 +15,35 @@ NULL
 #' @param constraints A vector of character strings that represent the constraints
 #' @param effectt A character string that represents the causal effect of interest
 #' 
-#' @return A an object of class "linearcausalproblem", which is a list with the following components. This list can be passed to \link{optimize_effect} which interfaces with Balke's code. Print and plot methods are also available. 
-#'     \describe{
-#'         \item{variables}{Character vector of variable names of potential outcomes, these start with 'q' to match Balke's notation} 
-#'         \item{parameters}{Character vector of parameter names of observed probabilities, these start with 'p' to match Balke's notation}
-#'         \item{constraints}{Character vector of parsed constraints}
-#'         \item{objective}{Character string defining the objective to be optimized in terms of the variables}
-#'         \item{p.vals}{Matrix of all possible values of the observed data vector, corresponding to the list of parameters.}
-#'         \item{q.vals}{Matrix of all possible values of the response function form of the potential outcomes, corresponding to the list of variables.}
-#'         \item{parsed.query}{A nested list containing information on the parsed causal query.}
-#'         \item{objective.nonreduced}{The objective in terms of the original variables, before algebraic variable reduction. The nonreduced variables can be obtained by concatenating the columns of q.vals.}
-#'         \item{response.functions}{List of response functions.}
-#'         \item{graph}{The graph as passed to the function.}
-#'     }
-#' 
+#' @return A an object of class "linearcausalproblem", which is a list with the
+#'   following components. This list can be passed to \link{optimize_effect}
+#'   which interfaces with Balke's code. Print and plot methods are also
+#'   available. \describe{ 
+#'   \item{variables}{Character vector of variable names
+#'   of potential outcomes, these start with 'q' to match Balke's notation}
+#'   \item{parameters}{Character vector of parameter names of observed
+#'   probabilities, these start with 'p' to match Balke's notation}
+#'   \item{constraints}{Character vector of parsed constraints}
+#'   \item{objective}{Character string defining the objective to be optimized in
+#'   terms of the variables} 
+#'   \item{p.vals}{Matrix of all possible values of the
+#'   observed data vector, corresponding to the list of parameters.}
+#'   \item{q.vals}{Matrix of all possible values of the response function form
+#'   of the potential outcomes, corresponding to the list of variables.}
+#'   \item{parsed.query}{A nested list containing information on the parsed
+#'   causal query.} 
+#'   \item{objective.nonreduced}{The objective in terms of the
+#'   original variables, before algebraic variable reduction. The nonreduced
+#'   variables can be obtained by concatenating the columns of q.vals.}
+#'   \item{response.functions}{List of response functions.} 
+#'   \item{graph}{The graph as passed to the function.} 
+#'   \item{R}{A matrix with coefficients
+#'   relating the p.vals to the q.vals p = R * q} 
+#'   \item{c0}{A vector of coefficients relating the q.vals to the 
+#'   objective function theta = c0 * q} 
+#'   \item{iqR}{A matrix with coefficients to represent the inequality
+#'   constraints} }
+#'
 #' @export
 #' @examples 
 #' ### confounded exposure and outcome
@@ -251,6 +267,8 @@ analyze_graph <- function(graph, constraints, effectt) {
     }
     colnames(res.mat) <- names(obsvars)
     
+    R <- matrix(0, nrow = nrow(p.vals) + 1, ncol = nrow(q.vals))
+    R[1, ] <- 1
     removeprows <- rep(0, nrow(p.vals))
     p.constraints <- rep(NA, nrow(p.vals) + 1)
     p.constraints[1] <- paste(paste(variables, collapse= " + "), " = 1")
@@ -265,6 +283,8 @@ analyze_graph <- function(graph, constraints, effectt) {
         
       } else {
         q.match <- q.vals.all.lookup[inp, ncol(q.vals.all.lookup)]
+        
+        R[pj + 1, match(unique(q.match), variables)] <- 1
         if(length(q.match) == 0) q.match <- "0"
         p.constraints[pj + 1] <- paste(parameters[pj], "=", paste(unique(q.match), collapse = " + "))
         
@@ -274,6 +294,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     p.vals <- p.vals[removeprows == 0, , drop = FALSE]
     parameters <- parameters[removeprows == 0]
     p.constraints <- p.constraints[!is.na(p.constraints)]
+    R <- R[c(TRUE, removeprows == 0), , drop = FALSE]
     
     baseind <- rep(FALSE, length(p.constraints))
     baseind[1:nrow(p.vals)] <- TRUE
@@ -505,39 +526,37 @@ analyze_graph <- function(graph, constraints, effectt) {
     }
     
     
-    special.terms <- grepl("p(.*) = 0", p.constraints)
-    
-    red.sets <- const.to.sets(p.constraints[!special.terms], objective)
-    
-    
-    objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
-    
    
-    if(!is.null(effect$oper) & length(effect$oper) > 0 & length(red.sets$objective.terms) > 1) {
+    
+    objective.fin <- paste(objective[[1]], collapse = " + ")
+    c0 <- matrix(0, nrow = length(variables))
+    c0[match(objective[[1]], variables)] <- c0[match(objective[[1]], variables)] + 1
+   
+    if(!is.null(effect$oper) & length(effect$oper) > 0 & length(objective) > 1) {
       
       for(opp in 1:length(effect$oper)) {
         
         thiscol <- ifelse(effect$oper[[opp]] == "-", " - ", " + ")
         objective.fin <- paste(objective.fin, effect$oper[[opp]], 
-                               paste(red.sets$objective.terms[[opp + 1]], collapse = thiscol))
+                               paste(objective[[opp + 1]], collapse = thiscol))
+        c0[match(objective[[opp + 1]], variables)] <- c0[match(objective[[opp + 1]], variables)] + 
+          ifelse(thiscol == " - ", -1, 1)
         
       }
       
     }
     
-  
-    
     attr(parameters, "key") <- parameters.key
     attr(parameters, "rightvars") <- names(right.vars[right.vars$latent == 0])
     attr(parameters, "condvars") <- names(cond.vars[cond.vars$latent == 0])
     
-    res <- list(variables = red.sets$variables, parameters = parameters, 
-         constraints = c(red.sets$constr, p.constraints[special.terms]), 
+    res <- list(variables = variables, parameters = parameters, 
+         constraints = p.constraints, 
          objective = objective.fin, p.vals = p.vals, q.vals = q.vals, 
          parsed.query = effect, unparsed.query = effectt, 
          user.constraints = constraints, 
          objective.nonreduced = objective, response.functions = respvars, 
-         graph = graph)
+         graph = graph, R = R, c0 = c0)
     class(res) <- "linearcausalproblem"
     res
     

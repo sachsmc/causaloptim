@@ -93,7 +93,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Improving the speed of computing causal bounds</h1>
-                        <h4 class="author">Gustav Jonzon</h4>
+                        <h4 class="author"><span class="citation">@gjo11</span></h4>
             
       
       <small class="dont-index">Source: <a href="https://github.com/sachsmc/causaloptim/blob/master/vignettes/vertexenum-speed.Rmd"><code>vignettes/vertexenum-speed.Rmd</code></a></small>
@@ -184,11 +184,11 @@ Benchmark Example. Multiple Instruments.
 <p>Then we pass the probabilities to the bounds functions and compare:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> 
-<span class="co">#&gt;           lower     upper</span>
-<span class="co">#&gt; q00 -0.04750731 0.3867209</span>
+<span class="co">#&gt;          lower     upper</span>
+<span class="co">#&gt; q00 0.09339444 0.4303737</span>
 <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span>
-<span class="co">#&gt;           lower     upper</span>
-<span class="co">#&gt; q00 -0.04750731 0.3867209</span></pre></div>
+<span class="co">#&gt;          lower     upper</span>
+<span class="co">#&gt; q00 0.09339444 0.4303737</span></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let’s first see how <code>causaloptim</code> sets up the optimization problem.</p>
 </div>

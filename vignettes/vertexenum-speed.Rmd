@@ -1,6 +1,6 @@
 ---
 title: "Improving the speed of computing causal bounds"
-author: Gustav Jonzon
+author: "@gjo11"
 output: rmarkdown::html_vignette
 resource_files:
   - TwoIVs.png

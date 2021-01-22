@@ -238,9 +238,14 @@ interpret_bounds <- function(bounds, parameters) {
     args <- vector(mode = "list", length = length(parameters))
     names(args) <- parameters
     
+    bod <- parse(text = paste0("lb <- ", bcalls[1], "\n", 
+                        "ub <- ", bcalls[2], "\n", 
+                        "if(ub < lb) {\n warning('Invalid bounds! Data probably does not satisfy the assumptions in the DAG!')\n } \n",
+                        "data.frame(lower = lb, upper = ub) \n"))
+    
     f <- function() {}
     formals(f) <- as.pairlist(args)
-    body(f) <- parse(text = paste0("data.frame(lower = ", bcalls[1], ", upper = ", bcalls[2], ") \n"))
+    body(f) <- as.call(c(as.name("{"), bod))
     environment(f) <- parent.frame()
     
     f

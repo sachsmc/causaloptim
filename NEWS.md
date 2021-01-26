@@ -8,6 +8,7 @@
 ## Small features
 
 - interpret_bounds returns function that will now give a warning if bounds are invalid. 
+- Pull steps of analyze_graph out into separate modules.
 
 # causaloptim 0.7.1
 

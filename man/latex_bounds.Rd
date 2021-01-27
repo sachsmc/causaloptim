@@ -4,7 +4,7 @@
 \alias{latex_bounds}
 \title{Latex bounds equations}
 \usage{
-latex_bounds(bounds, parameters, prob.sym = "P")
+latex_bounds(bounds, parameters, prob.sym = "P", brackets = c("(", ")"))
 }
 \arguments{
 \item{bounds}{Vector of bounds as returned by \link{optimize_effect}}
@@ -12,6 +12,8 @@ latex_bounds(bounds, parameters, prob.sym = "P")
 \item{parameters}{The parameters object as returned by \link{analyze_graph}}
 
 \item{prob.sym}{Symbol to use for probability statements in latex, usually "P" or "pr"}
+
+\item{brackets}{Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\\{", "\\}")}
 }
 \value{
 A character string with latex code for the bounds

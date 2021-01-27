@@ -274,6 +274,7 @@ parse_constraints <- function(constraints, obsnames) {
 #' @param bounds Vector of bounds as returned by \link{optimize_effect}
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
+#' @param brackets Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\\{", "\\}")
 #' @return A character string with latex code for the bounds
 #' @export
 #' @examples
@@ -285,14 +286,16 @@ parse_constraints <- function(constraints, obsnames) {
 #' bounds <- optimize_effect(obj)
 #' latex_bounds(bounds$bounds, obj$parameters)
 #' latex_bounds(bounds$bounds, obj$parameters, "Pr")
-latex_bounds <- function(bounds, parameters, prob.sym = "P") {
+latex_bounds <- function(bounds, parameters, prob.sym = "P", brackets = c("(", ")")) {
     
     lkeyup <- do.call(expand.grid, c(lapply(1:length(attr(parameters, "rightvars")), function(x) c("0", "1")), stringsAsFactors = FALSE))
     if(length(attr(parameters, "condvars")) == 0) {
         
         probstate <- lapply(1:nrow(lkeyup), function(i) {
             lkey <- lkeyup[i, ]
-            paste0(prob.sym, "(", paste(paste0(attr(parameters, "rightvars"), " = ", lkey), collapse = ", "), ")")
+            paste0(prob.sym, brackets[1], 
+                   paste(paste0(attr(parameters, "rightvars"), " = ", lkey), 
+                         collapse = ", "), brackets[2])
         })
         namelook <- sapply(1:nrow(lkeyup), function(i) {
             
@@ -313,8 +316,8 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P") {
             
             lkey <- lrkeyup[i, 1:nr]
             rkey <- lrkeyup[i, (nr + 1):(nr + nc)]
-            paste0(prob.sym, "(", paste(paste0(attr(parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
-                        paste0(attr(parameters, "condvars"), " = ", rkey, collapse = ", "), ")")
+            paste0(prob.sym, brackets[1], paste(paste0(attr(parameters, "rightvars"), " = ", lkey), collapse = ", "), " | ", 
+                        paste0(attr(parameters, "condvars"), " = ", rkey, collapse = ", "), brackets[2])
         })
         
         

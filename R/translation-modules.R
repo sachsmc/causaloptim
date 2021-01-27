@@ -226,10 +226,17 @@ create_R_matrix <- function(graph, obsvars, respvars, p.vals, parameters, q.list
     q.vals.all <- q.list$q.vals.all
     q.vals.all.lookup <- q.list$q.vals.all.lookup
     
+    parent_lookup <- lapply(1:length(obsvars), function(i) {
+        tmpar <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+        tmpar[!names(tmpar) %in% c("Ul", "Ur")]
+    })
+    
      gee_r <- function(r, i) {
         
-        parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-        parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+         parents <- parent_lookup[[i]]
+         
+        #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+        #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
         
         
         if (length(parents) == 0){
@@ -319,7 +326,12 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
     q.vals.all <- q.list$q.vals.all
     q.vals.all.lookup <- q.list$q.vals.all.lookup
     
-
+    
+    parent_lookup <- lapply(1:length(obsvars), function(i) {
+        tmpar <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+        tmpar[!names(tmpar) %in% c("Ul", "Ur")]
+    })
+    
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
         
@@ -339,8 +351,9 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 
                 gee_r <- function(r, i) {
                     
-                    parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-                    parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+                    parents <- parent_lookup[[i]]
+                    #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+                    #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
                     
                     
                     if (length(parents) == 0){
@@ -402,8 +415,9 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 
                 gee_rA <- function(r, i, path = NULL) {
                     
-                    parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-                    parents <- parents[!names(parents) %in% c("Ul", "Ur")]
+                    parents <- parent_lookup[[i]]
+                    #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
+                    #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
                     
                     if(!is.null(path)){
                         #thisintervene <- intervene[[childcall]]

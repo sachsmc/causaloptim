@@ -17,7 +17,7 @@ create_effect_vector(effect, graph, obsvars, respvars, q.list, variables)
 
 \item{q.list}{List with q matrices, as returned by \link{create_q_matrix}}
 
-\item{variable}{Vector of qs names}
+\item{variables}{Vector of qs names}
 }
 \value{
 A list with the target effect in terms of qs

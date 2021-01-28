@@ -10,6 +10,10 @@
 - interpret_bounds returns function that will now give a warning if bounds are invalid. 
 - Pull steps of analyze_graph out into separate modules.
 
+## Bugfixes
+
+- Make sure that qs are unique in large problems
+
 # causaloptim 0.7.1
 
 ## Bugfixes

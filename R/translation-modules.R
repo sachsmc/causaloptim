@@ -117,12 +117,12 @@ create_response_function <- function(graph, right.vars, cond.vars) {
 
 #' Translate response functions into matrix of counterfactuals
 #'
-#' @param respvars A list of functions as returned by \link{create_response_functions}
+#' @param respvars A list of functions as returned by \link{create_response_function}
 #' @param right.vars Vertices of graph on the right side
 #' @param cond.vars Vertices of graph on the left side
 #' @param constraints A vector of character strings that represent the constraints
 #' 
-#' @return A list of 2 data frames of counterfactuals and their associated labels
+#' @return A list of 3 data frames of counterfactuals and their associated labels
 #' @export
 
 
@@ -194,7 +194,7 @@ create_q_matrix <- function(respvars, right.vars, cond.vars, constraints) {
     
     q.vals <- do.call(expand.grid, lapply(respvars, "[[", 1)[which(obsvars %in% right.vars)])
     
-    variables <- paste0("q", do.call(paste0, q.vals))
+    variables <- paste0("q", do.call(paste, c(q.vals, sep = "_")))
     
     q.vals.tmp2 <- cbind(q.vals, vars = variables, stringsAsFactors = FALSE)
     q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp2, by = names(right.vars), sort = TRUE)
@@ -314,7 +314,7 @@ create_R_matrix <- function(graph, obsvars, respvars, p.vals, parameters, q.list
 #' @param obsvars Vector of observed variable vertices from the graph 
 #' @param respvars Response function, as returned by \link{create_response_function}
 #' @param q.list List with q matrices, as returned by \link{create_q_matrix}
-#' @param variable Vector of qs names
+#' @param variables Vector of qs names
 #' 
 #' @export
 #' @return A list with the target effect in terms of qs

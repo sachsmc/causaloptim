@@ -7,7 +7,7 @@
 create_q_matrix(respvars, right.vars, cond.vars, constraints)
 }
 \arguments{
-\item{respvars}{A list of functions as returned by \link{create_response_functions}}
+\item{respvars}{A list of functions as returned by \link{create_response_function}}
 
 \item{right.vars}{Vertices of graph on the right side}
 
@@ -16,7 +16,7 @@ create_q_matrix(respvars, right.vars, cond.vars, constraints)
 \item{constraints}{A vector of character strings that represent the constraints}
 }
 \value{
-A list of 2 data frames of counterfactuals and their associated labels
+A list of 3 data frames of counterfactuals and their associated labels
 }
 \description{
 Translate response functions into matrix of counterfactuals

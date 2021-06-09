@@ -240,7 +240,7 @@ interpret_bounds <- function(bounds, parameters) {
     
     bod <- parse(text = paste0("lb <- ", bcalls[1], "\n", 
                         "ub <- ", bcalls[2], "\n", 
-                        "if(ub < lb) {\n warning('Invalid bounds! Data probably does not satisfy the assumptions in the DAG!')\n } \n",
+                        "if(any(ub < lb)) {\n warning('Invalid bounds! Data probably does not satisfy the assumptions in the DAG!')\n } \n",
                         "data.frame(lower = lb, upper = ub) \n"))
     
     f <- function() {}

@@ -236,7 +236,7 @@ CSymbolSet_ * CEquationSet_ :: EliminateVariables ()
 			pInequality = & pInequalitySet-> m_pEquations [nInequality];
 
 			if (pInequality-> Projection (pWorkEqn) == ProjectDataLoss)
-				printf ("ERROR: non-zero coefficient for an eliminated variable.\n");
+				Rprintf ("ERROR: non-zero coefficient for an eliminated variable.\n");
 
 			nInequality++;
 		}

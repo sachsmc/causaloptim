@@ -29,7 +29,7 @@ Description: When causal quantities are not identifiable from the observed data,
             <https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf>.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.1), shiny, rcdd
-Depends: igraph
+Depends: R (>= 3.5.0), igraph
 LinkingTo: Rcpp
 RoxygenNote: 7.1.1
 Suggests: 

@@ -1,10 +1,7 @@
-This is a resubmission to address a few bugs and other minor improvements. 
+This is a resubmission that adds some new features and bugfixes. 
 
-It was built using R 4.0.0 and checked on the following platforms: 
+It was built using R 4.1.0 and checked on the following platforms: 
 
-- Windows 10, R 4.0 on local machine
-- macOS 10.13.6, R-release
-- Ubuntu 16.04, R-release, on Travis
-
-
-Bumped version to 0.7.1
+- Windows 10, R 4.1 on local machine
+- Win Builder dev and release
+- Rhub builder on linux platforms

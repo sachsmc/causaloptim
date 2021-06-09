@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -74,7 +74,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sachsmc/causaloptim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -88,8 +88,7 @@
 
       
 
-      </header><script src="vertexenum-speed_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="vertexenum-speed_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="vertexenum-speed_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="vertexenum-speed_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Improving the speed of computing causal bounds</h1>
@@ -103,10 +102,9 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: igraph</span>
-<span class="co">#&gt; Warning: package 'igraph' was built under R version 4.0.3</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'igraph'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -114,7 +112,7 @@
 <span class="co">#&gt;     decompose, spectrum</span>
 <span class="co">#&gt; The following object is masked from 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     union</span></pre></div>
+<span class="co">#&gt;     union</span></code></pre></div>
 <div id="what-is-causaloptim" class="section level1">
 <h1 class="hasAnchor">
 <a href="#what-is-causaloptim" class="anchor"></a>What is <code>causaloptim</code>?</h1>
@@ -137,32 +135,32 @@
 Benchmark Example. Multiple Instruments.
 </p>
 </div>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org">igraph</a></span><span class="op">)</span>
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Z1</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z2</span>, <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">rlconnect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">edge.monotone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
-<span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyze_graph.html">analyze_graph</a></span><span class="op">(</span><span class="va">b</span>, constraints <span class="op">=</span> <span class="cn">NULL</span>, effectt <span class="op">=</span> <span class="st">"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class="op">)</span></pre></div>
+<span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyze_graph.html">analyze_graph</a></span><span class="op">(</span><span class="va">b</span>, constraints <span class="op">=</span> <span class="cn">NULL</span>, effectt <span class="op">=</span> <span class="st">"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class="op">)</span></code></pre></div>
 <p>Using <code>causaloptim</code> version <code>0.7.1</code> to bound <span class="math inline">\(\text{ACE}(X\rightarrow Y)\)</span> we got (with a 3.3 GHz Quad-Core Intel Core i5; your mileage may vary)</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">oldbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/optimize_effect.html">optimize_effect</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">oldbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/optimize_effect.html">optimize_effect</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;     user  system  elapsed </span>
-<span class="co">#&gt; 31093.57   47.02 61368.22</span></pre></div>
+<span class="co">#&gt; 31093.57   47.02 61368.22</span></code></pre></div>
 <p>Note the times (in seconds)! 😱 Our CPU spent almost <span class="math inline">\(9\)</span> hours working on this! 🤖 And we spent more than <span class="math inline">\(17\)</span> hours waiting! 😴 Correctness is not enough; having to wait until the next day is a bad user experience. Using <code>causaloptim</code> version <code>0.8.0</code> however, we get</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">newbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/optimize_effect_2.html">optimize_effect_2</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span><span class="op">(</span><span class="va">newbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/optimize_effect_2.html">optimize_effect_2</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;  user  system  elapsed </span>
-<span class="co">#&gt; 0.139   0.001    0.140</span></pre></div>
+<span class="co">#&gt; 0.139   0.001    0.140</span></code></pre></div>
 <p>Now this is acceptable! 😊 Of course, we need to verify that the results are the same. It is difficult to see upon visual inspection that they are the same, because the vertices are returned in a different order (and there are lots of them). Instead we can randomly generate some probability distributions that satisfy the graph, and compute the bounds and compare the results. First, we create the R functions that compute the bounds:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">eval_newbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret_bounds.html">interpret_bounds</a></span><span class="op">(</span><span class="va">newbnds</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span>
-<span class="va">eval_oldbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret_bounds.html">interpret_bounds</a></span><span class="op">(</span><span class="va">oldbnds</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eval_newbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret_bounds.html">interpret_bounds</a></span><span class="op">(</span><span class="va">newbnds</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span>
+<span class="va">eval_oldbnds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/interpret_bounds.html">interpret_bounds</a></span><span class="op">(</span><span class="va">oldbnds</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span></code></pre></div>
 <p>Then, we create a distribution by first randomly generating the counterfactual probabilities, and then calculating the observable probabilities by using the constraints implied by the DAG (which live in the <code>constraints</code> element of <code>obj</code>).</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="va">sim.qs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">rbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">obj</span><span class="op">$</span><span class="va">variables</span><span class="op">)</span>, <span class="fl">.05</span>, <span class="fl">1</span><span class="op">)</span>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sim.qs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Beta.html">rbeta</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">obj</span><span class="op">$</span><span class="va">variables</span><span class="op">)</span>, <span class="fl">.05</span>, <span class="fl">1</span><span class="op">)</span>
 <span class="va">sim.qs</span> <span class="op">&lt;-</span> <span class="va">sim.qs</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">sim.qs</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">sim.qs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">variables</span>
@@ -180,15 +178,15 @@ Benchmark Example. Multiple Instruments.
 <span class="op">}</span><span class="op">)</span>
 
 <span class="va">params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">get</a></span><span class="op">(</span><span class="va">x</span>, envir <span class="op">=</span> <span class="va">inenv</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">params</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">obj</span><span class="op">$</span><span class="va">parameters</span></code></pre></div>
 <p>Then we pass the probabilities to the bounds functions and compare:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> 
-<span class="co">#&gt;          lower     upper</span>
-<span class="co">#&gt; q00 0.09339444 0.4303737</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> 
+<span class="co">#&gt;           lower      upper</span>
+<span class="co">#&gt; q0_0 -0.6762463 -0.0252698</span>
 <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span>
-<span class="co">#&gt;          lower     upper</span>
-<span class="co">#&gt; q00 0.09339444 0.4303737</span></pre></div>
+<span class="co">#&gt;           lower      upper</span>
+<span class="co">#&gt; q0_0 -0.6762463 -0.0252698</span></code></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let’s first see how <code>causaloptim</code> sets up the optimization problem.</p>
 </div>
@@ -252,31 +250,31 @@ st&amp;\Sigma q=1\\
 In general, with <span class="math inline">\(A_e:=\begin{pmatrix}1_{n\times1}^T\\R\end{pmatrix}\)</span>, <span class="math inline">\(b_e:=\begin{pmatrix}1\\p\end{pmatrix}\)</span> and user provided matrix inequality <span class="math inline">\(A_{\ell}q\leq b_{\ell}\)</span>, we have <span class="math display">\[\begin{align*}\min_q(ACE(A\to Y))&amp;=\min(\{c^Tq\mid q\in\mathbb{R}^n,A_{\ell}q\leq b_{\ell},A_eq=b_e,q\geq0_{n\times1}\})\\
 &amp;=\max(\{\begin{pmatrix}b_{\ell}^T&amp;b_e^T\end{pmatrix}y\mid y\in\mathbb{R}^{m_{\ell}+m_e},\begin{pmatrix}A_{\ell}^T&amp;A_e^T\end{pmatrix}y\leq c,\begin{pmatrix}I_{m_l\times m_l}&amp;0_{m_l\times m_e}\end{pmatrix}y\leq0_{m_l\times1}\}\\
 &amp;=\max(\{\begin{pmatrix}b_{\ell}^T&amp;b_e^T\end{pmatrix}\bar{y}\mid\bar{y}\text{ is a vertex of }\{y\in\mathbb{R}^{m_{\ell}+m_e}\mid\begin{pmatrix}A_{\ell}^T&amp;A_e^T\\I_{m_l\times m_l}&amp;0_{m_l\times m_e}\end{pmatrix}y\leq\begin{pmatrix}c\\0_{m_l\times1}\end{pmatrix}\}\})\end{align*}\]</span> The coefficient matrix and right hand side vector of the dual polytope are constructed in the few lines of code below (where <span class="math inline">\(c_0:=c\)</span>).</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">a1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">A_l</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">A_e</span><span class="op">)</span><span class="op">)</span>,
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">a1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">A_l</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">A_e</span><span class="op">)</span><span class="op">)</span>,
             <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html">diag</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">1</span>, nrow <span class="op">=</span> <span class="va">m_l</span>, ncol <span class="op">=</span> <span class="va">m_l</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fl">0</span>, nrow <span class="op">=</span> <span class="va">m_l</span>, ncol <span class="op">=</span> <span class="va">m_e</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="va">b1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">c0</span>,
             <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span>data <span class="op">=</span> <span class="fl">0</span>, nrow <span class="op">=</span> <span class="va">m_l</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="kw">if</span> <span class="op">(</span><span class="va">opt</span> <span class="op">==</span> <span class="st">"max"</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">a1</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">a1</span>
   <span class="va">b1</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="va">b1</span>
-<span class="op">}</span></pre></div>
+<span class="op">}</span></code></pre></div>
 </div>
 <div id="vertex-enumeration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#vertex-enumeration" class="anchor"></a>Vertex Enumeration</h2>
 <p>The last step of vertex enumeration has previously been the major computational bottleneck in <code>causaloptim</code>. It has now been replaced by <code>cddlib</code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, which has an implementation of <em>the Double Description Method</em> (dd). Any convex polytope can be dually described as either an intersection of half-planes (which is the form we <em>get</em> our dual constraint space in) or as a minimal set of vertices of which it is the convex hull (which is the form we <em>want</em> it in) and the dd algorithm efficiently converts between these two descriptions. <code>cddlib</code> also uses exact rational arithmetic, so we don’t have to worry about any numerical instability issues, e.g. Also, it already interfaces with R<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. The following lines of code extract the vertices of the dual polytope and store them as rows of a matrix.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stat.umn.edu/geyer/rcdd/">rcdd</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stat.umn.edu/geyer/rcdd/">rcdd</a></span><span class="op">)</span>
 <span class="va">hrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rcdd/man/makeH.html">makeH</a></span><span class="op">(</span>a1 <span class="op">=</span> <span class="va">a1</span>, b1 <span class="op">=</span> <span class="va">b1</span><span class="op">)</span>
 <span class="va">vrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rcdd/man/scdd.html">scdd</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">hrep</span><span class="op">)</span>
 <span class="va">matrix_of_vrep</span> <span class="op">&lt;-</span> <span class="va">vrep</span><span class="op">$</span><span class="va">output</span>
 <span class="va">indices_of_vertices</span> <span class="op">&lt;-</span> <span class="va">matrix_of_vrep</span><span class="op">[</span> , <span class="fl">1</span><span class="op">]</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="va">matrix_of_vrep</span><span class="op">[</span> , <span class="fl">2</span><span class="op">]</span> <span class="op">==</span> <span class="fl">1</span>
-<span class="va">vertices</span> <span class="op">&lt;-</span> <span class="va">matrix_of_vrep</span><span class="op">[</span><span class="va">indices_of_vertices</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></pre></div>
+<span class="va">vertices</span> <span class="op">&lt;-</span> <span class="va">matrix_of_vrep</span><span class="op">[</span><span class="va">indices_of_vertices</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></code></pre></div>
 <p>The rest is simply a matter of plugging them into the dual objective function, evaluating the expression and presenting the results!<br>
 The first part of this is done by the following line of code, where the utility function <code>evaluate_objective</code> pretty much does what you expect it to do (here <code>(c1_num,p)</code><span class="math inline">\(=(\begin{pmatrix}b_{\ell}^T&amp;1\end{pmatrix},p)\)</span> separates the dual objective gradient into its numeric and symbolic parts).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">expressions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">vertices</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/evaluate_objective.html">evaluate_objective</a></span><span class="op">(</span>c1_num <span class="op">=</span> <span class="va">c1_num</span>, p <span class="op">=</span> <span class="va">p</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">expressions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">vertices</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/evaluate_objective.html">evaluate_objective</a></span><span class="op">(</span>c1_num <span class="op">=</span> <span class="va">c1_num</span>, p <span class="op">=</span> <span class="va">p</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>There are still a few places in <code>causaloptim</code> that are worthwhile to optimize, but with this major one resolved we looking forward to researchers taking advantage of the generalized class of problems that it can handle!</p>
 <p>Happy bounding!</p>
 </div>

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
       </span>
     </div>
 
@@ -79,7 +79,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -114,7 +114,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sachsmc/causaloptim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -135,9 +135,9 @@
       <small>Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="causaloptim-080" class="section level1">
-<h1 class="page-header" data-toc-text="0.8.0">
-<a href="#causaloptim-080" class="anchor"></a>causaloptim 0.8.0<small> Unreleased </small>
+    <div id="causaloptim-081" class="section level1">
+<h1 class="page-header" data-toc-text="0.8.1">
+<a href="#causaloptim-081" class="anchor"></a>causaloptim 0.8.1<small> Unreleased </small>
 </h1>
 <div id="big-new-features" class="section level2">
 <h2 class="hasAnchor">
@@ -147,14 +147,29 @@
 <li>New vignette explaining how the optimization was implemented (also thanks to <a href='https://github.com/gjo11'>@gjo11</a>)</li>
 </ul>
 </div>
+<div id="small-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#small-features" class="anchor"></a>Small features</h2>
+<ul>
+<li>interpret_bounds returns function that will now give a warning if bounds are invalid.</li>
+<li>Pull steps of analyze_graph out into separate modules.</li>
+</ul>
+</div>
+<div id="bugfixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bugfixes" class="anchor"></a>Bugfixes</h2>
+<ul>
+<li>Make sure that qs are unique in large problems</li>
+</ul>
+</div>
 </div>
     <div id="causaloptim-071" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.1">
 <a href="#causaloptim-071" class="anchor"></a>causaloptim 0.7.1<small> 2020-05-07 </small>
 </h1>
-<div id="bugfixes" class="section level2">
+<div id="bugfixes-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-1" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Propogation of intervention set when not all paths are defined</li>
 <li>Checking for violations of condition 6 in effect</li>
@@ -173,9 +188,9 @@
 <h1 class="page-header" data-toc-text="0.6.5">
 <a href="#causaloptim-065" class="anchor"></a>causaloptim 0.6.5<small> 2020-03-25 </small>
 </h1>
-<div id="bugfixes-1" class="section level2">
+<div id="bugfixes-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-1" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-2" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Fixed mismatched new/delete/delete[] in C++ code</li>
 </ul>
@@ -185,9 +200,9 @@
 <h1 class="page-header" data-toc-text="0.6.4">
 <a href="#causaloptim-064" class="anchor"></a>causaloptim 0.6.4<small> 2020-03-20 </small>
 </h1>
-<div id="bugfixes-2" class="section level2">
+<div id="bugfixes-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-2" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-3" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Parse effect fixed for joint outcome probabilities.</li>
 <li>Added examples</li>
@@ -199,9 +214,9 @@
 <h1 class="page-header" data-toc-text="0.6.3">
 <a href="#causaloptim-063" class="anchor"></a>causaloptim 0.6.3<small> Unreleased </small>
 </h1>
-<div id="bugfixes-3" class="section level2">
+<div id="bugfixes-4" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-3" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-4" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Refactor algorithm 1 so that it works correctly for unobserved variables</li>
 <li>Fix probability printing in shiny app for unobserved variables</li>
@@ -212,9 +227,9 @@
 <h1 class="page-header" data-toc-text="0.6.2">
 <a href="#causaloptim-062" class="anchor"></a>causaloptim 0.6.2<small> Unreleased </small>
 </h1>
-<div id="bugfixes-4" class="section level2">
+<div id="bugfixes-5" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-4" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-5" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Fixed repeated qs bug that affects graphs with multiple variables on left side</li>
 <li>Added citation file</li>
@@ -253,9 +268,9 @@
 <h1 class="page-header" data-toc-text="0.5.3">
 <a href="#causaloptim-053" class="anchor"></a>causaloptim 0.5.3<small> Unreleased </small>
 </h1>
-<div id="bugfixes-5" class="section level2">
+<div id="bugfixes-6" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-5" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-6" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Fixed warnings on CRAN check</li>
 <li>Added travis ci</li>
@@ -268,9 +283,9 @@
 <h1 class="page-header" data-toc-text="0.5.2">
 <a href="#causaloptim-052" class="anchor"></a>causaloptim 0.5.2<small> Unreleased </small>
 </h1>
-<div id="bugfixes-6" class="section level2">
+<div id="bugfixes-7" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bugfixes-6" class="anchor"></a>Bugfixes</h2>
+<a href="#bugfixes-7" class="anchor"></a>Bugfixes</h2>
 <ul>
 <li>Better reset functionality in shiny app</li>
 </ul>

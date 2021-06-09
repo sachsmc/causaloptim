@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -74,7 +74,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sachsmc/causaloptim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -88,8 +88,7 @@
 
       
 
-      </header><script src="example-code_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="example-code_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="example-code_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="example-code_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Code from examples in manuscript</h1>
@@ -102,10 +101,9 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: igraph</span>
-<span class="co">#&gt; Warning: package 'igraph' was built under R version 4.0.3</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'igraph'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -114,12 +112,12 @@
 <span class="co">#&gt; The following object is masked from 'package:base':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     union</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org">igraph</a></span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://igraph.org">igraph</a></span><span class="op">)</span></code></pre></div>
 <div id="confounded-exposure-and-outcome" class="section level2">
 <h2 class="hasAnchor">
 <a href="#confounded-exposure-and-outcome" class="anchor"></a>confounded exposure and outcome</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">rlconnect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">edge.monotone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
@@ -134,14 +132,14 @@
 <span class="co">#&gt; upper bound =  </span>
 <span class="co">#&gt; MIN {</span>
 <span class="co">#&gt;   1 - p10_ - p01_</span>
-<span class="co">#&gt; }</span></pre></div>
+<span class="co">#&gt; }</span></code></pre></div>
 </div>
 <div id="multiple-instruments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#multiple-instruments" class="anchor"></a>multiple instruments</h2>
 <p>Not run, this takes a very long time to compute.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Z1</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z2</span>,
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Z1</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z2</span>,
                         <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
@@ -281,13 +279,13 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">width.multi</span> <span class="op">~</span> <span class="va">width.single</span>, data <span class="op">=</span> <span class="va">bounds.comparison</span>, pch <span class="op">=</span> <span class="fl">20</span>, cex <span class="op">=</span> <span class="fl">.3</span>,
      xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, xlab<span class="op">=</span> <span class="st">"Single IV"</span>, ylab <span class="op">=</span> <span class="st">"Two IV"</span>,
      main <span class="op">=</span> <span class="st">"Comparison of width of bounds intervals"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/abline.html">abline</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, lty <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="measurement-error-in-the-outcome" class="section level2">
 <h2 class="hasAnchor">
 <a href="#measurement-error-in-the-outcome" class="anchor"></a>measurement error in the outcome</h2>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y2</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y2</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y2</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">rlconnect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
@@ -307,7 +305,7 @@
 <span class="co">#&gt; MIN {</span>
 <span class="co">#&gt;   1,</span>
 <span class="co">#&gt;   1 + 2p0_0 - 2p0_1</span>
-<span class="co">#&gt; }</span></pre></div>
+<span class="co">#&gt; }</span></code></pre></div>
 </div>
   </div>
 

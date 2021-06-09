@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -74,7 +74,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/sachsmc/causaloptim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -88,8 +88,7 @@
 
       
 
-      </header><script src="shinyapp_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="shinyapp_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="shinyapp_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="shinyapp_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>How to use the causaloptim Shiny app to analyze graphs</h1>
@@ -102,10 +101,9 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: igraph</span>
-<span class="co">#&gt; Warning: package 'igraph' was built under R version 4.0.3</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'igraph'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -113,10 +111,10 @@
 <span class="co">#&gt;     decompose, spectrum</span>
 <span class="co">#&gt; The following object is masked from 'package:base':</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;     union</span></pre></div>
+<span class="co">#&gt;     union</span></code></pre></div>
 <p>Run the Shiny application like so. The result is assigned to an objected called <code>results</code> so that you can save the results that are produced in the web interface.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/specify_graph.html">specify_graph</a></span><span class="op">(</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/specify_graph.html">specify_graph</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>A new window in your system’s default web browser is opened with the following interface:</p>
 <div class="figure">
 <img src="screen1.png" alt=""><p class="caption">Startup</p>
@@ -166,8 +164,8 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <p>Once you have inspected the graph, specified the causal effect, and understand what is being analyzed, press the final button to compute the bounds.</p>
 <p>The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see the paper that doesn’t exist yet. The final button allows you to return all of the objects back to the R environment and store them in <code>results</code>.</p>
 <p>The <code>results</code> object contains the graph, the parameterization and interpretation of the graph in terms of the variables and parameters, the bounds and log information about the optimization procedure, and an R function that implements the bounds:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
 <span class="co">#&gt; [1] "graphres"       "obj"            "bounds.obs"     "constraints"   </span>
 <span class="co">#&gt; [5] "effect"         "boundsFunction"</span>
 
@@ -184,21 +182,21 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span>
 <span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span>
 <span class="co">#&gt; data.frame(lower = pmax(), upper = pmin())</span>
-<span class="co">#&gt; &lt;environment: 0x000000001d5ab0d0&gt;</span></pre></div>
+<span class="co">#&gt; &lt;environment: 0x000000001f84b1a0&gt;</span></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>
-<span class="co">#&gt;     objective bound.lower bound.upper</span>
-<span class="co">#&gt; 1 -0.02720310  -0.3048436   0.3247571</span>
-<span class="co">#&gt; 2  0.10729873  -0.2288437   0.3476993</span>
-<span class="co">#&gt; 3  0.11808327  -0.1917263   0.4643925</span>
-<span class="co">#&gt; 4 -0.14194493  -0.4043640   0.1946779</span>
-<span class="co">#&gt; 5 -0.06979034  -0.4630922   0.1891326</span>
-<span class="co">#&gt; 6 -0.02338893  -0.3090971   0.2927326</span></pre></div>
+<span class="co">#&gt;      objective bound.lower bound.upper</span>
+<span class="co">#&gt; 1  0.070678636 -0.23084453   0.4341957</span>
+<span class="co">#&gt; 2 -0.089759145 -0.46273776   0.2631321</span>
+<span class="co">#&gt; 3  0.262111360 -0.09677724   0.5344272</span>
+<span class="co">#&gt; 4  0.119514852 -0.36455310   0.4083313</span>
+<span class="co">#&gt; 5 -0.076430280 -0.35464287   0.2943910</span>
+<span class="co">#&gt; 6  0.008282515 -0.34874845   0.3705889</span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><span class="math display">\[ 
  \mbox{Lower bound} = \mbox{max} \left. \begin{cases} nd: MAX {\\ 
    P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) \end{cases} \right\} 

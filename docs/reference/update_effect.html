@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Recursive function to get the last name in a list — btm_var • causaloptim</title>
+<title>Update the effect in a linearcausalproblem object — update_effect • causaloptim</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Recursive function to get the last name in a list — btm_var" />
-<meta property="og:description" content="Recursive function to get the last name in a list" />
+<meta property="og:title" content="Update the effect in a linearcausalproblem object — update_effect" />
+<meta property="og:description" content="If you want to use the same graph and response function, but change the 
+effect of interest, this can save some computation time." />
 
 
 
@@ -132,33 +133,34 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Recursive function to get the last name in a list</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
-    <div class="hidden name"><code>btm_var.Rd</code></div>
+    <h1>Update the effect in a linearcausalproblem object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/update-effect.R'><code>R/update-effect.R</code></a></small>
+    <div class="hidden name"><code>update_effect.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Recursive function to get the last name in a list</p>
+    <p>If you want to use the same graph and response function, but change the 
+effect of interest, this can save some computation time.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>btm_var</span><span class='op'>(</span><span class='va'>x</span>, name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>update_effect</span><span class='op'>(</span><span class='va'>obj</span>, <span class='va'>effectt</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>a list</p></td>
+      <th>obj</th>
+      <td><p>An object as returned by <a href='analyze_graph.html'>analyze_graph</a></p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>name of the top element of the list</p></td>
+      <th>effectt</th>
+      <td><p>A character string that represents the causal effect of interest</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The name of the deepest nested list element</p>
+    <p>A object of class linearcausalproblem, see <a href='analyze_graph.html'>analyze_graph</a> for details</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

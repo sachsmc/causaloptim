@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Recursive function to get the last name in a list — btm_var • causaloptim</title>
+<title>Translate response functions into matrix of counterfactuals — create_q_matrix • causaloptim</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Recursive function to get the last name in a list — btm_var" />
-<meta property="og:description" content="Recursive function to get the last name in a list" />
+<meta property="og:title" content="Translate response functions into matrix of counterfactuals — create_q_matrix" />
+<meta property="og:description" content="Translate response functions into matrix of counterfactuals" />
 
 
 
@@ -132,33 +132,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Recursive function to get the last name in a list</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
-    <div class="hidden name"><code>btm_var.Rd</code></div>
+    <h1>Translate response functions into matrix of counterfactuals</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/translation-modules.R'><code>R/translation-modules.R</code></a></small>
+    <div class="hidden name"><code>create_q_matrix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Recursive function to get the last name in a list</p>
+    <p>Translate response functions into matrix of counterfactuals</p>
     </div>
 
-    <pre class="usage"><span class='fu'>btm_var</span><span class='op'>(</span><span class='va'>x</span>, name <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>create_q_matrix</span><span class='op'>(</span><span class='va'>respvars</span>, <span class='va'>right.vars</span>, <span class='va'>cond.vars</span>, <span class='va'>constraints</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>a list</p></td>
+      <th>respvars</th>
+      <td><p>A list of functions as returned by <a href='create_response_function.html'>create_response_function</a></p></td>
     </tr>
     <tr>
-      <th>name</th>
-      <td><p>name of the top element of the list</p></td>
+      <th>right.vars</th>
+      <td><p>Vertices of graph on the right side</p></td>
+    </tr>
+    <tr>
+      <th>cond.vars</th>
+      <td><p>Vertices of graph on the left side</p></td>
+    </tr>
+    <tr>
+      <th>constraints</th>
+      <td><p>A vector of character strings that represent the constraints</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The name of the deepest nested list element</p>
+    <p>A list of 3 data frames of counterfactuals and their associated labels</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

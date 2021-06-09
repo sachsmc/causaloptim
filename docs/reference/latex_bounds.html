@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/sachsmc/causaloptim/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -141,7 +141,7 @@
     <p>Latex bounds equations</p>
     </div>
 
-    <pre class="usage"><span class='fu'>latex_bounds</span><span class='op'>(</span><span class='va'>bounds</span>, <span class='va'>parameters</span>, prob.sym <span class='op'>=</span> <span class='st'>"P"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>latex_bounds</span><span class='op'>(</span><span class='va'>bounds</span>, <span class='va'>parameters</span>, prob.sym <span class='op'>=</span> <span class='st'>"P"</span>, brackets <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"("</span>, <span class='st'>")"</span><span class='op'>)</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,6 +157,10 @@
     <tr>
       <th>prob.sym</th>
       <td><p>Symbol to use for probability statements in latex, usually "P" or "pr"</p></td>
+    </tr>
+    <tr>
+      <th>brackets</th>
+      <td><p>Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\", "\")</p></td>
     </tr>
     </table>
 

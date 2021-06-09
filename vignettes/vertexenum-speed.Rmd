@@ -219,7 +219,7 @@ if (opt == "max") {
 ## Vertex Enumeration
 The last step of vertex enumeration has previously been the major computational bottleneck in `causaloptim`. 
 It has now been replaced by `cddlib`^[https://people.inf.ethz.ch/fukudak/cdd_home/], which has an implementation of *the Double Description Method* (dd). 
-Any convex polytope can be dually described as either an intersection of half-planes (which is the form we *get* our dual constraint space in) or as a minimal set of vertices of which it is the convex hull (which is the form we *want* it in) and the dd algorithm efficiently converts between these two descriptions. `cddlib` also uses exact rational arithmetic, so we don't have to worry about any numerical instability issues, e.g. Also, it already interfaces with R^[https://cran.r-project.org/web/packages/rcdd/index.html]. 
+Any convex polytope can be dually described as either an intersection of half-planes (which is the form we *get* our dual constraint space in) or as a minimal set of vertices of which it is the convex hull (which is the form we *want* it in) and the dd algorithm efficiently converts between these two descriptions. `cddlib` also uses exact rational arithmetic, so we don't have to worry about any numerical instability issues, e.g. Also, it already interfaces with R^[https://CRAN.R-project.org/package=rcdd]. 
 The following lines of code extract the vertices of the dual polytope and store them as rows of a matrix.
 ```{r Vertex_Enumeration, eval = FALSE}
 library(rcdd)

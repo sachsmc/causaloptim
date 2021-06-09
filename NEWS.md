@@ -1,4 +1,4 @@
-# causaloptim 0.8.1
+# causaloptim 0.8.2
 
 ## Big new features!
 

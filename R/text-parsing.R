@@ -156,7 +156,7 @@ symb.subtract <- function(x1, x2) {
 #'        indicates potential outcomes as names of the list elements, 
 #'        the variables that they depend on, and the values that any variables are being fixed to.}
 #'        \item{oper}{The vector of operators (addition or subtraction) that combine the terms of the causal query.}
-#'        \item{values}{The values that the potential outcomes are set to in the query (0 or 1).}
+#'        \item{values}{The values that the potential outcomes are set to in the query.}
 #'        \item{pcheck}{List of logicals for each element of the query that are TRUE if the element 
 #'        is a potential outcome and FALSE if it is an observational quantity.}
 #'        }
@@ -182,11 +182,9 @@ parse_effect <- function(text) {
         terms0 <- termssplit[[j]]
         
         parse1 <- lapply(terms0, function(x) {
-            val0 <- substr(x, nchar(x) - 1, nchar(x))
-            rmain <- substr(x, 1, nchar(x) - 2)
-            
-            list(as.numeric(substr(val0, 2, 2)), rmain)
-            
+            rmain <- unlist(strsplit(x, "=\\d+$"))
+            val0 <- substr(x = x, start = nchar(rmain) + 2, stop = nchar(x))
+            list(as.numeric(val0), rmain)
         })
         
         terms <- lapply(parse1, "[[", 2)
@@ -246,7 +244,7 @@ parse_constraints <- function(constraints, obsnames) {
         pr1 <- strsplit(substr(p0[-1], opdex + 1, nchar(p0[-1])), "\\(")[[1]]
         rightout <- pr1[1]
         
-        if(rightout %in% c("0", "1")) {
+        if(!is.na(suppressWarnings(as.numeric(rightout)))) {
             rightcond2 <- rightout
         } else {
             
@@ -281,6 +279,7 @@ parse_constraints <- function(constraints, obsnames) {
 #' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
 #' V(b)$leftside <- c(0,0,0)
 #' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(2,2,2)
 #' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 #' bounds <- optimize_effect(obj)

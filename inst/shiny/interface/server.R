@@ -20,7 +20,7 @@ function(input, output) {
         
         myin <- input$edges
         if(length(myin) > 0) {
-            j <- seq(1, length(myin) - 16, by = 17)
+            j <- seq(1, length(myin) - 18, by = 19)
             
             data.frame(id = paste0("e", myin[j]), source = myin[j+1], target = myin[j+2], 
                        source.leftside = ifelse(myin[j+3] == "FALSE", 0, 1), 
@@ -29,9 +29,10 @@ function(input, output) {
                        source.latent = as.numeric(myin[j + 6]), target.latent = as.numeric(myin[j + 7]), 
                        source.outcome = as.numeric(myin[j + 8]), target.outcome = as.numeric(myin[j + 9]), 
                        source.exposure = as.numeric(myin[j + 10]), target.exposure = as.numeric(myin[j + 11]), 
-                       edge.monotone = as.numeric(myin[j + 12]), 
-                       source.x = as.numeric(myin[j + 13]), source.y = as.numeric(myin[j + 14]), 
-                       target.x = as.numeric(myin[j + 15]), target.y = as.numeric(myin[j + 16]) )
+                       source.nvals = as.numeric(myin[j + 12]), target.nvals = as.numeric(myin[j + 13]), 
+                       edge.monotone = as.numeric(myin[j + 14]), 
+                       source.x = as.numeric(myin[j + 15]), source.y = as.numeric(myin[j + 16]), 
+                       target.x = as.numeric(myin[j + 17]), target.y = as.numeric(myin[j + 18]) )
             
             
         } else {
@@ -52,20 +53,22 @@ function(input, output) {
             
             vertex.meta <- rbind(data.frame(vnames = edges$source, leftside = edges$source.leftside, 
                                       latent = edges$source.latent, outcome = edges$source.outcome, 
-                                      exposure = edges$source.exposure, x = edges$source.x, y = -edges$source.y),
+                                      exposure = edges$source.exposure, nvals = edges$source.nvals, 
+                                      x = edges$source.x, y = -edges$source.y),
                                  data.frame(vnames = edges$target, leftside = edges$target.leftside, 
                                             latent = edges$target.latent, outcome = edges$target.outcome, 
-                                            exposure = edges$target.exposure, x = edges$target.x, y = -edges$target.y))
+                                            exposure = edges$target.exposure, nvals = edges$target.nvals, 
+                                            x = edges$target.x, y = -edges$target.y))
             
             #print(myin)
-            graphres <- graph_from_data_frame(edges[, c(1, 2, 5, 12)], vertices = unique(vertex.meta))
+            graphres <- graph_from_data_frame(edges[, c(1, 2, 5, 14)], vertices = unique(vertex.meta))
             
             ogleft <- V(graphres)[V(graphres)$leftside == 1]
             ogright <- V(graphres)[V(graphres)$leftside == 0]
             
             if(length(ogleft) > 1) {
               graphres <- add_vertices(graphres, 1, name = "Ul", latent = 1, 
-                                       leftside = 1, outcome = 0, exposure = 0, 
+                                       leftside = 1, outcome = 0, exposure = 0, nvals = 2, 
                                        x = min(V(graphres)$x) - 100, y = min(V(graphres)$y) +20)
               graphres <- add_edges(graphres, unlist(lapply(names(ogleft), function(x) c("Ul", x))), 
                                     rlconnect = rep(0,length(ogleft)), edge.monotone= rep(0, length(ogleft)))
@@ -73,7 +76,7 @@ function(input, output) {
             
             if(length(ogright) > 1) {
               graphres <- add_vertices(graphres, 1, name = "Ur", latent = 1, 
-                                       leftside = 0, outcome = 0, exposure = 0, 
+                                       leftside = 0, outcome = 0, exposure = 0, nvals = 2, 
                                        x = max(V(graphres)$x) + 100, y = min(V(graphres)$y) +20)
               
               graphres <- add_edges(graphres, unlist(lapply(names(ogright), function(x) c("Ur", x))), 
@@ -128,6 +131,8 @@ function(input, output) {
                   showNotification(sprintf("Invalid names: %s, found in graph vertices!", 
                                            paste(badnames, collapse = ",")), type = "error")
                   
+                } else if (any(vertex_attr(graph)$nvals < 2)) {
+                  showNotification("Each variable needs to be able to take on at least two distinct possible values!", type = "error")
                 } else {
                   
                   
@@ -215,7 +220,7 @@ function(input, output) {
             
             effectUI <- div(id = "effect", 
                                  h3("Specify causal effect of interest (required)"), 
-                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are either 0 or 1, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and if there is nothing on the left side, they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."),
+                            helpText("Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are numeric values in the appropriate value sets, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and if there is nothing on the left side, they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."),
                             fluidRow(id = "effecttext",
                                  column(8, textAreaInput("effect", NULL, default.effect)), 
                                  column(1, actionButton("parseeffect", "Parse", style="background-color: #69fb82"))
@@ -406,15 +411,15 @@ function(input, output) {
       } else {
         
         allnmes <- unique(c(parsed.ctest$leftout, parsed.ctest$rightout, 
-                            gsub("=(0|1)", "", c(parsed.ctest$leftcond, parsed.ctest$rightcond))))
+                            gsub("=\\d+", "", c(parsed.ctest$leftcond, parsed.ctest$rightcond))))
         
         
         if(any(!parsed.ctest$operator %in% c("==", "<", ">", "<=", ">="))) {
           error <- "Operator not allowed!"
         }
         
-        realnms <- c(names(V(graph)), "0", "1")
-        if(any(!allnmes %in% realnms)) {
+        realnms <- names(V(graph))
+        if(any(!allnmes %in% realnms & !is.na(suppressWarnings(as.numeric(allnmes))))) {
           
           error <- sprintf("Names %s in constraint not specified in graph!", 
                            paste(allnmes[which(!allnmes %in% realnms)], collapse = ", "))

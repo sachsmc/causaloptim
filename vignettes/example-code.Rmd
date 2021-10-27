@@ -26,6 +26,7 @@ library(igraph)
 b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(0,0,0)
 V(b)$latent <- c(0,0,1)
+V(b)$nvals <- c(2,2,2)
 E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 
 obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
@@ -41,6 +42,7 @@ b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2,
                         X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
 V(b)$latent <- c(0, 0, 0, 1, 0, 1)
+V(b)$nvals <- c(2, 2, 2, 2, 2, 2)
 E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
 E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
 
@@ -52,6 +54,7 @@ b2 <- graph_from_literal(Z1 -+ X, Ul -+ Z1,
                          X -+ Y, Ur -+ X, Ur -+ Y)
 V(b2)$leftside <- c(1, 0, 1, 0, 0)
 V(b2)$latent <- c(0, 0, 1, 0, 1)
+V(b2)$nvals <- c(2, 2, 2, 2, 2)
 E(b2)$rlconnect <- c(0, 0,  0, 0, 0)
 E(b2)$edge.monotone <- c(0, 0, 0, 0, 0)
 
@@ -189,6 +192,7 @@ abline(0, 1, lty = 3)
 b <- graph_from_literal(Ul -+ X -+ Y -+ Y2, Ur -+ Y, Ur -+ Y2)
 V(b)$leftside <- c(1, 1, 0, 0, 0)
 V(b)$latent <- c(1, 0, 1, 0, 1)
+V(b)$nvals <- c(2, 2, 2, 2, 2)
 E(b)$rlconnect <- c(0, 0, 0, 0, 0)
 E(b)$edge.monotone <- c(0, 0, 0, 0, 0)
 

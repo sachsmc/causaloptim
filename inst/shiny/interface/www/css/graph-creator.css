@@ -32,6 +32,9 @@ g.conceptG.outcome circle{
 g.conceptG.exposure circle{
     fill: rgb(22, 22, 210);
 }
+g.conceptG.multilevel circle{
+    stroke-width: 3px;
+}
 
 path.link {
     fill: none;

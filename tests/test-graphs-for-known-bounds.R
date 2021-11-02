@@ -4,6 +4,7 @@ library(causaloptim)
 ## simple unconfounded X -> Y
 
 b <- readRDS("test-graphs/simple-unconfounded.RData")
+V(b)$nvals <- c(2,2)
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
@@ -20,6 +21,7 @@ cat(new_version_bound$bounds) # new version output string
 ## simple confounded X -> Y
 
 b <- readRDS("test-graphs/simple-confounded.RData")
+V(b)$nvals <- c(2,2,2)
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
@@ -36,6 +38,7 @@ cat(new_version_bound$bounds) # new version output string
 ## instrument Z -> X -> Y
 
 b <- readRDS("test-graphs/instrument.RData")
+V(b)$nvals <- c(2,2,2,2)
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
@@ -113,6 +116,7 @@ cat(new_version_bound$bounds) # new version output string
 
 
 b <- readRDS("test-graphs/mediator.RData")
+V(b)$nvals <- c(2,2,2,2)
 
 ## total effect: identifiable
 
@@ -217,6 +221,7 @@ new_version_bound <- optimize_effect_2(obj)
 graph <- graph_from_literal(Ul -+ X -+ Y, Ur -+ Y, W -+ Y, Ur -+ W)
 V(graph)$leftside <- c(1, 1, 0, 0, 0)
 V(graph)$latent <- c(1, 0, 0, 1, 0)
+V(graph)$nvals <- c(2, 2, 2, 2, 2)
 E(graph)$rlconnect <- c(0, 0, 0, 0, 0)
 E(graph)$edge.monotone <- c(0, 0, 0, 0, 0)
 
@@ -229,6 +234,7 @@ tryerror
 b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
 V(b)$latent <- c(0, 0, 0, 1, 0, 1)
+V(b)$nvals <- c(2, 2, 2, 2, 2, 2)
 E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
 E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
 obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")

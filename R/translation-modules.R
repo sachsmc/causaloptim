@@ -25,21 +25,23 @@ create_response_function <- function(graph, right.vars, cond.vars) {
         names(arglist) <- parents
         
         if (length(parents) == 0) {
-            values <- list(function() {
-                0
-            }, function() {
-                1
+            values <- lapply(1:numberOfValues(graph, names(i)), function(j) {
+                bin <- function() {
+                }
+                body(bin) <- eval(parse(text = paste0(j, "-1")))
+                environment(bin) <- baseenv()
+                bin
             })
         } else {
             ## da matrix
             
             poss.ins <-
-                expand.grid(lapply(parents, function(x)
-                    c(0, 1)))
+                expand.grid(lapply(parents, function(varname)
+                    seq(from = 0, to = numberOfValues(graph = graph, varname = varname) - 1)))
             colnames(poss.ins) <- parents
             ini.outs <-
                 expand.grid(lapply(1:nrow(poss.ins), function(x)
-                    c(0, 1)))
+                    seq(from = 0, to = numberOfValues(graph = graph, varname = names(i)) - 1)))
             
             args <- vector(mode = "list", length = ncol(poss.ins))
             names(args) <- parents
@@ -66,7 +68,7 @@ create_response_function <- function(graph, right.vars, cond.vars) {
                            ),
                            ")")
                 body(f.tmp) <- parse(text = fbod)
-                environment(f.tmp) <- parent.frame()
+                environment(f.tmp) <- baseenv()
                 
                 values[[j]] <- f.tmp
                 
@@ -148,11 +150,11 @@ create_q_matrix <- function(respvars, right.vars, cond.vars, constraints) {
             resp.out.left <- unlist(lapply(respvars[[iin$leftout]]$values, function(f) do.call(f, tmpenv.left)))
             resp.out.right <- unlist(lapply(respvars[[iin$rightout]]$values, function(f) do.call(f, tmpenv.right)))
             
-            if(iin$rightout %in% c("0", "1")) {
+            if(!is.na(suppressWarnings(as.numeric(iin$rightout)))) {
                 resp.out.right <- rep(iin$rightout, length(resp.out.left))
             }
             
-            if(iin$leftout == iin$rightout | iin$rightout %in% c("0", "1")) {  ## constraints are for the same counterfactual, these lead to removals of qs
+            if(iin$leftout == iin$rightout | !is.na(suppressWarnings(as.numeric(iin$rightout)))) {  ## constraints are for the same counterfactual, these lead to removals of qs
                 settozeroindex <- respvars[[iin$leftout]]$index[!do.call(iin$operator, list(resp.out.left, resp.out.right))]
                 
                 if(length(settozeroindex) > 0) {

@@ -51,6 +51,7 @@ NULL
 #' b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
 #' V(b)$leftside <- c(0,0,0)
 #' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(2,2,2)
 #' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 #' analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 
@@ -66,7 +67,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     obsvars <- c(right.vars, cond.vars)
     observed.variables <- V(graph)[V(graph)$latent == 0]
     
-    var.values <- lapply(names(observed.variables), function(i) c(0, 1))
+    var.values <- lapply(names(observed.variables), function(varname) seq(from = 0, to = numberOfValues(graph, varname) - 1))
     names(var.values) <- names(observed.variables)
     
     p.vals <- do.call(expand.grid, var.values)  # p vals need to be based on observed variables only
@@ -265,6 +266,7 @@ print.linearcausalproblem <- function(x, ...) {
   
   cat(effecttext, "\n Under the assumption encoded in the graph: ")
   print(E(x$graph))
+  cat("Number of possible values of each variable:", "\n", print_nvals(x$graph), "\n")
   cat(constrainttext, "\n", variabletext, "\n")
   
   cat("Additional information is available in the following list elements:")

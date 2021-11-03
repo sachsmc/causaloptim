@@ -9,6 +9,9 @@ shortentxt(x)
 \arguments{
 \item{x}{String}
 }
+\value{
+A string with line breaks to keep the width less than 80 characters
+}
 \description{
 Shorten strings to 80 characters wide
 }

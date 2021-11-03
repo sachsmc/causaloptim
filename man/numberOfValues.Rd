@@ -7,7 +7,7 @@
 numberOfValues(graph, varname)
 }
 \arguments{
-\item{graph}{An 'igraph'-object.}
+\item{graph}{An igraph object.}
 
 \item{varname}{A string. The name of a vertex in 'graph'.}
 }

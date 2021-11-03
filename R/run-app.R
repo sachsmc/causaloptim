@@ -14,8 +14,8 @@
 #'     \describe{
 #'        \item{graphres}{The graph as drawn and interpreted, an \link[igraph]{aaa-igraph-package} object.}
 #'        \item{obj}{The objective and all necessary supporting information. This object is 
-#'        documented in \link{analyze_graph}. This can be passed directly to \link{optimize_effect}.}
-#'        \item{bounds.obs}{Object of class 'balkebound' as returned by \link{optimize_effect}.}
+#'        documented in \link{analyze_graph}. This can be passed directly to \link{optimize_effect_2}.}
+#'        \item{bounds.obs}{Object of class 'balkebound' as returned by \link{optimize_effect_2}.}
 #'        \item{constraints}{Character vector of the specified constraints. NULL if no constraints.}
 #'        \item{effect}{Text describing the causal effect of interest.}
 #'        \item{boundsFunction}{Function that takes parameters (observed probabilities) as arguments, and returns a vector of length 2 for the lower and upper bounds.}

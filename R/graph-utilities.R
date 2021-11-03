@@ -41,7 +41,7 @@ print_nvals <- function(graphres) {
 
 #' Get the number of values of a given variable in the graph
 #' 
-#' @param graph An 'igraph'-object.
+#' @param graph An igraph object.
 #' @param varname A string. The name of a vertex in 'graph'.
 #' @return An integer greater than 1. The number of values of 'varname'.
 #' @export

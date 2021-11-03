@@ -18,6 +18,6 @@ A. Balke and J. Pearl, "Counterfactual Probabilities: Computational Methods,Boun
 \code{browseVignettes('causaloptim')}
 }
 \author{
-Michael C Sachs, Arvid Sjölander, Alexander Balke, Colorado Reed, and Erin Gabriel
+Michael C Sachs, Arvid Sjölander, Gustav Jonzon, Alexander Balke, Colorado Reed, and Erin Gabriel
     Maintainer: Michael C Sachs <sachsmc at gmail.com>
 }

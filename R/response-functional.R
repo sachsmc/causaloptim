@@ -7,13 +7,38 @@ NULL
 
 #' Analyze the causal graph to determine constraints and objective
 #' 
-#' The graph must contain edge attributes named "leftside" and "lrconnect"
-#' that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
-#' The shiny app returns a graph in this format. 
+#' The graph must contain certain edge and vertex attributes which are documented
+#' in the Details below. The shiny app run by \link{specify_graph} will return a
+#' graph in this format. 
 #' 
-#' @param graph An \link[igraph]{aaa-igraph-package} object that represents a directed acyclic graph
-#' @param constraints A vector of character strings that represent the constraints
+#' @param graph An \link[igraph]{aaa-igraph-package} object that represents a directed acyclic graph with certain attributes. See Details.
+#' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
 #' @param effectt A character string that represents the causal effect of interest
+#' 
+#' @details The graph object must contain the following named vertex attributes: \describe{
+#' \item{name}{The name of each vertex must be a valid R object name starting with a letter and no special characters. Good candidate names are for example, Z1, Z2, W2, X3, etc. }
+#' \item{leftside}{An indicator of whether the vertex is on the left side of the graph, 1 if yes, 0 if no.}
+#' \item{latent}{An indicator of whether the variable is latent (unobserved). There should always be a variable Ul on the left side that is latent and a parent of all variables on the left side, and another latent variable Ur on the right side that is a parent of all variables on the right side. }
+#' \item{nvals}{The number of possible values that the variable can take on, the default and minimum is 2 for 2 categories (0,1). }
+#' }
+#' In addition, there must be the following edge attributes: \describe{
+#' \item{rlconnect}{An indicator of whether the edge goes from the right side to the left side. Should be 0 for all edges.}
+#' \item{edge.monotone}{An indicator of whether the effect of the edge is monotone, meaning that if V1 -> V2 and the edge is monotone, then a > b implies V2(V1 = a) >= V2(V1 = b). Only available for binary variables (nvals = 2).}
+#' }
+#' The effectt parameter describes your causal effect of interest. The effectt parameter must be of the form
+#' 
+#' \code{p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...}
+#' 
+#' where Vij are names of variables in the graph, a, b are numeric values from 0:(nvals - 1), and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as \code{p{Y = 1}} are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:
+#' 
+#' \code{p{Y(X = 1) = 1} - p{Y(X = 0) = 1}}
+#' 
+#' \code{p{X(Z = 1) = 1; X(Z = 0) = 0}}
+#' 
+#' \code{p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}}
+#' 
+#' The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
+#' \code{X(Z = 1) >= X(Z = 0)}
 #' 
 #' @return A an object of class "linearcausalproblem", which is a list with the
 #'   following components. This list can be passed to \link{optimize_effect}

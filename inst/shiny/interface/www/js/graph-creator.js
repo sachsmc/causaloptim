@@ -424,7 +424,7 @@
             thisGraph.updateGraph();
         }
         break;
-    case 69: // e key for outcome
+    case 69: // e key for exposure
         if (selectedNode) {
             console.log(d3.event.keyCode);
             var i;

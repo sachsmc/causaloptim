@@ -53,6 +53,7 @@ The shiny app returns a graph in this format.
 b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(0,0,0)
 V(b)$latent <- c(0,0,1)
+V(b)$nvals <- c(2,2,2)
 E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 }

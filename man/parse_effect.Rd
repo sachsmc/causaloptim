@@ -16,7 +16,7 @@ A nested list that contains the following components:
        indicates potential outcomes as names of the list elements, 
        the variables that they depend on, and the values that any variables are being fixed to.}
        \item{oper}{The vector of operators (addition or subtraction) that combine the terms of the causal query.}
-       \item{values}{The values that the potential outcomes are set to in the query (0 or 1).}
+       \item{values}{The values that the potential outcomes are set to in the query.}
        \item{pcheck}{List of logicals for each element of the query that are TRUE if the element 
        is a potential outcome and FALSE if it is an observational quantity.}
        }

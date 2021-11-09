@@ -64,6 +64,20 @@ obj2 <- analyze_graph(b2, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X
 bounds.sing <- optimize_effect_2(obj2)
 
 
+b3 <- graph_from_literal(Z3 -+ X, Ul -+ Z3,
+                         X -+ Y, Ur -+ X, Ur -+ Y)
+V(b3)$leftside <- c(1, 0, 1, 0, 0)
+V(b3)$latent <- c(0, 0, 1, 0, 1)
+V(b3)$nvals <- c(4, 2, 2, 2, 2)
+E(b3)$rlconnect <- c(0, 0,  0, 0, 0)
+E(b3)$edge.monotone <- c(0, 0, 0, 0, 0)
+
+
+## single instrument
+obj3 <- analyze_graph(b3, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
+bounds.quad <- optimize_effect_2(obj3)
+
+
 joint <- function(df, alpha, pUr, pUl) {
 
   Z1 <- df$Z1
@@ -140,8 +154,25 @@ get_cond_probs <- function(p.vals) {
   xyz1.joint$Prob.cond <- with(xyz1.joint, Prob.xyz1 / Prob.z1)
   res2 <- as.list(xyz1.joint$Prob.cond)
   names(res2) <- with(xyz1.joint, paste0("p", X, Y, "_", Z1))
+  
+  
+  ## conditioning on Z3
+  
+  z3.joint <- unique(p.vals[, c("Z3"), drop = FALSE])
+  for(j in 1:nrow(z3.joint)) {
+    z3.joint$Prob.condz3[j] <- sum(subset(p.vals, Z3 == z3.joint[j, "Z3"])$Prob)
+  }
 
-  list(multi = res, sing = res2)
+  p.vals.3 <- merge(p.vals, z3.joint, by = c("Z3"), sort = FALSE)
+
+  p.vals.3$Prob.cond.fin <- ifelse(p.vals.3$Prob ==0, 0.0, p.vals.3$Prob / p.vals.3$Prob.condz3)
+  res3 <- as.list(p.vals.3$Prob.cond.fin)
+  names(res3) <- with(p.vals.3, paste0("p", X, Y, "_", Z3))
+
+
+  list(multi = res, 
+       sing = res2,
+       quad = res3)
 
 }
 
@@ -151,7 +182,9 @@ get_cond_probs <- function(p.vals) {
 nsim <- 50000
 f.multi <- interpret_bounds(bounds.multi$bounds, obj$parameters)
 f.single <- interpret_bounds(bounds.sing$bounds, obj2$parameters)
-result <- matrix(NA, ncol = 6, nrow = nsim)
+f.quad <- interpret_bounds(bounds.quad$bounds, obj3$parameters)
+
+result <- matrix(NA, ncol = 9, nrow = nsim)
 
 
 for (i in 1:nsim) {
@@ -162,19 +195,29 @@ for (i in 1:nsim) {
 
   p.vals.joint <- obj$p.vals
   p.vals.joint$Prob <- joint(p.vals.joint, alpha, pUr, pUl)
+  
+  p.vals.joint$Z3 <- with(p.vals.joint, ifelse(Z1 == 0 & Z2 == 0, 0, 
+                                               ifelse(Z1 == 0 & Z2 == 1, 1, 
+                                                      ifelse(Z1 == 1 & Z2 == 0, 2, 
+                                                             3))))
+  
   if(any(p.vals.joint$Prob == 0)) next
 
   condprobs <- get_cond_probs(p.vals.joint)
 
   bees <- do.call(f.multi, condprobs$multi)
   bees.sing <- do.call(f.single, condprobs$sing)
-
-  result[i, ] <- unlist(c(sort(bees), abs(bees[2] - bees[1]), sort(bees.sing), abs(bees.sing[2]- bees.sing[1])))
+  bees.quad <- do.call(f.quad, condprobs$quad)
+  
+  result[i, ] <- unlist(c(sort(bees), abs(bees[2] - bees[1]), 
+                          sort(bees.sing), abs(bees.sing[2]- bees.sing[1]),
+                          sort(bees.quad), abs(bees.quad[2]- bees.quad[1]))
 
 }
 colnames(result) <- c("bound.lower",
                       "bound.upper", "width.multi",
-                      "bound.lower.single", "bound.upper.single", "width.single")
+                      "bound.lower.single", "bound.upper.single", "width.single", 
+                      "bound.lower.quad", "bound.upper.quad", "width.quad")
 bounds.comparison <- as.data.frame(result)
 
 plot(width.multi ~ width.single, data = bounds.comparison, pch = 20, cex = .3,

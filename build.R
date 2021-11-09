@@ -3,6 +3,10 @@
 file.copy("doc/shinyapp.html", "inst/shiny/interface/www/shinyapp.html", overwrite = TRUE)
 devtools::build()
 
+library(rhub)
+ch <- check_for_cran("package", show_status = FALSE)
+ch$update()
+
 pkgdown::build_site(install = FALSE)
 ## fix path to images
 lines <- readLines("docs/articles/shinyapp.html")

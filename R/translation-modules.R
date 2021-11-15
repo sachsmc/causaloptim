@@ -395,7 +395,15 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 thisintervene <- unlist(list_to_path(thisvar, names(outcome)))
                 basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
                 ## check for missing paths from intervention sets to outcome
+                ## only do this if any of the top level intervention sets doesn't contain all
+                ## parents of the outcome
+                ## the logic being that if the user wrote that as an effect, then 
+                ## the intention was to propagate that intervention set forward through
+                ## all paths in the graph to the outcome
                 
+                parents <- adjacent_vertices(graph, v = outcome, mode = "in")[[1]]
+                if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                                  names(thisvar))) > 0) {
                 isets <- unique(btm_var(thisvar))
                 missingpaths <- lapply(isets, function(cc) {
                     allpaths <- all_simple_paths(graph, from = cc, to = names(outcome), mode = "out")
@@ -403,7 +411,7 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                     setdiff(paths2, names(thisintervene))
                 })
                 for(pp in 1:length(missingpaths)) {
-                    
+
                     if(length(missingpaths[[pp]]) == 0) {
                         next
                     }
@@ -411,9 +419,9 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                     addval2 <- rep(addval, length(missingpaths[[pp]]))
                     names(addval2) <- missingpaths[[pp]]
                     thisintervene <- c(thisintervene, addval2)
-                    
+
                 }
-                
+                }
                 
                 gee_rA <- function(r, i, path = NULL) {
                     

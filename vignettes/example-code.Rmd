@@ -209,9 +209,9 @@ for (i in 1:nsim) {
   bees.sing <- do.call(f.single, condprobs$sing)
   bees.quad <- do.call(f.quad, condprobs$quad)
   
-  result[i, ] <- unlist(c(sort(bees), abs(bees[2] - bees[1]), 
-                          sort(bees.sing), abs(bees.sing[2]- bees.sing[1]),
-                          sort(bees.quad), abs(bees.quad[2]- bees.quad[1]))
+  result[i, ] <- unlist(c(sort(unlist(bees)), abs(bees[2] - bees[1]), 
+                          sort(unlist(bees.sing)), abs(bees.sing[2]- bees.sing[1]),
+                          sort(unlist(bees.quad)), abs(bees.quad[2]- bees.quad[1])))
 
 }
 colnames(result) <- c("bound.lower",

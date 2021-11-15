@@ -289,3 +289,72 @@ test_that("Multiple IV numeric comparison", {
     expect_equal(do.call(f2new, params),  do.call(f2old, params))
     
 })
+
+
+test_that("Missing paths filling in works properly", {
+    
+    
+    b2 <- graph_from_literal(X -+ Y, Ul -+ X, X -+ M1, X -+ M2, M1 -+ Y, M2 -+ Y,
+                             Ur -+ M1, Ur -+ M2, Ur -+ Y, M1 -+ M2)
+    V(b2)$leftside <- c(1, 0, 1, 0, 0, 0)
+    V(b2)$latent <- c(0, 0, 1, 0, 0, 1)
+    V(b2)$nvals <- c(2, 2, 2, 2, 2, 2)
+    E(b2)$rlconnect <- rep(0, 10)
+    E(b2)$edge.monotone <- rep(0, 10)
+    
+    nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1(X = 1))) = 1}"
+    nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1 = 1)) = 1}"
+    eff2 <- parse_effect(nofill)$vars[[1]][[1]]
+    
+    thisintervene <- unlist(causaloptim:::list_to_path(eff2, "Y"))
+    basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
+    ## check for missing paths from intervention sets to outcome
+    outcome <- V(b2)[2]
+    parents <- adjacent_vertices(b2, v = outcome, mode = "in")[[1]]
+    expect_true(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                               names(eff2))) == 0)
+    if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                      names(eff2))) > 0) {
+        
+        isets <- unique(causaloptim:::btm_var(eff2))
+        missingpaths <- lapply(isets, function(cc) {
+            allpaths <- igraph::all_simple_paths(b2, from = cc, to = "Y", mode = "out")
+            paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
+            setdiff(paths2, names(thisintervene))
+        })
+        
+    }
+    
+    b1 <- graph_from_literal(X -+ M1, M1 -+ Y, X -+ Y, Ul -+ X, Ur -+ M1, Ur -+ Y)
+    V(b1)$leftside <- c(1, 0, 0, 1, 0)
+    V(b1)$latent <- c(0, 0, 0, 1, 1)
+    V(b1)$nvals <- c(2, 2, 2, 2, 2)
+    E(b1)$rlconnect <- rep(0, 6)
+    E(b1)$edge.monotone <- rep(0, 6)
+    
+    fill <- "p{Y(X = 1) = 1}"
+    eff1 <- parse_effect(fill)$vars[[1]][[1]]
+    outcome <- V(b1)[3]
+    thisintervene <- unlist(causaloptim:::list_to_path(eff1, "Y"))
+    basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
+    ## check for missing paths from intervention sets to outcome
+    ## only do this if any of the top level intervention sets doesn't contain all
+    ## parents of the outcome
+    ## the logic being that if the user wrote that as an effect, then 
+    ## the intention was to propogate that intervention set forward through
+    ## all paths in the graph to the outcome
+    
+    parents <- adjacent_vertices(b1, v = outcome, mode = "in")[[1]]
+    if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                      names(eff1))) > 0) {
+        isets <- unique(causaloptim:::btm_var(eff1))
+        missingpaths <- lapply(isets, function(cc) {
+            allpaths <- igraph::all_simple_paths(b1, from = cc, to = "Y", mode = "out")
+            paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
+            setdiff(paths2, names(thisintervene))
+        })
+        expect_equal(missingpaths[[1]], "X -> M1 -> Y")
+    }
+    
+    
+})

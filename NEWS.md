@@ -1,3 +1,13 @@
+# causaloptim 0.9.1
+
+## More big new features!
+
+- categorical variables are now handled
+
+## bug fixes
+
+- Fixed propagation of intervention sets downstream when there are crossed effects
+
 # causaloptim 0.8.2
 
 ## Big new features!

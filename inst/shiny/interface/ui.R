@@ -14,7 +14,16 @@ shinyUI(fluidPage(tags$head(
              column(12, helpText("Shift+click to add nodes. Shift+drag to connect nodes. Click to select nodes/edges and press 'd' to remove. Click a node to select and then press 'u' to mark it as unobserved/latent or press 'y' to mark it as the outcome of interest, or press 'e' to mark it as the exposure of interest. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press 'c' and enter a number into the prompt. Click an edge and press 'm' to enforce monotonicity for that connection. Other constraints can be specified later. "))
              ),
     fluidRow(id = "graphrow",
-        column(12, tagList(tags$div(id="graph", style="height:480px"), 
+        column(12, 
+               tagList(tags$div(id="modalnval", class = "modal fade in", 
+                                tags$div(class = "modal-dialogue", 
+                                         tags$div(class = "modal-content", 
+                                                  tags$div(class = "modal-header", "Test"), 
+                                                  tags$div(id="nvalcontent", class = "modal-body", "P"), 
+                                                  tags$div(class = "modal-footer", 
+                                                           tags$button(type="button", `data-dismiss` = "modal", class="btn btn-default", "Close"))
+                                                  )))),
+               tagList(tags$div(id="graph", style="height:480px"), 
                           tags$br()))
     ), 
     #verbatimTextOutput("outcode"), # for debugging

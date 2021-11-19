@@ -457,8 +457,10 @@
     case 50: // 2 key for dichotomous variable
         if (selectedNode) {
             console.log(d3.event.keyCode);
-            state.selectedNode.nvals = 3;
-            alert("Number of values is set to 2");
+            state.selectedNode.nvals = 2;
+            $('#nvalcontent').html("Number of values is set to 2");
+            $("#modalnval").modal("show");
+            //alert("Number of values is set to 2");
             thisGraph.updateGraph();
         }
         break;

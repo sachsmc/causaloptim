@@ -186,7 +186,7 @@ f.quad <- interpret_bounds(bounds.quad$bounds, obj3$parameters)
 
 result <- matrix(NA, ncol = 9, nrow = nsim)
 
-
+set.seed(211129)
 for (i in 1:nsim) {
 
   alpha <- rnorm(12, sd = 2)
@@ -219,12 +219,19 @@ colnames(result) <- c("bound.lower",
                       "bound.lower.single", "bound.upper.single", "width.single", 
                       "bound.lower.quad", "bound.upper.quad", "width.quad")
 bounds.comparison <- as.data.frame(result)
-
+pdf(file = "bounds-comparison2.pdf")
 plot(width.multi ~ width.single, data = bounds.comparison, pch = 20, cex = .3,
-     xlim = c(0, 1), ylim = c(0, 1), xlab= "Single IV", ylab = "Two IV",
+     xlim = c(0, 1), ylim = c(0, 1), xlab= "Single binary IV", ylab = "Two binary IVs/Single quarternary IV",
      main = "Comparison of width of bounds intervals")
 abline(0, 1, lty = 3)
-
+dev.off()
+summary(bounds.comparison) # contains 467 NA's to avoid division by 0
+# Verify that a single quad-level instrument yield the same bounds as two linked binary ones.
+all(round(x = bounds.comparison$bound.lower, digits = 12) == 
+        round(x = bounds.comparison$bound.lower.quad, digits = 12) && 
+        round(x = bounds.comparison$bound.upper, digits = 12) == 
+        round(x = bounds.comparison$bound.upper.quad, digits = 12), 
+    na.rm = TRUE)
 ```
 
 

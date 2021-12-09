@@ -15,14 +15,19 @@ shinyUI(fluidPage(tags$head(
              ),
     fluidRow(id = "graphrow",
         column(12, 
-               tagList(tags$div(id="modalnval", class = "modal fade in", 
-                                tags$div(class = "modal-dialogue", 
-                                         tags$div(class = "modal-content", 
-                                                  tags$div(class = "modal-header", "Test"), 
-                                                  tags$div(id="nvalcontent", class = "modal-body", "P"), 
-                                                  tags$div(class = "modal-footer", 
-                                                           tags$button(type="button", `data-dismiss` = "modal", class="btn btn-default", "Close"))
-                                                  )))),
+               tagList(tags$div(id="nvalsModal", class="modal fade", role="dialog", 
+                                tags$div(class="modal-dialog modal-dialog-centered", role="document", 
+                                         tags$div(class="modal-content shadow", 
+                                                  tags$div(class="modal-header", 
+                                                           tags$h5(class="modal-title", "Enter number of values: ")
+                                                           ), 
+                                                  tags$div(class="modal-body", 
+                                                           tags$input(id="nvalsInput", type="number", class="form-control", value=2, min=2)
+                                                           ), 
+                                                  tags$div(class="modal-footer", 
+                                                           tags$button(type="button", class="btn btn-default", `data-dismiss`="modal", "Cancel"), 
+                                                           tags$button(id="nvalsSubmit", type="button", class="btn btn-primary", `data-toggle`="modal", `data-target`="#nvalsModal", "Ok")))))), 
+               tagList(tags$div(id="toast")), 
                tagList(tags$div(id="graph", style="height:480px"), 
                           tags$br()))
     ), 

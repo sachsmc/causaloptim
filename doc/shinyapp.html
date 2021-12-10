@@ -225,12 +225,12 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">simulate_bounds</span>(results<span class="sc">$</span>obj, results<span class="sc">$</span>bounds.obs, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.17670583  -0.3146906   0.4447255</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 -0.09644684  -0.3728654   0.1218834</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.15073044  -0.6088040   0.1447301</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  0.01583577  -0.3192266   0.3197174</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 -0.01072283  -0.3813465   0.3332892</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 -0.08977256  -0.4431817   0.3224657</span></span></code></pre></div>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.16471546  -0.2045011   0.5002017</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 -0.07538962  -0.2704663   0.2554953</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.14800341  -0.3961594   0.2762531</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.01710245  -0.4092984   0.2280429</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 -0.12147754  -0.4156373   0.3140537</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.06460749  -0.3148784   0.2079008</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">latex_bounds</span>(results<span class="sc">$</span>bounds.obs<span class="sc">$</span>bounds, results<span class="sc">$</span>obj<span class="sc">$</span>parameters))</span></code></pre></div>
 <p><span class="math display">\[ 

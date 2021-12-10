@@ -19,6 +19,8 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
+library(causaloptim)
+
 b <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(1,0,0,1,0)
 V(b)$latent <- c(0,0,0,1,1)
@@ -33,7 +35,7 @@ results <- list(graphres = b, obj = obj, bounds.obs = opp,
                 boundsFunction = interpret_bounds(opp$bounds, obj$parameters))
 ```
 
-```{r setup}
+```{r setup, eval = FALSE}
 library(causaloptim)
 ```
 

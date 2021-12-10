@@ -200,37 +200,43 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [5] &quot;effect&quot;         &quot;boundsFunction&quot;</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results<span class="sc">$</span>bounds.obs)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lower bound =  min-bound: MAX {</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   p00_0 - p00_1 - p10_1 - p01_1</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ----------------------------------------</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; upper bound =  max-bound: MIN {</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results<span class="sc">$</span>boundsFunction)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data.frame(lower = pmax(), upper = pmin())</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x000000003e277c40&gt;</span></span></code></pre></div>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lower bound =  </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MAX {</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   p00_0 - p00_1 - p10_1 - p01_1</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ----------------------------------------</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; upper bound =  </span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; MIN {</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results<span class="sc">$</span>boundsFunction)</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     lb &lt;- pmax(p00_0 - p00_1 - p10_1 - p01_1)</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     ub &lt;- pmin(1 - p10_1 - p01_0)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     if (any(ub &lt; lb)) {</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         warning(&quot;Invalid bounds! Data probably does not satisfy the assumptions in the DAG!&quot;)</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     data.frame(lower = lb, upper = ub)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">simulate_bounds</span>(results<span class="sc">$</span>obj, results<span class="sc">$</span>bounds.obs, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       objective bound.lower bound.upper</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 -0.0661502909  -0.4509011   0.4096273</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 -0.0547500608  -0.3944714   0.3406882</span></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.0002985108  -0.3024419   0.3760656</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.2390620737  -0.4715353   0.2036962</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 -0.1950709495  -0.4163355   0.2179240</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 -0.0037152090  -0.2307208   0.3613534</span></span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  0.16471546  -0.2045011   0.5002017</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 -0.07538962  -0.2704663   0.2554953</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 -0.14800341  -0.3961594   0.2762531</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 -0.01710245  -0.4092984   0.2280429</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 -0.12147754  -0.4156373   0.3140537</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6  0.06460749  -0.3148784   0.2079008</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">latex_bounds</span>(results<span class="sc">$</span>bounds.obs<span class="sc">$</span>bounds, results<span class="sc">$</span>obj<span class="sc">$</span>parameters))</span></code></pre></div>
 <p><span class="math display">\[ 
- \mbox{Lower bound} = \mbox{max} \left. \begin{cases} nd: MAX {\\ 
-   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) \end{cases} \right\} 
+ \mbox{Lower bound} =   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) 
  \]</span> <span class="math display">\[ 
- \mbox{Upper bound} = \mbox{min} \left. \begin{cases} nd: MIN {\\ 
-   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) \end{cases} \right\} 
+ \mbox{Upper bound} =   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) 
  \]</span></p>
 <p>Please sends any bugs or feedback to <a href="mailto:michael.sachs@ki.se" class="email">michael.sachs@ki.se</a> or file an issue on <a href="https://github.com/sachsmc/causaloptim" class="uri">https://github.com/sachsmc/causaloptim</a> .</p>
 </div>

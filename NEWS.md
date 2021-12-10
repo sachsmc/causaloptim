@@ -30,7 +30,7 @@
 
 ## Bugfixes
 
-- Propogation of intervention set when not all paths are defined
+- Propagation of intervention set when not all paths are defined
 - Checking for violations of condition 6 in effect
 
 ## New features

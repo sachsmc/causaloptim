@@ -25,7 +25,7 @@ Description: When causal quantities are not identifiable from the observed data,
             user defined DAG, query, and constraints, and returns tight bounds. The bounds can be 
             converted to R functions to evaluate them for specific datasets, and to latex code for 
             publication. The methods and proofs of tightness and validity of the bounds are described in
-            a preprint by Sachs, Gabriel, and Sjölander (2020) 
+            a preprint by Sachs, Gabriel, and Sjölander (2021) 
             <https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf>.
 License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.1), shiny, rcdd

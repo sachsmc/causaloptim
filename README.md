@@ -1,5 +1,5 @@
 [![CRAN Status](https://www.r-pkg.org/badges/version/causaloptim)](https://cran.r-project.org/package=causaloptim)
-[![Build Status](https://www.travis-ci.com/sachsmc/causaloptim.svg?branch=master)](https://www.travis-ci.com/sachsmc/causaloptim)
+[![R-CMD-check](https://github.com/sachsmc/causaloptim/workflows/R-CMD-check/badge.svg)](https://github.com/sachsmc/causaloptim/actions)
 
 
 # causaloptim: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects

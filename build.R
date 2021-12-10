@@ -5,7 +5,7 @@ file.copy("doc/shinyapp.html", "inst/shiny/interface/www/shinyapp.html", overwri
 devtools::build()
 
 library(rhub)
-ch <- check_for_cran("package", show_status = FALSE)
+ch <- check_for_cran(".", show_status = FALSE)
 ch$update()
 
 pkgdown::build_site(install = FALSE)

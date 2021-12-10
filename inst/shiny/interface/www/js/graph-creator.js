@@ -439,28 +439,22 @@
     case 67: // c key for cardinality/categories
         if (selectedNode) {
             console.log(d3.event.keyCode);
-            userInputString = prompt("Enter number of values: ", "2");
-            userInputNumber = parseInt(userInputString, 10);
-            if (userInputString == null || userInputString == "") {
-              // do nothing
-            } else if (isNaN(userInputNumber)) {
-              alert("Cannot parse number.")
-            } else if (userInputNumber < 2) {
-              alert("Number must be at least 2.")
-            } else {
-              state.selectedNode.nvals = userInputNumber;
-              alert("Number of values is set to " + userInputNumber + ".");
-              thisGraph.updateGraph();
-            }
+            $(document).ready(function() {
+                $('#nvalsModal').modal();
+                $('#nvalsSubmit').click(function() {
+                    var nvalsNumber = $('#nvalsInput').val();
+                    state.selectedNode.nvals = nvalsNumber;
+                    toastMessage("Number of values of " + selectedNode.title + " is set to " + nvalsNumber);
+                    thisGraph.updateGraph();
+                });
+            });
         }
         break;
     case 50: // 2 key for dichotomous variable
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 2;
-            $('#nvalcontent').html("Number of values is set to 2");
-            $("#modalnval").modal("show");
-            //alert("Number of values is set to 2");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 2");
             thisGraph.updateGraph();
         }
         break;
@@ -468,7 +462,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 3;
-            alert("Number of values is set to 3");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 3");
             thisGraph.updateGraph();
         }
         break;
@@ -476,7 +470,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 4;
-            alert("Number of values is set to 4");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 4");
             thisGraph.updateGraph();
         }
         break;
@@ -484,7 +478,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 5;
-            alert("Number of values is set to 5");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 5");
             thisGraph.updateGraph();
         }
         break;
@@ -492,7 +486,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 6;
-            alert("Number of values is set to 6");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 6");
             thisGraph.updateGraph();
         }
         break;
@@ -500,7 +494,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 7;
-            alert("Number of values is set to 7");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 7");
             thisGraph.updateGraph();
         }
         break;
@@ -508,7 +502,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 8;
-            alert("Number of values is set to 8");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 8");
             thisGraph.updateGraph();
         }
         break;
@@ -516,7 +510,7 @@
         if (selectedNode) {
             console.log(d3.event.keyCode);
             state.selectedNode.nvals = 9;
-            alert("Number of values is set to 9");
+            toastMessage("Number of values of " + selectedNode.title + " is set to 9");
             thisGraph.updateGraph();
         }
         break;
@@ -737,3 +731,10 @@
  
  
 //})(window.d3, window.saveAs, window.Blob);
+
+function toastMessage(textMessage) {
+    var x = document.getElementById("toast");
+    x.className = "show";
+    $('#toast').text(textMessage);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}

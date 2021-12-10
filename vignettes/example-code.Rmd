@@ -26,16 +26,24 @@ library(igraph)
 b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(0,0,0)
 V(b)$latent <- c(0,0,1)
-V(b)$nvals <- c(2,2,2)
+V(b)$nvals <- c(3,2,2)
 E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 
 obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 optimize_effect_2(obj)
+
+
+obj2 <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 2) = 1} - p{Y(X = 0) = 1}")
+optimize_effect_2(obj2)
+
+
+obj3 <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 2) = 1} - p{Y(X = 1) = 1}")
+optimize_effect_2(obj3)
 ```
 
 ## multiple instruments
 
-Not run, this takes a very long time to compute.
+Not run, this takes a few minutes to compute.
 
 ```{r, eval = FALSE}
 b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2,
@@ -220,11 +228,20 @@ colnames(result) <- c("bound.lower",
                       "bound.lower.quad", "bound.upper.quad", "width.quad")
 bounds.comparison <- as.data.frame(result)
 
+#pdf("figsim.pdf", width = 8, height = 4.25, family = "serif")
+par(mfrow = c(1,2))
 plot(width.multi ~ width.single, data = bounds.comparison, pch = 20, cex = .3,
-     xlim = c(0, 1), ylim = c(0, 1), xlab= "Single IV", ylab = "Two IV",
-     main = "Comparison of width of bounds intervals")
+     xlim = c(0, 1), ylim = c(0, 1), xlab= "Single IV", ylab = "Two binary IV/Single 4-level IV",
+     main = "Width of bounds intervals")
 abline(0, 1, lty = 3)
 
+plot(bound.lower.quad ~ bound.lower, data = bounds.comparison[1:100,], pch = 20, cex = 1, 
+     xlim = c(-1, 1), ylim = c(-1, 1), xlab = "Two binary IV", ylab = "Single 4-level IV", 
+     main = "Bounds values")
+points(bound.upper.quad ~ bound.upper, data = bounds.comparison[1:100,], pch = 1, cex = 1)
+
+legend("bottomright", pch = c(1, 20), legend = c("upper", "lower"))
+#dev.off()
 ```
 
 

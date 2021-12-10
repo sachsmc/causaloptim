@@ -187,12 +187,12 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <code class="sourceCode R"><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>
 <span class="co">#&gt;      objective bound.lower bound.upper</span>
-<span class="co">#&gt; 1  0.109060989  -0.3485855   0.3697654</span>
-<span class="co">#&gt; 2 -0.137815576  -0.4505608   0.2309870</span>
-<span class="co">#&gt; 3 -0.205767250  -0.4779306   0.1740865</span>
-<span class="co">#&gt; 4 -0.111912093  -0.4584500   0.3527774</span>
-<span class="co">#&gt; 5 -0.003452924  -0.3532251   0.3497601</span>
-<span class="co">#&gt; 6  0.240967635  -0.2161976   0.6337547</span></code></pre></div>
+<span class="co">#&gt; 1  0.148780507  -0.1098659   0.5961153</span>
+<span class="co">#&gt; 2  0.055705238  -0.2979296   0.3114689</span>
+<span class="co">#&gt; 3 -0.074243978  -0.4466384   0.2360135</span>
+<span class="co">#&gt; 4 -0.001892314  -0.3733967   0.3313878</span>
+<span class="co">#&gt; 5  0.078778128  -0.3049688   0.4198573</span>
+<span class="co">#&gt; 6 -0.014151674  -0.2926663   0.4159174</span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></code></pre></div>

@@ -184,11 +184,11 @@ Benchmark Example. Multiple Instruments.
 <p>Then we pass the probabilities to the bounds functions and compare:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> 
-<span class="co">#&gt;            lower     upper</span>
-<span class="co">#&gt; q0_0 -0.04027945 0.2439977</span>
+<span class="co">#&gt;           lower     upper</span>
+<span class="co">#&gt; q0_0 -0.4315456 0.1126725</span>
 <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span>
-<span class="co">#&gt;            lower     upper</span>
-<span class="co">#&gt; q0_0 -0.04027945 0.2439977</span></code></pre></div>
+<span class="co">#&gt;           lower     upper</span>
+<span class="co">#&gt; q0_0 -0.4315456 0.1126725</span></code></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let’s first see how <code>causaloptim</code> sets up the optimization problem.</p>
 </div>

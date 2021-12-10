@@ -1,4 +1,5 @@
 
+devtools::build_vignettes()
 ## build
 file.copy("doc/shinyapp.html", "inst/shiny/interface/www/shinyapp.html", overwrite = TRUE)
 devtools::build()

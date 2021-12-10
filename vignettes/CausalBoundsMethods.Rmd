@@ -1,6 +1,6 @@
 ---
-title: "Symbolic Computation of Tight Causal Bounds"
-subtitle: "Preprint, Under Review as of November 2021"
+title: "A General Method for Deriving Tight Symbolic Bounds on Causal Effects"
+subtitle: "Preprint"
 output: 
     rmarkdown::pdf_document:
       extra_dependencies: pdfpages

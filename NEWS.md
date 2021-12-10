@@ -3,6 +3,8 @@
 ## More big new features!
 
 - categorical variables are now handled
+- Update shiny UI to enable specification of categorical variables
+- Update draft of methods paper in vignette
 
 ## bug fixes
 

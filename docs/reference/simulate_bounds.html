@@ -74,7 +74,7 @@ bounds in terms of the observable variables." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@ bounds in terms of the observable variables." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -172,6 +172,7 @@ bounds in terms of the observable variables.</p>
     <pre class="examples"><div class='input'><span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'>graph_from_literal</span><span class='op'>(</span><span class='va'>X</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>Y</span>, <span class='va'>Ur</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>X</span>, <span class='va'>Ur</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>Y</span><span class='op'>)</span>
 <span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>leftside</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>
 <span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>latent</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>nvals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span>
 <span class='fu'>E</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>rlconnect</span> <span class='op'>&lt;-</span> <span class='fu'>E</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>edge.monotone</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>
 <span class='va'>obj</span> <span class='op'>&lt;-</span> <span class='fu'><a href='analyze_graph.html'>analyze_graph</a></span><span class='op'>(</span><span class='va'>b</span>, constraints <span class='op'>=</span> <span class='cn'>NULL</span>, effectt <span class='op'>=</span> <span class='st'>"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class='op'>)</span>
 <span class='va'>bounds</span> <span class='op'>&lt;-</span> <span class='fu'><a href='optimize_effect.html'>optimize_effect</a></span><span class='op'>(</span><span class='va'>obj</span><span class='op'>)</span>

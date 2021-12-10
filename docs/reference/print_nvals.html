@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Translate regular DAG to response functions — create_response_function • causaloptim</title>
+<title>Print the number of values of each variable/vertex of the analyzed graph object — print_nvals • causaloptim</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Translate regular DAG to response functions — create_response_function" />
-<meta property="og:description" content="Translate regular DAG to response functions" />
+<meta property="og:title" content="Print the number of values of each variable/vertex of the analyzed graph object — print_nvals" />
+<meta property="og:description" content="Print the number of values of each variable/vertex of the analyzed graph object" />
 
 
 
@@ -132,40 +132,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Translate regular DAG to response functions</h1>
-    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/translation-modules.R'><code>R/translation-modules.R</code></a></small>
-    <div class="hidden name"><code>create_response_function.Rd</code></div>
+    <h1>Print the number of values of each variable/vertex of the analyzed graph object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/sachsmc/causaloptim/blob/master/R/graph-utilities.R'><code>R/graph-utilities.R</code></a></small>
+    <div class="hidden name"><code>print_nvals.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Translate regular DAG to response functions</p>
+    <p>Print the number of values of each variable/vertex of the analyzed graph object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>create_response_function</span><span class='op'>(</span><span class='va'>graph</span>, <span class='va'>right.vars</span>, <span class='va'>cond.vars</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>print_nvals</span><span class='op'>(</span><span class='va'>graphres</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>graph</th>
-      <td><p>An aaa-igraph-package object that represents a
-directed acyclic graph must contain edge attributes named "leftside" and
-"lrconnect" that takes values 0 and 1. Only one edge may have a value 1 for
-lrconnect. The shiny app returns a graph in this format.</p></td>
-    </tr>
-    <tr>
-      <th>right.vars</th>
-      <td><p>Vertices of graph on the right side</p></td>
-    </tr>
-    <tr>
-      <th>cond.vars</th>
-      <td><p>Vertices of graph on the left side</p></td>
+      <th>graphres</th>
+      <td><p>an igraph object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of functions representing the response functions</p>
+    <p>None</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

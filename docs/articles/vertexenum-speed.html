@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -88,7 +88,7 @@
 
       
 
-      </header><script src="vertexenum-speed_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="vertexenum-speed_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Improving the speed of computing causal bounds</h1>
@@ -105,6 +105,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: igraph</span>
+<span class="co">#&gt; Warning: package 'igraph' was built under R version 4.1.1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'igraph'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -141,6 +142,7 @@ Benchmark Example. Multiple Instruments.
 <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html">graph_from_literal</a></span><span class="op">(</span><span class="va">Z1</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Z2</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z1</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z2</span>, <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/igraph/man/V.html">V</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">nvals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">rlconnect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/igraph/man/E.html">E</a></span><span class="op">(</span><span class="va">b</span><span class="op">)</span><span class="op">$</span><span class="va">edge.monotone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>
 <span class="va">obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/analyze_graph.html">analyze_graph</a></span><span class="op">(</span><span class="va">b</span>, constraints <span class="op">=</span> <span class="cn">NULL</span>, effectt <span class="op">=</span> <span class="st">"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class="op">)</span></code></pre></div>
@@ -182,11 +184,11 @@ Benchmark Example. Multiple Instruments.
 <p>Then we pass the probabilities to the bounds functions and compare:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> 
-<span class="co">#&gt;           lower      upper</span>
-<span class="co">#&gt; q0_0 -0.6762463 -0.0252698</span>
+<span class="co">#&gt;           lower     upper</span>
+<span class="co">#&gt; q0_0 -0.3346468 0.1325661</span>
 <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span>
-<span class="co">#&gt;           lower      upper</span>
-<span class="co">#&gt; q0_0 -0.6762463 -0.0252698</span></code></pre></div>
+<span class="co">#&gt;           lower     upper</span>
+<span class="co">#&gt; q0_0 -0.3346468 0.1325661</span></code></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end optimization algorithm and implementation. To see how it fits into the bigger picture, let’s first see how <code>causaloptim</code> sets up the optimization problem.</p>
 </div>
@@ -265,7 +267,7 @@ In general, with <span class="math inline">\(A_e:=\begin{pmatrix}1_{n\times1}^T\
 <a href="#vertex-enumeration" class="anchor"></a>Vertex Enumeration</h2>
 <p>The last step of vertex enumeration has previously been the major computational bottleneck in <code>causaloptim</code>. It has now been replaced by <code>cddlib</code><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, which has an implementation of <em>the Double Description Method</em> (dd). Any convex polytope can be dually described as either an intersection of half-planes (which is the form we <em>get</em> our dual constraint space in) or as a minimal set of vertices of which it is the convex hull (which is the form we <em>want</em> it in) and the dd algorithm efficiently converts between these two descriptions. <code>cddlib</code> also uses exact rational arithmetic, so we don’t have to worry about any numerical instability issues, e.g. Also, it already interfaces with R<a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. The following lines of code extract the vertices of the dual polytope and store them as rows of a matrix.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.stat.umn.edu/geyer/rcdd/">rcdd</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.umn.edu/geyer/rcdd/">rcdd</a></span><span class="op">)</span>
 <span class="va">hrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rcdd/man/makeH.html">makeH</a></span><span class="op">(</span>a1 <span class="op">=</span> <span class="va">a1</span>, b1 <span class="op">=</span> <span class="va">b1</span><span class="op">)</span>
 <span class="va">vrep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/rcdd/man/scdd.html">scdd</a></span><span class="op">(</span>input <span class="op">=</span> <span class="va">hrep</span><span class="op">)</span>
 <span class="va">matrix_of_vrep</span> <span class="op">&lt;-</span> <span class="va">vrep</span><span class="op">$</span><span class="va">output</span>
@@ -291,7 +293,7 @@ The first part of this is done by the following line of code, where the utility 
 <li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Dual_linear_program#Strong_duality" class="uri">https://en.wikipedia.org/wiki/Dual_linear_program#Strong_duality</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p><a href="https://en.wikipedia.org/wiki/Fundamental_theorem_of_linear_programming" class="uri">https://en.wikipedia.org/wiki/Fundamental_theorem_of_linear_programming</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p><a href="https://people.inf.ethz.ch/fukudak/cdd_home/" class="uri">https://people.inf.ethz.ch/fukudak/cdd_home/</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
-<li id="fn6"><p><a href="https://cran.r-project.org/web/packages/rcdd/index.html" class="uri">https://cran.r-project.org/web/packages/rcdd/index.html</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p><a href="https://CRAN.R-project.org/package=rcdd" class="uri">https://CRAN.R-project.org/package=rcdd</a><a href="#fnref6" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>

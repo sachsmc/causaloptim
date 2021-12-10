@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -88,7 +88,7 @@
 
       
 
-      </header><script src="shinyapp_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="shinyapp_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>How to use the causaloptim Shiny app to analyze graphs</h1>
@@ -104,6 +104,7 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span>
 <span class="co">#&gt; Loading required package: igraph</span>
+<span class="co">#&gt; Warning: package 'igraph' was built under R version 4.1.1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'igraph'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
@@ -124,7 +125,7 @@
 <div class="figure">
 <img src="screen2.png" alt=""><p class="caption">Naming nodes</p>
 </div>
-<p>Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press ‘u’ to mark it as unobserved/latent. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.</p>
+<p>Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press ‘u’ to mark it as unobserved/latent. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press ‘c’ and enter a number into the prompt. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.</p>
 <div class="figure">
 <img src="screen3.png" alt=""><p class="caption">Connections</p>
 </div>
@@ -142,7 +143,7 @@
 </div>
 <p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are either 0 or 1, and <code>op</code> are either <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as <code>p{Y = 1}</code> are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:</p>
+<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are corresponding values, and <code>op</code> are either <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as <code>p{Y = 1}</code> are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -182,18 +183,18 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span>
 <span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span>
 <span class="co">#&gt; data.frame(lower = pmax(), upper = pmin())</span>
-<span class="co">#&gt; &lt;environment: 0x000000001f84b1a0&gt;</span></code></pre></div>
+<span class="co">#&gt; &lt;environment: 0x000000001f118a30&gt;</span></code></pre></div>
 <p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>
-<span class="co">#&gt;      objective bound.lower bound.upper</span>
-<span class="co">#&gt; 1  0.070678636 -0.23084453   0.4341957</span>
-<span class="co">#&gt; 2 -0.089759145 -0.46273776   0.2631321</span>
-<span class="co">#&gt; 3  0.262111360 -0.09677724   0.5344272</span>
-<span class="co">#&gt; 4  0.119514852 -0.36455310   0.4083313</span>
-<span class="co">#&gt; 5 -0.076430280 -0.35464287   0.2943910</span>
-<span class="co">#&gt; 6  0.008282515 -0.34874845   0.3705889</span></code></pre></div>
+<span class="co">#&gt;     objective bound.lower bound.upper</span>
+<span class="co">#&gt; 1  0.20167644  -0.2212721   0.5411163</span>
+<span class="co">#&gt; 2  0.11239180  -0.1473521   0.4741274</span>
+<span class="co">#&gt; 3 -0.04173584  -0.4516340   0.2238179</span>
+<span class="co">#&gt; 4  0.24790912  -0.1989387   0.3512090</span>
+<span class="co">#&gt; 5 -0.03172046  -0.4254573   0.1634150</span>
+<span class="co">#&gt; 6  0.09793647  -0.2844778   0.3478513</span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></code></pre></div>

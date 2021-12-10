@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -171,7 +171,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-direct-interface" class="hasAnchor"><a href="#section-direct-interface" class="anchor"></a>Direct interface</h2>
-          <p class="section-desc"><p>Functions for creating and interacting with Balke’s program.</p></p>
+          <p class="section-desc"><p>Functions for creating and interacting with the algorithm.</p></p>
         </th>
       </tr>
       
@@ -197,6 +197,12 @@
           <p><code><a href="optimize_effect_2.html">optimize_effect_2()</a></code> </p>
         </td>
         <td><p>Run the optimizer</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="update_effect.html">update_effect()</a></code> </p>
+        </td>
+        <td><p>Update the effect in a linearcausalproblem object</p></td>
       </tr><tr>
         
         <td>
@@ -342,6 +348,42 @@
           <p><code><a href="reduce.sets.html">reduce.sets()</a></code> </p>
         </td>
         <td><p>Algebraically reduce sets</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_effect_vector.html">create_effect_vector()</a></code> </p>
+        </td>
+        <td><p>Translate target effect to vector of response variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_q_matrix.html">create_q_matrix()</a></code> </p>
+        </td>
+        <td><p>Translate response functions into matrix of counterfactuals</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_response_function.html">create_response_function()</a></code> </p>
+        </td>
+        <td><p>Translate regular DAG to response functions</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="create_R_matrix.html">create_R_matrix()</a></code> </p>
+        </td>
+        <td><p>Create constraint matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="numberOfValues.html">numberOfValues()</a></code> </p>
+        </td>
+        <td><p>Get the number of values of a given variable in the graph</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="print_nvals.html">print_nvals()</a></code> </p>
+        </td>
+        <td><p>Print the number of values of each variable/vertex of the analyzed graph object</p></td>
       </tr>
     </tbody>
     </table>

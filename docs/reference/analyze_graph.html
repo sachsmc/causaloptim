@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Analyze the causal graph to determine constraints and objective — analyze_graph" />
-<meta property="og:description" content="The graph must contain edge attributes named &quot;leftside&quot; and &quot;lrconnect&quot;
-that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
-The shiny app returns a graph in this format." />
+<meta property="og:description" content="The graph must contain certain edge and vertex attributes which are documented
+in the Details below. The shiny app run by specify_graph will return a
+graph in this format." />
 
 
 
@@ -74,7 +74,7 @@ The shiny app returns a graph in this format." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@ The shiny app returns a graph in this format." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -140,9 +140,9 @@ The shiny app returns a graph in this format." />
     </div>
 
     <div class="ref-description">
-    <p>The graph must contain edge attributes named "leftside" and "lrconnect"
-that takes values 0 and 1. Only one edge may have a value 1 for lrconnect. 
-The shiny app returns a graph in this format.</p>
+    <p>The graph must contain certain edge and vertex attributes which are documented
+in the Details below. The shiny app run by <a href='specify_graph.html'>specify_graph</a> will return a
+graph in this format.</p>
     </div>
 
     <pre class="usage"><span class='fu'>analyze_graph</span><span class='op'>(</span><span class='va'>graph</span>, <span class='va'>constraints</span>, <span class='va'>effectt</span><span class='op'>)</span></pre>
@@ -152,11 +152,11 @@ The shiny app returns a graph in this format.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>graph</th>
-      <td><p>An aaa-igraph-package object that represents a directed acyclic graph</p></td>
+      <td><p>An aaa-igraph-package object that represents a directed acyclic graph with certain attributes. See Details.</p></td>
     </tr>
     <tr>
       <th>constraints</th>
-      <td><p>A vector of character strings that represent the constraints</p></td>
+      <td><p>A vector of character strings that represent the constraints on counterfactual quantities</p></td>
     </tr>
     <tr>
       <th>effectt</th>
@@ -196,17 +196,40 @@ The shiny app returns a graph in this format.</p>
   constraints</p></dd> 
 </dl>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The graph object must contain the following named vertex attributes:</p><dl>
+<dt>name</dt><dd><p>The name of each vertex must be a valid R object name starting with a letter and no special characters. Good candidate names are for example, Z1, Z2, W2, X3, etc.</p></dd>
+<dt>leftside</dt><dd><p>An indicator of whether the vertex is on the left side of the graph, 1 if yes, 0 if no.</p></dd>
+<dt>latent</dt><dd><p>An indicator of whether the variable is latent (unobserved). There should always be a variable Ul on the left side that is latent and a parent of all variables on the left side, and another latent variable Ur on the right side that is a parent of all variables on the right side.</p></dd>
+<dt>nvals</dt><dd><p>The number of possible values that the variable can take on, the default and minimum is 2 for 2 categories (0,1).</p></dd>
+
+</dl><p>In addition, there must be the following edge attributes:</p><dl>
+<dt>rlconnect</dt><dd><p>An indicator of whether the edge goes from the right side to the left side. Should be 0 for all edges.</p></dd>
+<dt>edge.monotone</dt><dd><p>An indicator of whether the effect of the edge is monotone, meaning that if V1 -&gt; V2 and the edge is monotone, then a &gt; b implies V2(V1 = a) &gt;= V2(V1 = b). Only available for binary variables (nvals = 2).</p></dd>
+
+</dl><p>The effectt parameter describes your causal effect of interest. The effectt parameter must be of the form</p>
+<p><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></p>
+<p>where Vij are names of variables in the graph, a, b are numeric values from 0:(nvals - 1), and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as <code>p{Y = 1}</code> are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:</p>
+<p><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}</code></p>
+<p><code>p{X(Z = 1) = 1; X(Z = 0) = 0}</code></p>
+<p><code>p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></p>
+<p>The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
+<code>X(Z = 1) &gt;= X(Z = 0)</code></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>### confounded exposure and outcome</span>
 <span class='va'>b</span> <span class='op'>&lt;-</span> <span class='fu'>igraph</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/igraph/man/graph_from_literal.html'>graph_from_literal</a></span><span class='op'>(</span><span class='va'>X</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>Y</span>, <span class='va'>Ur</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>X</span>, <span class='va'>Ur</span> <span class='op'>-</span><span class='op'>+</span> <span class='va'>Y</span><span class='op'>)</span>
 <span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>leftside</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>0</span><span class='op'>)</span>
 <span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>latent</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0</span>,<span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'>V</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>nvals</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>2</span>,<span class='fl'>2</span><span class='op'>)</span>
 <span class='fu'>E</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>rlconnect</span> <span class='op'>&lt;-</span> <span class='fu'>E</span><span class='op'>(</span><span class='va'>b</span><span class='op'>)</span><span class='op'>$</span><span class='va'>edge.monotone</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>
 <span class='fu'>analyze_graph</span><span class='op'>(</span><span class='va'>b</span>, constraints <span class='op'>=</span> <span class='cn'>NULL</span>, effectt <span class='op'>=</span> <span class='st'>"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; Ready to compute bounds for the effect p{Y(X = 1) = 1} - p{Y(X = 0) = 1} 
-#&gt;  Under the assumption encoded in the graph: + 3/3 edges from 15a9e93 (vertex names):
+#&gt;  Under the assumption encoded in the graph: + 3/3 edges from 48623f8 (vertex names):
 #&gt; [1] X -&gt;Y Ur-&gt;X Ur-&gt;Y
+#&gt; Number of possible values of each variable: 
+#&gt;  X: 2, Y: 2 
 #&gt; No constraints have been specified 
 #&gt;  The bounds will be reported in terms of parameters of the form pab_, which represents the probability P(X = a, Y = b). 
 #&gt; Additional information is available in the following list elements: [1] "variables"            "parameters"           "constraints"         

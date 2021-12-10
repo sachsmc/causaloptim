@@ -7,11 +7,12 @@ reference:
       - specify_graph
       - causaloptim
   - title: "Direct interface"
-    desc: "Functions for creating and interacting with Balke's program."
+    desc: "Functions for creating and interacting with the algorithm."
     contents:
       - analyze_graph
       - optimize_effect
       - optimize_effect_2
+      - update_effect
       - interpret_bounds
       - simulate_bounds
       - latex_bounds
@@ -36,4 +37,11 @@ reference:
       - opt_effect
       - parse_constraints
       - pastestar
-      - reduce.sets 
+      - reduce.sets
+      - create_effect_vector
+      - create_q_matrix
+      - create_response_function
+      - create_R_matrix
+      - numberOfValues
+      - print_nvals
+      

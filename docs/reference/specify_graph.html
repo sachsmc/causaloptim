@@ -75,7 +75,7 @@ to an object. See below for information on what is returned." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.8.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -98,7 +98,7 @@ to an object. See below for information on what is returned." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/CausalBoundsMethods.pdf">Symbolic Computation of Tight Causal Bounds (PDF)</a>
+      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
     </li>
     <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
@@ -159,8 +159,8 @@ to an object. See below for information on what is returned.</p>
 <p></p><dl>
        <dt>graphres</dt><dd><p>The graph as drawn and interpreted, an aaa-igraph-package object.</p></dd>
        <dt>obj</dt><dd><p>The objective and all necessary supporting information. This object is 
-       documented in <a href='analyze_graph.html'>analyze_graph</a>. This can be passed directly to <a href='optimize_effect.html'>optimize_effect</a>.</p></dd>
-       <dt>bounds.obs</dt><dd><p>Object of class 'balkebound' as returned by <a href='optimize_effect.html'>optimize_effect</a>.</p></dd>
+       documented in <a href='analyze_graph.html'>analyze_graph</a>. This can be passed directly to <a href='optimize_effect_2.html'>optimize_effect_2</a>.</p></dd>
+       <dt>bounds.obs</dt><dd><p>Object of class 'balkebound' as returned by <a href='optimize_effect_2.html'>optimize_effect_2</a>.</p></dd>
        <dt>constraints</dt><dd><p>Character vector of the specified constraints. NULL if no constraints.</p></dd>
        <dt>effect</dt><dd><p>Text describing the causal effect of interest.</p></dd>
        <dt>boundsFunction</dt><dd><p>Function that takes parameters (observed probabilities) as arguments, and returns a vector of length 2 for the lower and upper bounds.</p></dd>

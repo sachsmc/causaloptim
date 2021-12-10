@@ -5,3 +5,4 @@ It was built using R 4.1.0 and checked on the following platforms:
 - Windows 10, R 4.1 on local machine
 - Win Builder dev and release
 - Rhub builder on linux platforms
+- Rhub builder on OSX

@@ -1,3 +1,9 @@
+# causaloptim 0.9.2
+
+## bug fixes
+
+- Fixed c++ compiler warning about length of buffer in Tableau.cpp 
+
 # causaloptim 0.9.1
 
 ## More big new features!

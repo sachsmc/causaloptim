@@ -7,7 +7,7 @@
 #include "SymConst.h"
 
 
-#define		LEN_STRING		256
+#define		LEN_STRING		1024
 
 #define		MAX_VERTICES	1000
 

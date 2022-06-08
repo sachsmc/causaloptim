@@ -209,7 +209,9 @@ function(input, output) {
                                      " = %s", "("))
                 
               }
-              def.eff <- paste0(def.eff, res, paste(rep(")", max(1, nvs - 1)), collapse =  ""), ifelse(j < length(effectpath), ", ", ""))
+              def.eff <- paste0(def.eff, res, paste(rep(")", 
+                                                        max(1, nvs - 1)), collapse =  ""), 
+                                ifelse(j < length(effectpath), ", ", ""))
               
             }
            

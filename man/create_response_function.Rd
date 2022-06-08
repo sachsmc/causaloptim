@@ -8,9 +8,8 @@ create_response_function(graph, right.vars, cond.vars)
 }
 \arguments{
 \item{graph}{An \link[igraph]{aaa-igraph-package} object that represents a
-directed acyclic graph must contain edge attributes named "leftside" and
-"lrconnect" that takes values 0 and 1. Only one edge may have a value 1 for
-lrconnect. The shiny app returns a graph in this format.}
+directed acyclic graph that contains certain edge attributes. 
+ The shiny app returns a graph in this format and see examples.}
 
 \item{right.vars}{Vertices of graph on the right side}
 
@@ -21,4 +20,15 @@ A list of functions representing the response functions
 }
 \description{
 Translate regular DAG to response functions
+}
+\examples{
+### confounded exposure and outcome
+b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+V(b)$nvals <- c(2,2,2)
+E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+cond.vars <- V(b)[V(b)$leftside == 1 & names(V(b)) != "Ul"]
+right.vars <- V(b)[V(b)$leftside == 0 & names(V(b)) != "Ur"] 
+create_response_function(b, right.vars, cond.vars)
 }

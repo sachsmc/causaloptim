@@ -287,7 +287,13 @@ parse_constraints <- function(constraints, obsnames) {
 #' latex_bounds(bounds$bounds, obj$parameters, "Pr")
 latex_bounds <- function(bounds, parameters, prob.sym = "P", brackets = c("(", ")")) {
     
-    lkeyup <- do.call(expand.grid, c(lapply(1:length(attr(parameters, "rightvars")), function(x) c("0", "1")), stringsAsFactors = FALSE))
+    
+    lkeys <- strsplit(gsub("p", "", sapply(strsplit(parameters, "_"), "[", 1)), "") 
+    lkeyup <- as.data.frame(do.call(rbind, lkeys))
+    # lkeyup <- do.call(expand.grid, 
+    #                   c(lapply(1:length(attr(parameters, "rightvars")), 
+    #                            function(x) c("0", "1")), stringsAsFactors = FALSE))
+    
     if(length(attr(parameters, "condvars")) == 0) {
         
         probstate <- lapply(1:nrow(lkeyup), function(i) {
@@ -309,7 +315,15 @@ latex_bounds <- function(bounds, parameters, prob.sym = "P", brackets = c("(", "
         
         nr <- length(attr(parameters, "rightvars"))
         nc <- length(attr(parameters, "condvars"))
-        lrkeyup <- do.call(expand.grid, c(lapply(1:(nr + nc), function(x) c("0", "1")), stringsAsFactors = FALSE))
+        
+        lrkeys <- lapply(strsplit(gsub("p", "", parameters), ""), function(x) {
+            x[x!= "_"]
+        }) 
+        lrkeyup <- as.data.frame(do.call(rbind, lrkeys))
+        
+        # lrkeyup <- do.call(expand.grid, c(lapply(1:(nr + nc), 
+        #                                          function(x) c("0", "1")), 
+        #                                   stringsAsFactors = FALSE))
         
         probstate <- lapply(1:nrow(lrkeyup), function(i) {
             

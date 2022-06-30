@@ -77,7 +77,7 @@ find_cycles = function(g) {
 #' @param graph The graph object, should have vertex attributes "outcome" and "exposure"
 #' 
 #' @return A string that can be passed to \link{parse_effect}
-get_default_effect <- function(graph) {
+get_default_effect <- function(graphres) {
     
     rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
     
@@ -90,6 +90,8 @@ get_default_effect <- function(graph) {
     } else {
         ## default total effect
         def.eff <- paste0(names(outc), "(")
+        stack <- c(")")
+        len.arg <- 0
         for(j in 1:length(effectpath)) {
             res <- ""
             nvs <- length(effectpath[[j]])
@@ -98,16 +100,33 @@ get_default_effect <- function(graph) {
                 res <- paste0(res, names(thisvar), 
                               ifelse(names(thisvar) == names(expo), 
                                      " = %s", "("))
+                if(names(thisvar) == names(expo)) {
+                    len.arg <- len.arg + 1
+                } else {
+                    stack <- c(stack, ")")
+                }
                 
             }
-            def.eff <- paste0(def.eff, res, paste(rep(")", 
-                                                      max(1, nvs - 1)), collapse =  ""), 
+            def.eff <- paste0(def.eff, res, 
                               ifelse(j < length(effectpath), ", ", ""))
             
+            #if((nvs - 1) > 1) {
+            #    stack <- c(stack, ")")
+            #}
         }
+        def.eff <- paste(def.eff, paste(stack, collapse = ""), sep = "")
         
         def.eff <- paste0("p{", def.eff, "=1}")
-        default.effect <- paste(sapply(c(1, 0), function(x) sprintf(def.eff, x, x)), collapse = " - ")
+        
+        
+        default.effect <- paste(sapply(c(1, 0), function(x){
+            
+            arg2 <- lapply(1:len.arg, function(i) x)
+            arg1 <- def.eff
+            do.call(sprintf, c(arg1, arg2))
+            
+            
+            }), collapse = " - ")
         
     }
         default.effect

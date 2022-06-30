@@ -190,34 +190,8 @@ function(input, output) {
             
             rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
             
-            expo <- V(graphres)[V(graphres)$exposure == 1]
-            outc <- V(graphres)[V(graphres)$outcome == 1]
-            effectpath <- all_simple_paths(graphres, from = expo, to = outc)
+            default.effect <- get_default_effect(graphres)
             
-            if(length(outc) == 0 | length(expo) == 0) {
-              default.effect <- ""
-            } else {
-            ## default total effect
-            def.eff <- paste0(names(outc), "(")
-            for(j in 1:length(effectpath)) {
-              res <- ""
-              nvs <- length(effectpath[[j]])
-              for(k in max(1, nvs - 1):1) {
-                thisvar <- effectpath[[j]][k]
-                res <- paste0(res, names(thisvar), 
-                              ifelse(names(thisvar) == names(expo), 
-                                     " = %s", "("))
-                
-              }
-              def.eff <- paste0(def.eff, res, paste(rep(")", 
-                                                        max(1, nvs - 1)), collapse =  ""), 
-                                ifelse(j < length(effectpath), ", ", ""))
-              
-            }
-           
-            def.eff <- paste0("p{", def.eff, "=1}")
-            default.effect <- paste(sapply(c(1, 0), function(x) sprintf(def.eff, x, x)), collapse = " - ")
-            }
             ##
             
             effectUI <- div(id = "effect", 

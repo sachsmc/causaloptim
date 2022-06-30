@@ -77,6 +77,7 @@ find_cycles = function(g) {
 #' @param graph The graph object, should have vertex attributes "outcome" and "exposure"
 #' 
 #' @return A string that can be passed to \link{parse_effect}
+#' @export
 get_default_effect <- function(graphres) {
     
     rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]

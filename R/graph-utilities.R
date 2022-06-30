@@ -74,7 +74,7 @@ find_cycles = function(g) {
 
 #' Define default effect for a given graph
 #' 
-#' @param graph The graph object, should have vertex attributes "outcome" and "exposure"
+#' @param graphres The graph object, should have vertex attributes "outcome" and "exposure"
 #' 
 #' @return A string that can be passed to \link{parse_effect}
 #' @export

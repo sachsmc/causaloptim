@@ -4,10 +4,10 @@
 \alias{get_default_effect}
 \title{Define default effect for a given graph}
 \usage{
-get_default_effect(graph)
+get_default_effect(graphres)
 }
 \arguments{
-\item{graph}{The graph object, should have vertex attributes "outcome" and "exposure"}
+\item{graphres}{The graph object, should have vertex attributes "outcome" and "exposure"}
 }
 \value{
 A string that can be passed to \link{parse_effect}

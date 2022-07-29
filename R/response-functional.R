@@ -126,6 +126,16 @@ analyze_graph <- function(graph, constraints, effectt) {
     
     interven.vars <- unique(unlist(chk0))
     
+    allnmes <- unique(c(interven.vars, unlist(lapply(effect$vars, names))))
+    
+    realnms <- names(V(graph))
+    if(any(!allnmes %in% realnms)) {
+        
+        stop(sprintf("Names %s in effect not specified in graph!", 
+                     paste(allnmes[which(!allnmes %in% realnms)], collapse = ", ")))
+        
+    }
+    
     ## check that children of intervention sets are on the right
     
     any.children.onleft <- sapply(interven.vars, function(v) {
@@ -144,16 +154,7 @@ analyze_graph <- function(graph, constraints, effectt) {
       stop(sprintf("Operator '%s' not allowed!", chk0["oper"]))
     }
     
-    allnmes <- unique(unlist(lapply(effect$vars, names)))
-    
-    realnms <- names(V(graph))
-    if(any(!allnmes %in% realnms)) {
-      
-      stop(sprintf("Names %s in effect not specified in graph!", 
-                       paste(allnmes[which(!allnmes %in% realnms)], collapse = ", ")))
-      
-    }
-    
+   
     if(length(names(cond.vars)) > 0) {
       
       chkpaths <- unlist(lapply(cond.vars, function(x){ 

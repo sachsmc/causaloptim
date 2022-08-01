@@ -284,7 +284,7 @@ function(input, output) {
             chkpaths <- unlist(lapply(cond.vars, function(x){ 
               pths <- all_simple_paths(graph, from = x, to = allnmes, mode = "out")
               unlist(lapply(pths, function(pth) {
-                all(interven.vars %in% names(pth))
+                any(interven.vars %in% names(pth))
                 
               }))
             }))

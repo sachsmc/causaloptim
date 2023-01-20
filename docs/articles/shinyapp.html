@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,32 +33,23 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/CausalBoundsMethods.pdf">A General Method for Deriving Tight Symbolic Bounds on Causal Effects (PDF)</a>
-    </li>
-    <li>
       <a href="../articles/example-code.html">Code from examples in manuscript</a>
     </li>
     <li>
@@ -73,7 +66,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/sachsmc/causaloptim/">
+  <a href="https://github.com/sachsmc/causaloptim/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -88,13 +81,14 @@
 
       
 
-      </header><script src="shinyapp_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>How to use the causaloptim Shiny app to analyze graphs</h1>
+      <h1 data-toc-skip>How to use the causaloptim Shiny app to analyze
+graphs</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/sachsmc/causaloptim/blob/master/vignettes/shinyapp.Rmd"><code>vignettes/shinyapp.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/sachsmc/causaloptim/blob/HEAD/vignettes/shinyapp.Rmd" class="external-link"><code>vignettes/shinyapp.Rmd</code></a></small>
       <div class="hidden name"><code>shinyapp.Rmd</code></div>
 
     </div>
@@ -102,38 +96,91 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim">causaloptim</a></span><span class="op">)</span></code></pre></div>
-<p>Run the Shiny application like so. The result is assigned to an objected called <code>results</code> so that you can save the results that are produced in the web interface.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim" class="external-link">causaloptim</a></span><span class="op">)</span></span></code></pre></div>
+<p>Run the Shiny application like so. The result is assigned to an
+objected called <code>results</code> so that you can save the results
+that are produced in the web interface.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/specify_graph.html">specify_graph</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>A new window in your system’s default web browser is opened with the following interface:</p>
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/specify_graph.html">specify_graph</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>A new window in your system’s default web browser is opened with the
+following interface:</p>
 <div class="figure">
 <img src="screen1.png" alt=""><p class="caption">Startup</p>
 </div>
-<p>The instructions at the top provide details on how to specify the graph. The graph is divided into a left side and a right side. There is no confounding allowed between the left and right sides. All variables on the right side are confounded. Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. On the left side, arbitrary connections are allowed and the model assumes that all nodes are observed and connected. On the right side, unmeasured variables are allowed, and the procedure assumes unmeasured confounding between all nodes. These restrictions are sufficient to ensure that the problem can be solved analytically using linear optimization.</p>
-<p>In the main window below the text, Shift+click to add nodes. When a node is added, you are prompted to give it a name. Make sure that you use a valid R variable name. This means it cannot start with a number, and cannot contain spaces or special characters. Single capital letters are good choices, possibly with trailing numbers.</p>
+<p>The instructions at the top provide details on how to specify the
+graph. The graph is divided into a left side and a right side. There is
+no confounding allowed between the left and right sides. All variables
+on the right side are confounded. Connections between the left and right
+sides must originate from the left. I.e, no connections from the right
+to left are allowed. On the left side, arbitrary connections are allowed
+and the model assumes that all nodes are observed and connected. On the
+right side, unmeasured variables are allowed, and the procedure assumes
+unmeasured confounding between all nodes. These restrictions are
+sufficient to ensure that the problem can be solved analytically using
+linear optimization.</p>
+<p>In the main window below the text, Shift+click to add nodes. When a
+node is added, you are prompted to give it a name. Make sure that you
+use a valid R variable name. This means it cannot start with a number,
+and cannot contain spaces or special characters. Single capital letters
+are good choices, possibly with trailing numbers.</p>
 <div class="figure">
 <img src="screen2.png" alt=""><p class="caption">Naming nodes</p>
 </div>
-<p>Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press ‘u’ to mark it as unobserved/latent. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press ‘c’ and enter a number into the prompt. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.</p>
+<p>Click on an existing node to select it, and shift+click on a node to
+change the name. Shift+drag to connect nodes. Remember than no edges may
+go from the right side to the left side. Click a node to select and then
+press ‘u’ to mark it as unobserved/latent. Select a node and press a
+digit to set that number of possible categorical values (all variables
+default to binary), or press ‘c’ and enter a number into the prompt.
+Click to select nodes/edges and press delete to remove. If there are
+problems selecting nodes, try restarting your browser.</p>
 <div class="figure">
 <img src="screen3.png" alt=""><p class="caption">Connections</p>
 </div>
-<p>Once we have our graph specified, we can optionally make some annotations. You must specify the outcome of interest, and the exposure of interest. Select the outcome node and press ‘y’ to mark it as the outcome of interest, and then select the exposure node and press ‘e’ to mark it as the exposure of interest. The default causal contrast is the total effect. The exposure will be colored blue, and the outcome colored red.</p>
+<p>Once we have our graph specified, we can optionally make some
+annotations. You must specify the outcome of interest, and the exposure
+of interest. Select the outcome node and press ‘y’ to mark it as the
+outcome of interest, and then select the exposure node and press ‘e’ to
+mark it as the exposure of interest. The default causal contrast is the
+total effect. The exposure will be colored blue, and the outcome colored
+red.</p>
 <div class="figure">
 <img src="screen4.png" alt=""><p class="caption">Final graph</p>
 </div>
-<p>We now have a graph specified that is ready to be analyzed. Optionally, click an edge and press ‘m’ to enforce monotonicity for that connection. If you are ready to analyze the object click on the “Press to analyze the graph button”. The program interprets the graph, converts it to an <code>igraph</code> object with annotations, and prints the result from R. Inspect the resulting graph carefully so that you understand what is being analyzed.</p>
-<div id="specifying-the-causal-effect-of-interest" class="section level2">
-<h2 class="hasAnchor">
-<a href="#specifying-the-causal-effect-of-interest" class="anchor"></a>Specifying the causal effect of interest</h2>
-<p>The next step is to use the text box to specify the causal effect of interest. In our current example, we are interested in the causal risk difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The optimizer will compute bounds for the expected value of this quantity.</p>
+<p>We now have a graph specified that is ready to be analyzed.
+Optionally, click an edge and press ‘m’ to enforce monotonicity for that
+connection. If you are ready to analyze the object click on the “Press
+to analyze the graph button”. The program interprets the graph, converts
+it to an <code>igraph</code> object with annotations, and prints the
+result from R. Inspect the resulting graph carefully so that you
+understand what is being analyzed.</p>
+<div class="section level2">
+<h2 id="specifying-the-causal-effect-of-interest">Specifying the causal effect of interest<a class="anchor" aria-label="anchor" href="#specifying-the-causal-effect-of-interest"></a>
+</h2>
+<p>The next step is to use the text box to specify the causal effect of
+interest. In our current example, we are interested in the causal risk
+difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The
+optimizer will compute bounds for the expected value of this
+quantity.</p>
 <div class="figure">
 <img src="screen5.png" alt=""><p class="caption">Interpreted graph</p>
 </div>
-<p>Use the text box to describe your causal effect of interest. The effects must be of the form</p>
+<p>Use the text box to describe your causal effect of interest. The
+effects must be of the form</p>
 <pre><code>p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...</code></pre>
-<p>where <code>Vij</code> are names of variables in the graph, <code>a, b</code> are corresponding values, and <code>op</code> are either <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code> or <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by <code>;</code>. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as <code>p{Y = 1}</code> are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:</p>
+<p>where <code>Vij</code> are names of variables in the graph,
+<code>a, b</code> are corresponding values, and <code>op</code> are
+either <code>-</code> or <code>+</code>. You can specify a single
+probability statement (i.e., no operator). Note that the probability
+statements begin with little p, and use curly braces, and items inside
+the probability statements are separated by <code>;</code>. The
+variables may be potential outcomes which are denoted by parentheses.
+Variables may also be nested inside potential outcomes. Pure
+observations such as <code>p{Y = 1}</code> are not allowed if the left
+side contains any variables. If the left side contains any variables,
+then they mush be ancestors of the intervention set variables (or the
+intervention variables themselves). All of the following are valid
+effect statements:</p>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 p{X(Z = 1) = 1; X(Z = 0) = 0}
 p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
@@ -141,67 +188,90 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 <pre><code>p{Y(X = 1) = 1} - p{Y(X = 0) = 1}</code></pre>
 <p>then click the “parse” button to fix the effect.</p>
 </div>
-<div id="specifying-constraints-optional" class="section level2">
-<h2 class="hasAnchor">
-<a href="#specifying-constraints-optional" class="anchor"></a>Specifying constraints (optional)</h2>
-<p>Once the causal effect of interest has been specified, you may optionally specify some constraints. Click the button to start the constraint interface.</p>
-<p>Here you can specify potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). In our example, we can specify monotonicity of the instrument Z by defining the constraint X(Z = 1) <span class="math inline">\(\geq\)</span> X(Z = 0):</p>
-<pre><code>X(Z = 1) &gt;= X(Z = 0)</code></pre>
+<div class="section level2">
+<h2 id="specifying-constraints-optional">Specifying constraints (optional)<a class="anchor" aria-label="anchor" href="#specifying-constraints-optional"></a>
+</h2>
+<p>Once the causal effect of interest has been specified, you may
+optionally specify some constraints. Click the button to start the
+constraint interface.</p>
+<p>Here you can specify potential outcomes to constrain by writing the
+potential outcomes, values of their parents, and operators that
+determine the constraint (equalities or inequalities). In our example,
+we can specify monotonicity of the instrument Z by defining the
+constraint X(Z = 1) <span class="math inline">\(\geq\)</span> X(Z =
+0):</p>
+<pre><code><span><span class="fu">X</span><span class="op">(</span>Z <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu">X</span><span class="op">(</span>Z <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre>
 <p>then click parse.</p>
 </div>
-<div id="computation-of-the-bounds" class="section level2">
-<h2 class="hasAnchor">
-<a href="#computation-of-the-bounds" class="anchor"></a>Computation of the bounds</h2>
-<p>Once you have inspected the graph, specified the causal effect, and understand what is being analyzed, press the final button to compute the bounds.</p>
-<p>The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see the paper that doesn’t exist yet. The final button allows you to return all of the objects back to the R environment and store them in <code>results</code>.</p>
-<p>The <code>results</code> object contains the graph, the parameterization and interpretation of the graph in terms of the variables and parameters, the bounds and log information about the optimization procedure, and an R function that implements the bounds:</p>
+<div class="section level2">
+<h2 id="computation-of-the-bounds">Computation of the bounds<a class="anchor" aria-label="anchor" href="#computation-of-the-bounds"></a>
+</h2>
+<p>Once you have inspected the graph, specified the causal effect, and
+understand what is being analyzed, press the final button to compute the
+bounds.</p>
+<p>The results are summarized in plain text. The bounds are expressed as
+the minimum/maximum of a series of expressions involving the conditional
+probabilities of the observed variables. For more details on the method
+see the paper that doesn’t exist yet. The final button allows you to
+return all of the objects back to the R environment and store them in
+<code>results</code>.</p>
+<p>The <code>results</code> object contains the graph, the
+parameterization and interpretation of the graph in terms of the
+variables and parameters, the bounds and log information about the
+optimization procedure, and an R function that implements the
+bounds:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt; [1] "graphres"       "obj"            "bounds.obs"     "constraints"   </span>
-<span class="co">#&gt; [5] "effect"         "boundsFunction"</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">)</span>
-<span class="co">#&gt; lower bound =  </span>
-<span class="co">#&gt; MAX {</span>
-<span class="co">#&gt;   p00_0 - p00_1 - p10_1 - p01_1</span>
-<span class="co">#&gt; }</span>
-<span class="co">#&gt; ----------------------------------------</span>
-<span class="co">#&gt; upper bound =  </span>
-<span class="co">#&gt; MIN {</span>
-<span class="co">#&gt;   1 - p10_1 - p01_0</span>
-<span class="co">#&gt; }</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">boundsFunction</span><span class="op">)</span>
-<span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span>
-<span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span>
-<span class="co">#&gt; {</span>
-<span class="co">#&gt;     lb &lt;- pmax(p00_0 - p00_1 - p10_1 - p01_1)</span>
-<span class="co">#&gt;     ub &lt;- pmin(1 - p10_1 - p01_0)</span>
-<span class="co">#&gt;     if (any(ub &lt; lb)) {</span>
-<span class="co">#&gt;         warning("Invalid bounds! Data probably does not satisfy the assumptions in the DAG!")</span>
-<span class="co">#&gt;     }</span>
-<span class="co">#&gt;     data.frame(lower = lb, upper = ub)</span>
-<span class="co">#&gt; }</span></code></pre></div>
-<p>The results object can also be used to numerically simulate the bounds. Try using the <code>simulate_bounds</code> function.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "graphres"       "obj"            "bounds.obs"     "constraints"   </span></span>
+<span><span class="co">#&gt; [5] "effect"         "boundsFunction"</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">)</span></span>
+<span><span class="co">#&gt; lower bound =  </span></span>
+<span><span class="co">#&gt; MAX {</span></span>
+<span><span class="co">#&gt;   p00_0 - p00_1 - p10_1 - p01_1</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; ----------------------------------------</span></span>
+<span><span class="co">#&gt; upper bound =  </span></span>
+<span><span class="co">#&gt; MIN {</span></span>
+<span><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
+<span><span class="co">#&gt; }</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">boundsFunction</span><span class="op">)</span></span>
+<span><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
+<span><span class="co">#&gt;     p01_0 = NULL, p01_1 = NULL, p11_0 = NULL, p11_1 = NULL) </span></span>
+<span><span class="co">#&gt; {</span></span>
+<span><span class="co">#&gt;     lb &lt;- pmax(p00_0 - p00_1 - p10_1 - p01_1)</span></span>
+<span><span class="co">#&gt;     ub &lt;- pmin(1 - p10_1 - p01_0)</span></span>
+<span><span class="co">#&gt;     if (any(ub &lt; lb)) {</span></span>
+<span><span class="co">#&gt;         warning("Invalid bounds! Data probably does not satisfy the assumptions in the DAG!")</span></span>
+<span><span class="co">#&gt;     }</span></span>
+<span><span class="co">#&gt;     data.frame(lower = lb, upper = ub)</span></span>
+<span><span class="co">#&gt; }</span></span></code></pre></div>
+<p>The results object can also be used to numerically simulate the
+bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span>
-<span class="co">#&gt;     objective  bound.lower bound.upper</span>
-<span class="co">#&gt; 1 -0.07571605 -0.462294628   0.2401344</span>
-<span class="co">#&gt; 2  0.34161555  0.005710439   0.5910309</span>
-<span class="co">#&gt; 3  0.11401841 -0.321426345   0.3551550</span>
-<span class="co">#&gt; 4  0.02553395 -0.325267661   0.4486846</span>
-<span class="co">#&gt; 5 -0.04384350 -0.369795357   0.2838969</span>
-<span class="co">#&gt; 6  0.11160934 -0.233296766   0.3981532</span></code></pre></div>
-<p>We also provide a helper function to print the bounds as latex equations. Use the <code>latex_bounds</code> function.</p>
+<code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
+<span><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
+<span><span class="co">#&gt; 1  0.03064386  -0.2364324  0.38918969</span></span>
+<span><span class="co">#&gt; 2 -0.31735330  -0.6112535  0.05960512</span></span>
+<span><span class="co">#&gt; 3 -0.01815844  -0.1840196  0.43831214</span></span>
+<span><span class="co">#&gt; 4  0.07209910  -0.2723190  0.45283182</span></span>
+<span><span class="co">#&gt; 5 -0.16732491  -0.4438953  0.35951738</span></span>
+<span><span class="co">#&gt; 6 -0.23609721  -0.5211721  0.14759893</span></span></code></pre></div>
+<p>We also provide a helper function to print the bounds as latex
+equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><span class="math display">\[ 
- \mbox{Lower bound} =   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) 
- \]</span> <span class="math display">\[ 
- \mbox{Upper bound} =   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) 
- \]</span></p>
-<p>Please sends any bugs or feedback to <a href="mailto:michael.sachs@ki.se" class="email">michael.sachs@ki.se</a> or file an issue on <a href="https://github.com/sachsmc/causaloptim" class="uri">https://github.com/sachsmc/causaloptim</a> .</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><span class="math display">\[
+\mbox{Lower bound} =   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1)
+- P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1)
+\]</span> <span class="math display">\[
+\mbox{Upper bound} =   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z
+= 0)
+\]</span></p>
+<p>Please sends any bugs or feedback to <a href="mailto:michael.sachs@ki.se" class="email">michael.sachs@ki.se</a>
+or file an issue on <a href="https://github.com/sachsmc/causaloptim" class="external-link uri">https://github.com/sachsmc/causaloptim</a> .</p>
 </div>
   </div>
 
@@ -216,11 +286,13 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Michael C Sachs, Erin E Gabriel, Arvid Sjölander.</p>
+  <p></p>
+<p>Developed by Michael C Sachs, Erin E Gabriel, Arvid Sjölander.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -228,6 +300,8 @@ p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}</code></pre>
 
   
 
+
+  
 
   </body>
 </html>

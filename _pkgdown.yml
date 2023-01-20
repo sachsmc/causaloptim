@@ -24,6 +24,7 @@ reference:
       - plot_graphres
       - symb.subtract
       - parse_effect
+      - get_default_effect
       - shortentxt
       - btm_var
       - const.to.sets

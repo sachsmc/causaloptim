@@ -1,3 +1,8 @@
+# causaloptim 0.9.3
+
+- Minor bug fixes in Balke's old code
+- removed methods vignette and linked to published article instead (it is open access, please email me if you can't access it)
+
 # causaloptim 0.9.2
 
 ## bug fixes

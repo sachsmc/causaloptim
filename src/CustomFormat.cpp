@@ -25,8 +25,8 @@ char * FormatReal
 	char		PadChar;
 					// Character to replace trailing zeroes with.
 
-	sprintf (szFormat, "%%%d.%dlf", p_Width, p_Decimal);
-	sprintf (p_szTarget, szFormat, p_Real);
+	snprintf (szFormat, 20, "%%%d.%dlf", p_Width, p_Decimal);
+	snprintf (p_szTarget, 256, szFormat, p_Real);
 
 	if (p_Decimal != 0)		// There are trailing decimal places.
 	{

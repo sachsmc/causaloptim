@@ -455,7 +455,7 @@ char * CEquation_ :: BuildOutput
 		 */
 		if (Coef < 0.0)
 		{
-			sprintf (szSign, "-%s", szSeperator);
+			snprintf (szSign,3, "-%s", szSeperator);
 			Coef = -Coef;
 		}
 		else
@@ -463,7 +463,7 @@ char * CEquation_ :: BuildOutput
 			if (bFirstCoef)
 				strcpy (szSign, "");
 			else
-				sprintf (szSign, "+%s", szSeperator);
+				snprintf (szSign,3, "+%s", szSeperator);
 		}
 
 		/*
@@ -476,12 +476,12 @@ char * CEquation_ :: BuildOutput
 		 */
 		if (Approx(Coef,1.0,Leeway) ||
 			Approx(Coef,-1.0,Leeway))
-			sprintf (szTerm, "%s%s%s",
+			snprintf (szTerm, 50, "%s%s%s",
 					 szTermSep,
 					 szSign,
 					 m_pVariables-> GetName (nSymbol));
 		else
-			sprintf (szTerm, "%s%s%s%s%s",
+			snprintf (szTerm, 50, "%s%s%s%s%s",
 					 szTermSep,
 					 szSign,
 					 szReal,
@@ -514,7 +514,7 @@ char * CEquation_ :: BuildOutput
 		 */
 		if (Coef < 0.0)
 		{
-			sprintf (szSign, "-%s", szSeperator);
+			snprintf (szSign,3, "-%s", szSeperator);
 			Coef = -Coef;
 		}
 		else
@@ -522,7 +522,7 @@ char * CEquation_ :: BuildOutput
 			if (bFirstCoef)
 				strcpy (szSign, "");
 			else
-				sprintf (szSign, "+%s", szSeperator);
+				snprintf (szSign,3, "+%s", szSeperator);
 		}
 
 		/*
@@ -535,12 +535,12 @@ char * CEquation_ :: BuildOutput
 		 */
 		if (Approx(Coef,1.0,Leeway) ||
 			Approx(Coef,-1.0,Leeway))
-			sprintf (szTerm, "%s%s%s",
+			snprintf (szTerm,50, "%s%s%s",
 					 szTermSep,
 					 szSign,
 					 m_pParameters-> GetName (nSymbol));
 		else
-			sprintf (szTerm, "%s%s%s%s%s",
+			snprintf (szTerm, 50, "%s%s%s%s%s",
 					 szTermSep,
 					 szSign,
 					 szReal,
@@ -571,7 +571,7 @@ char * CEquation_ :: BuildOutput
 		 */
 		if (Coef < 0.0)
 		{
-			sprintf (szSign, "-%s", szSeperator);
+			snprintf (szSign,3, "-%s", szSeperator);
 			Coef = -Coef;
 		}
 		else
@@ -579,7 +579,7 @@ char * CEquation_ :: BuildOutput
 			if (bFirstCoef)
 				strcpy (szSign, "");
 			else
-				sprintf (szSign, "+%s", szSeperator);
+				snprintf (szSign,3, "+%s", szSeperator);
 		}
 
 		/*
@@ -590,7 +590,7 @@ char * CEquation_ :: BuildOutput
 		/*
 		 * Format the entire term, and concatenate it to the output string.
 		 */
-		sprintf (szTerm, "%s%s%s",
+		snprintf (szTerm,50, "%s%s%s",
 				 szTermSep,
 				 szSign,
 				 szReal);
@@ -603,15 +603,15 @@ char * CEquation_ :: BuildOutput
 	switch (m_RelationToZero)
 	{
 	  case RTZ_Equal:
-	  	sprintf (szTerm, "%s=%s0", szTermSep, szTermSep);
+	  	snprintf (szTerm,50, "%s=%s0", szTermSep, szTermSep);
 		break;
 
 	  case RTZ_EqualOrGreater:
-	  	sprintf (szTerm, "%s>=%s0", szTermSep, szTermSep);
+	  	snprintf (szTerm,50, "%s>=%s0", szTermSep, szTermSep);
 	  	break;
 
 	  case RTZ_EqualOrLess:
-	  	sprintf (szTerm, "%s<=%s0", szTermSep, szTermSep);
+	  	snprintf (szTerm,50, "%s<=%s0", szTermSep, szTermSep);
 		break;
 
 	  default:

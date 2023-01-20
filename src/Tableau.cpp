@@ -124,13 +124,13 @@ void CTableau :: Setup (
 	for (nRow = 0; nRow < p_Rows; nRow++)
 	{
 		nVar = 1 + m_ParamCnt + 1 + nRow;
-		sprintf (m_pVarLabels [nVar], "$%02d", nRow);
+		snprintf (m_pVarLabels [nVar],1024, "$%02d", nRow);
 	}
 
 	for (nAug = 0; nAug < m_AugCnt; nAug++)
 	{
 		nVar = 1 + m_ParamCnt + 1 + p_Rows + nAug;
-		sprintf (m_pVarLabels [nVar], "@%02d", nAug);
+		snprintf (m_pVarLabels [nVar],1024, "@%02d", nAug);
 	}
 
 
@@ -574,7 +574,7 @@ std::string CTableau :: DecisionDisplay ()
 	result.append ("Basis");
 	for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 	{
-		sprintf (buffer, "%7s", m_pVarLabels [m_pBasisVars [nBasis]]);
+		snprintf (buffer,100, "%7s", m_pVarLabels [m_pBasisVars [nBasis]]);
 	    result.append (buffer);
 	}
 	result.append ("\n");
@@ -589,11 +589,11 @@ std::string CTableau :: DecisionDisplay ()
 		if (nBasis < m_BasisCnt)
 			continue;
 
-		sprintf (buffer, "%7s", m_pVarLabels [nVar]);
+		snprintf (buffer,100, "%7s", m_pVarLabels [nVar]);
 		result.append(buffer); 
 		for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 		{
-			sprintf (buffer, "%7.3lf", m_pTable [nBasis][nVar]);
+			snprintf (buffer, 100, "%7.3lf", m_pTable [nBasis][nVar]);
 		    result.append(buffer);
 		}
 		result.append ("\n");
@@ -602,7 +602,7 @@ std::string CTableau :: DecisionDisplay ()
 	result.append ( "Sol");
 	for (nBasis = 0; nBasis < m_BasisCnt; nBasis++)
 	{
-		sprintf (buffer, "%7.3lf", m_pSolution [nBasis]);
+		snprintf (buffer,100, "%7.3lf", m_pSolution [nBasis]);
 	    result.append(buffer); 
 	}
 	result.append ("\n\n");
@@ -1124,7 +1124,7 @@ std::string CTableau :: VertexEnumerate ()
 	{
 		if (m_pSlackFlag [nSlack] == 0)
 		{
-			sprintf (buffer, "\t%d\n", nSlack);
+			snprintf (buffer,1024, "\t%d\n", nSlack);
 		    result.append(buffer);
 		}
 	}
@@ -1372,7 +1372,7 @@ std::string CTableau :: DisplayVertices ()
 	result.append ("\n\n");
 	for (nParam = 0; nParam < m_ParamCnt; nParam++)
 	{
-		sprintf (buffer, "%6s ", m_pVarLabels [nParam + 1]);
+		snprintf (buffer, 1024, "%6s ", m_pVarLabels [nParam + 1]);
 	    result.append(buffer);
 	}
 	result.append ("\n\n");
@@ -1381,7 +1381,7 @@ std::string CTableau :: DisplayVertices ()
 	{
 		for (nParam = 0; nParam < m_ParamCnt; nParam++)
 		{
-			sprintf (buffer, "%6.3lf ", m_pVertices [nVertex][nParam]);
+			snprintf (buffer,1024, "%6.3lf ", m_pVertices [nVertex][nParam]);
 		    result.append(buffer);
 		}
 		result.append ("\n");

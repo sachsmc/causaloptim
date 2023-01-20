@@ -504,7 +504,7 @@ std::string COptimization_ :: Display ()
 		for (nConst = 0; nConst < m_pOrigConstraints-> m_Count; nConst++)
 		{
 			m_pOrigConstraints-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			sprintf (buffer, "\t%s\n", szString);
+			snprintf (buffer, 2048,"\t%s\n", szString);
 			result.append(buffer);
 		}
 	}
@@ -518,7 +518,7 @@ std::string COptimization_ :: Display ()
 		for (nConst = 0; nConst < m_pOrigEqualities-> m_Count; nConst++)
 		{
 			m_pOrigEqualities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			sprintf (buffer, "\t%s\n", szString);
+			snprintf (buffer, 2048, "\t%s\n", szString);
 			result.append(buffer);
 		}
 	}
@@ -532,7 +532,7 @@ std::string COptimization_ :: Display ()
 		for (nConst = 0; nConst < m_pOrigInequalities-> m_Count; nConst++)
 		{
 			m_pOrigInequalities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			sprintf (buffer, "\t%s\n", szString);
+			snprintf (buffer, 2048, "\t%s\n", szString);
 			result.append(buffer);
 		}
 	}
@@ -544,7 +544,7 @@ std::string COptimization_ :: Display ()
 	{
 		result.append ("Objective:\n");
 		m_pOrigObjective-> BuildOutput (szString, 3, TRUE);
-		sprintf (buffer, "\t%s\n", szString);
+		snprintf (buffer,2048, "\t%s\n", szString);
 		result.append(buffer);
 	}
 
@@ -557,7 +557,7 @@ std::string COptimization_ :: Display ()
 		for (nConst = 0; nConst < m_pReducedInequalities-> m_Count; nConst++)
 		{
 			m_pReducedInequalities-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			sprintf (buffer, "\t%s\n", szString);
+			snprintf (buffer,2048, "\t%s\n", szString);
 			result.append(buffer);
 		}
 	}
@@ -569,7 +569,7 @@ std::string COptimization_ :: Display ()
 	{
 		result.append ("Reduced Objective:\n");
 		m_pReducedObjective-> BuildOutput (szString, 3, TRUE);
-		sprintf (buffer, "\t%s\n", szString);
+		snprintf (buffer,2048, "\t%s\n", szString);
 		result.append(buffer);
 	}
 
@@ -580,7 +580,7 @@ std::string COptimization_ :: Display ()
 	{
 		result.append ("Reduced Objective's Excess Terms:\n");
 		m_pObjectiveExcessTerm-> BuildOutput (szString, 3, TRUE);
-		sprintf (buffer, "\t%s\n", szString);
+		snprintf(buffer, 2048, "\t%s\n", szString);
 		result.append(buffer);
 	}
 
@@ -593,7 +593,7 @@ std::string COptimization_ :: Display ()
 		for (nConst = 0; nConst < m_pBValues-> m_Count; nConst++)
 		{
 			m_pBValues-> m_pEquations [nConst]. BuildOutput (szString, 3, TRUE);
-			sprintf (buffer, "\t%s\n", szString);
+			snprintf(buffer, 2048, "\t%s\n", szString);
 			result.append(buffer);
 		}
 	}
@@ -999,7 +999,7 @@ std::string COptimization_ :: EnumerateVertices ()
 	pLabels = new Label_ [Columns];
 	for (nInequality = 0; nInequality < Columns; nInequality++)
 	{
-		sprintf (pLabels [nInequality], "y%03d", nInequality + 1);
+		snprintf (pLabels [nInequality], 1024, "y%03d", nInequality + 1);
 	}
 
 
@@ -1032,7 +1032,7 @@ std::string COptimization_ :: EnumerateVertices ()
 		result.append ("\t");
 		for (nInequality = 0; nInequality < Columns; nInequality++)
 		{
-			sprintf (buffer, "%5.2f ", pMatrixA [nVar][nInequality]);
+			snprintf(buffer, 1024, "%5.2f ", pMatrixA [nVar][nInequality]);
 		    result.append(buffer);
 		}
 		result.append("\n");
@@ -1051,7 +1051,7 @@ std::string COptimization_ :: EnumerateVertices ()
 	result.append ("Vector B\n");
 	for (nVar = 0; nVar < Rows; nVar++)
 	{
-		sprintf (buffer, "\t%5.2f\n", pVectorB [nVar]);
+		snprintf(buffer, 1024, "\t%5.2f\n", pVectorB [nVar]);
 	    result.append(buffer);
 	}
 	result.append ("\n");

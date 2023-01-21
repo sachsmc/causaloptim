@@ -49,7 +49,7 @@ Balke even wrote a command line program in C++ that computes them, given such a 
 His program has been used successfully by researchers in causal inference since then, but has had a few issues preventing it from wider adoption among applied researchers. 
 
 `causaloptim` was written to solve these problems. 
-It can handle the generalized class of problems defined in [Sachs & Gabriel & Sjölander]^[https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf]. 
+It can handle the generalized class of problems defined in [Sachs & Jonzon & Gabriel & Sjölander]^[https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905]. 
 It removes the burden of translating the causal problem into an LP and has an intuitive graphical user interface that guides the user through specifying their DAG and causal query. 
 It has until version `0.7.1` used Balke's code for the optimization. However, for non-trivial instances of the generalized class that `causaloptim` handles, the original optimization algorithm has not been up to the task.
 

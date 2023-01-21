@@ -4,15 +4,6 @@
     <loc>/404.html</loc>
   </url>
   <url>
-    <loc>/EuroCIM2020-Slides/index.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>/articles/CausalBoundsMethods.html</loc>
   </url>
   <url>
@@ -31,7 +22,16 @@
     <loc>/authors.html</loc>
   </url>
   <url>
+    <loc>/EuroCIM2020-Slides/index.html</loc>
+  </url>
+  <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>/LICENSE.html</loc>
   </url>
   <url>
     <loc>/news/index.html</loc>
@@ -55,9 +55,6 @@
     <loc>/reference/constant_term.html</loc>
   </url>
   <url>
-    <loc>/reference/create_R_matrix.html</loc>
-  </url>
-  <url>
     <loc>/reference/create_effect_vector.html</loc>
   </url>
   <url>
@@ -65,6 +62,9 @@
   </url>
   <url>
     <loc>/reference/create_response_function.html</loc>
+  </url>
+  <url>
+    <loc>/reference/create_R_matrix.html</loc>
   </url>
   <url>
     <loc>/reference/evaluate_objective.html</loc>
@@ -100,13 +100,13 @@
     <loc>/reference/numberOfValues.html</loc>
   </url>
   <url>
-    <loc>/reference/opt_effect.html</loc>
-  </url>
-  <url>
     <loc>/reference/optimize_effect.html</loc>
   </url>
   <url>
     <loc>/reference/optimize_effect_2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/opt_effect.html</loc>
   </url>
   <url>
     <loc>/reference/parse_constraints.html</loc>

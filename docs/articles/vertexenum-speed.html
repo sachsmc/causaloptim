@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
       </span>
     </div>
 
@@ -150,8 +150,8 @@ has been used successfully by researchers in causal inference since
 then, but has had a few issues preventing it from wider adoption among
 applied researchers.</p>
 <p><code>causaloptim</code> was written to solve these problems. It can
-handle the generalized class of problems defined in [Sachs &amp; Gabriel
-&amp; Sjölander]<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. It removes the burden of translating the
+handle the generalized class of problems defined in [Sachs &amp; Jonzon
+&amp; Gabriel &amp; Sjölander]<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. It removes the burden of translating the
 causal problem into an LP and has an intuitive graphical user interface
 that guides the user through specifying their DAG and causal query. It
 has until version <code>0.7.1</code> used Balke’s code for the
@@ -234,10 +234,10 @@ compare:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> </span>
 <span><span class="co">#&gt;           lower      upper</span></span>
-<span><span class="co">#&gt; q0_0 -0.1776401 0.09304862</span></span>
+<span><span class="co">#&gt; q0_0 -0.8497802 -0.7039564</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           lower      upper</span></span>
-<span><span class="co">#&gt; q0_0 -0.1776401 0.09304862</span></span></code></pre></div>
+<span><span class="co">#&gt; q0_0 -0.8497802 -0.7039564</span></span></code></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end
 optimization algorithm and implementation. To see how it fits into the
@@ -438,7 +438,7 @@ problems that it can handle!</p>
 <hr>
 <ol>
 <li id="fn1"><p><a href="https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf" class="external-link uri">https://ftp.cs.ucla.edu/pub/stat_ser/R213-B.pdf</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p><a href="https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf" class="external-link uri">https://sachsmc.github.io/causaloptim/articles/CausalBoundsMethods.pdf</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905" class="external-link uri">https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p><a href="https://en.wikipedia.org/wiki/Dual_linear_program#Strong_duality" class="external-link uri">https://en.wikipedia.org/wiki/Dual_linear_program#Strong_duality</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p><a href="https://en.wikipedia.org/wiki/Fundamental_theorem_of_linear_programming" class="external-link uri">https://en.wikipedia.org/wiki/Fundamental_theorem_of_linear_programming</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li id="fn5"><p><a href="https://people.inf.ethz.ch/fukudak/cdd_home/" class="external-link uri">https://people.inf.ethz.ch/fukudak/cdd_home/</a><a href="#fnref5" class="footnote-back">↩︎</a></p></li>
@@ -464,7 +464,7 @@ problems that it can handle!</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>

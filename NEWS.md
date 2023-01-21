@@ -1,7 +1,8 @@
 # causaloptim 0.9.3
 
-- Minor bug fixes in Balke's old code
+- Minor bug fixes in Balke's old code (sprintf -> snprintf)
 - removed methods vignette and linked to published article instead (it is open access, please email me if you can't access it)
+- bugfix to ensure parameters get removed if constraints make them impossible
 
 # causaloptim 0.9.2
 

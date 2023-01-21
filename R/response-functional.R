@@ -118,6 +118,8 @@ analyze_graph <- function(graph, constraints, effectt) {
     linconstr.list <- create_R_matrix(graph, obsvars, respvars, 
                                       p.vals, parameters, q.list, variables)
     
+    parameters <- linconstr.list$newparams
+    p.vals <- linconstr.list$newpvals
     ## determine objective based on exposure and outcome in terms of qs
 
     effect <- parse_effect(effectt)

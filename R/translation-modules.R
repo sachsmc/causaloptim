@@ -313,7 +313,7 @@ create_R_matrix <- function(graph, obsvars, respvars, p.vals, parameters, q.list
     baseind[1:nrow(p.vals)] <- TRUE
     attr(p.constraints, "baseconstr") <- baseind
     
-    list(p.constraints = p.constraints, R = R)
+    list(p.constraints = p.constraints, R = R, newparams = parameters, newpvals = p.vals)
     
     
 }

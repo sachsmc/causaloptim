@@ -1,3 +1,7 @@
+# causaloptim 0.9.4
+
+- More fixes to snprintf
+
 # causaloptim 0.9.3
 
 - Minor bug fixes in Balke's old code (sprintf -> snprintf)

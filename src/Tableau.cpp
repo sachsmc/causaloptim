@@ -124,13 +124,13 @@ void CTableau :: Setup (
 	for (nRow = 0; nRow < p_Rows; nRow++)
 	{
 		nVar = 1 + m_ParamCnt + 1 + nRow;
-		snprintf (m_pVarLabels [nVar],1024, "$%02d", nRow);
+		snprintf (m_pVarLabels [nVar],LEN_LABEL, "$%02d", nRow);
 	}
 
 	for (nAug = 0; nAug < m_AugCnt; nAug++)
 	{
 		nVar = 1 + m_ParamCnt + 1 + p_Rows + nAug;
-		snprintf (m_pVarLabels [nVar],1024, "@%02d", nAug);
+		snprintf (m_pVarLabels [nVar],LEN_LABEL, "@%02d", nAug);
 	}
 
 

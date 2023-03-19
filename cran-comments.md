@@ -1,3 +1,1 @@
-This is a resubmission that addresses warnings due to using sprintf in compiled code. All instances of sprintf were replaced with snprintf and the result checked using R hub on R-dev debian+fedora (clang|gcc) and 
-
-I also removed the vignette describing the methods, instead linking to the published manuscript. Also includes some minor bugfixes. 
+This is a resubmission that addresses errors on certain platforms caused by misusing snprintf in compiled code. I attempted to fix the buffer overflow issues in every instance. I was able to reproduce them as warnings when I compile locally, and I confirm that I fixed the buffer lengths so that they don't overflow. I checked on rhub with the fedora dev option, but I'm not certain that it runs the same checks. Thanks for your patience and understanding. 

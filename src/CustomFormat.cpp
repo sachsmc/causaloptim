@@ -26,7 +26,7 @@ char * FormatReal
 					// Character to replace trailing zeroes with.
 
 	snprintf (szFormat, 20, "%%%d.%dlf", p_Width, p_Decimal);
-	snprintf (p_szTarget, 256, szFormat, p_Real);
+	snprintf (p_szTarget, 20, szFormat, p_Real);
 
 	if (p_Decimal != 0)		// There are trailing decimal places.
 	{

@@ -487,12 +487,12 @@ CEquation_ * COptimization_ :: GetSolution (WORD & p_SolutionID)
 
 std::string COptimization_ :: Display ()
 {
-	char			szString [2048];
+	char			szString [2042];
 					// Memory in which to format the display strings.
 
 	WORD			nConst;
 					// Index into the array of constraints.
-    char buffer[2048];
+    char buffer[2056];
     std::string result;
     
 	/*
@@ -999,7 +999,7 @@ std::string COptimization_ :: EnumerateVertices ()
 	pLabels = new Label_ [Columns];
 	for (nInequality = 0; nInequality < Columns; nInequality++)
 	{
-		snprintf (pLabels [nInequality], 1024, "y%03d", nInequality + 1);
+		snprintf (pLabels [nInequality], LEN_LABEL, "y%03d", nInequality + 1);
 	}
 
 
@@ -1032,7 +1032,7 @@ std::string COptimization_ :: EnumerateVertices ()
 		result.append ("\t");
 		for (nInequality = 0; nInequality < Columns; nInequality++)
 		{
-			snprintf(buffer, 1024, "%5.2f ", pMatrixA [nVar][nInequality]);
+			snprintf(buffer, 1020, "%5.2f ", pMatrixA [nVar][nInequality]);
 		    result.append(buffer);
 		}
 		result.append("\n");
@@ -1051,7 +1051,7 @@ std::string COptimization_ :: EnumerateVertices ()
 	result.append ("Vector B\n");
 	for (nVar = 0; nVar < Rows; nVar++)
 	{
-		snprintf(buffer, 1024, "\t%5.2f\n", pVectorB [nVar]);
+		snprintf(buffer, 1020, "\t%5.2f\n", pVectorB [nVar]);
 	    result.append(buffer);
 	}
 	result.append ("\n");

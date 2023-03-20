@@ -1,1 +1,1 @@
-This is a resubmission that changes citEntry to bibentry.
+This is a resubmission that fixes the problem causing warnings about truncation. 

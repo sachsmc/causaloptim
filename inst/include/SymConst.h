@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#define		LEN_LABEL	6
+#define		LEN_LABEL	14
 
 #define		SET_SIZE	4
 

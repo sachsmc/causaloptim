@@ -1,13 +1,18 @@
-citHeader("To cite causaloptim in publications use:")
+## R package reference generated from DESCRIPTION metadata
+citation(auto = meta)
 
-year = sub('.*(2[[:digit:]]{3})-.*', '\\1', meta$Date, perl = TRUE)
-vers = paste('R package version', meta$Version)
-
-citEntry(entry = "Manual",
- title = paste('causaloptim:', meta$Title),
-  author = 'Michael C. Sachs and Arvid Sjölander and Erin E Gabriel',
-  year = year,
-  note = vers,
-  url = meta$URL,
-  textVersion = paste('Michael C. Sachs, Arvid Sjölander, and Erin E. Gabriel, (', year, '). causaloptim: ', meta$Title, '. ', vers, '.', sep = '')
-)
+## causaloptim paper
+bibentry(bibtype = "Article",
+         title = "A general method for deriving tight symbolic bounds on causal effects",
+         author = c(
+    person("Michael C", "Sachs"),
+     person("Gustav", "Jonzon"),
+    person("Erin E", "Gabriel"), 
+    person("Arvid", "Sjölander")
+   ),
+         year = "2022", 
+         journal="Journal of Computational and Graphical Statistics",
+  pages="1--10",
+  year="2022",
+  publisher="Taylor \\& Francis", 
+  doi="10.1080/10618600.2022.2071905")

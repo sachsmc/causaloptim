@@ -1,1 +1,1 @@
-This is a resubmission that addresses errors on certain platforms caused by misusing snprintf in compiled code. I attempted to fix the buffer overflow issues in every instance. I was able to reproduce them as warnings when I compile locally, and I confirm that I fixed the buffer lengths so that they don't overflow. I checked on rhub with the fedora dev option, but I'm not certain that it runs the same checks. Thanks for your patience and understanding. 
+This is a resubmission that changes citEntry to bibentry.

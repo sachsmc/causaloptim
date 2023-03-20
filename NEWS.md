@@ -1,6 +1,7 @@
-# causaloptim 0.9.4
+# causaloptim 0.9.5
 
 - More fixes to snprintf
+- update bibentry
 
 # causaloptim 0.9.3
 

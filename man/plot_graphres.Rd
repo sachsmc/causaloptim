@@ -15,3 +15,17 @@ None
 \description{
 Special plotting method for igraphs of this type
 }
+\examples{
+b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+V(b)$leftside <- c(0,0,0)
+V(b)$latent <- c(0,0,1)
+V(b)$nvals <- c(2,2,2)
+V(b)$exposure <- c(1,0,0)
+V(b)$outcome <- c(0,1,0)
+E(b)$rlconnect <- c(0,0,0)
+E(b)$edge.monotone <- c(0,0,0)
+plot(b)
+}
+\seealso{
+\link{plot.linearcausalproblem} which plots a graph with attributes
+}

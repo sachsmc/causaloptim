@@ -213,6 +213,7 @@ function(input, output) {
                                         column(1, actionButton("constraints", "Specify constraints"))
                                         )),
                                div(id = "results", h3("Bounds"), 
+                                   helpText("Note that the computation may take a significant amount of time."), 
                                    fluidRow(
                                         column(1, actionButton("optimize", "Compute the bounds", style="background-color: #69fb82"))
                                ))

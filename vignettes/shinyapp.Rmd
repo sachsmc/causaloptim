@@ -94,7 +94,6 @@ p{Y(X = 1) = 1} - p{Y(X = 0) = 1}
 
 then click the "parse" button to fix the effect. 
 
-Note that the computation may take a significant amount of time.
 
 ## Specifying constraints (optional)
 
@@ -113,7 +112,9 @@ then click parse.
 
 Once you have inspected the graph, specified the causal effect, and understand what is being analyzed, press the final button to compute the bounds. 
 
-The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see \url{https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905}. The final button allows you to return all of the objects back to the R environment and store them in `results`. 
+Note that the computation may take a significant amount of time.
+
+The results are summarized in plain text. The bounds are expressed as the minimum/maximum of a series of expressions involving the conditional probabilities of the observed variables. For more details on the method see [this paper](https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905). The final button allows you to return all of the objects back to the R environment and store them in `results`. 
 
 The `results` object contains the graph, the parameterization and interpretation of the graph in terms of the variables and parameters, the bounds and log information about the optimization procedure, and an R function that implements the bounds: 
 

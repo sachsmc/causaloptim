@@ -159,7 +159,7 @@ GetLineStatus_ GetLine
 					// Indicates when the line no longer continues to the next
 					// line in the file.
 	
-	p_pDestString [0] = NULL;
+	p_pDestString [0] = 0;
 
 	while (! bLineEnd)
 	{
@@ -168,7 +168,7 @@ GetLineStatus_ GetLine
 		 */
 		if (fgets (szFileLine, MAX_FILE_LINE, p_pFile) == NULL)
 		{
-			if (p_pDestString [0] == NULL)
+			if (p_pDestString [0] == 0)
 				return GLS_EndOfFile;
 			else
 				return GLS_Success;
@@ -185,11 +185,11 @@ GetLineStatus_ GetLine
 
 		if (*pEndChar == '\\')
 		{
-			*pEndChar = NULL;
+			*pEndChar = 0;
 		}
 		else
 		{
-			*(pEndChar+1) = NULL;
+			*(pEndChar+1) = 0;
 			bLineEnd = TRUE;
 		}
 
@@ -223,7 +223,7 @@ BOOL COptimization_ :: ParseFile (FILE * p_pFile)
 	ParseState_	ParseState = PS_None;
 					// Indicates which section of the file is being parsed.
 
-	ParseState_ OldParseState = PS_None;
+//	ParseState_ OldParseState = PS_None;
 					// Indicates the previous section of the file that was
 					// just finished parsing.
 
@@ -696,7 +696,7 @@ void COptimization_ :: GaussianElimination ()
 	CEquation_ *	pWorkEqn;
 	CEquation_ *	pEquation;
 	CEquation_ *	pInequality;
-	BOOL			bDiagonalized = FALSE; 
+//	BOOL			bDiagonalized = FALSE; 
 
 	/****************************************************
 	 * All equations must be equalities.

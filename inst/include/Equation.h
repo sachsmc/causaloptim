@@ -4,7 +4,7 @@
 #include <windows.h>
 #include "SymbolSet.h"
 
-typedef enum RelationToZero_
+enum RelationToZero_
 {
 	RTZ_Value,			// No relationship holds (just an expression).
 	RTZ_Equal,			// Expression is equal to zero.
@@ -12,7 +12,7 @@ typedef enum RelationToZero_
 	RTZ_EqualOrLess		// Expression is less than or equal to zero.
 };
 
-typedef enum ProjectResult_
+enum ProjectResult_
 {
 	ProjectDataLoss,	// Not all non-zero coefficients were projected.
 	ProjectNoDataLoss	// All non-zero coefficients were projected.

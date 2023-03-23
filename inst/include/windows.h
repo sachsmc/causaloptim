@@ -1,11 +1,12 @@
 #ifndef Windows_H
 #define	Windows_H
 
+#include <stddef.h>
 #include <memory.h>
 #include <string.h>
 #include <ctype.h>
 
-#define	NULL				0
+//#define	NULL				0
 #define	TRUE				1
 #define	FALSE				0
 

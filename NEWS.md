@@ -1,6 +1,7 @@
-# causaloptim 0.9.5
+# causaloptim 0.9.7
 
-- More fixes to snprintf
+- More fixes to snprintf and LEN_LABEL
+- Fixed warnings from Balke's old cpp code
 - update bibentry
 
 # causaloptim 0.9.3

@@ -99,11 +99,11 @@ WORD ParseSymbol
 			/*
 			 *	Symbol name exceeded maximum length.
 			 */
-			p_Symbol [0] = NULL;
+			p_Symbol [0] = 0;
 			return 0;
 		}
 	}
-	*pTgtChar = NULL;
+	*pTgtChar = 0;
 	return nScan;
 }  /* ParseSymbol () */
 

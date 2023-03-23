@@ -19,7 +19,7 @@ CConstraint *	CConstraint::m_pEqualities;
 
 CConstraint :: CConstraint ()
 {
-	int		nIdx;
+	//int		nIdx;
 
 	m_Use = SOL_VALUE;
 	m_TermSign = TERM_ZERO;
@@ -85,10 +85,10 @@ char ParseAdvance (char * &p_pChar)
 void CConstraint :: Parse (char * p_szLine)
 {
 	char *	pChar;
-	int		nScan;
-	double	Number;
+//	int		nScan;
+//	double	Number;
 	int		nSymbol;
-	char	bLeft = 1;
+//	char	bLeft = 1;
 	char	bMinus;
 	char	szBuffer[20];
 	char *	pBuf;
@@ -283,8 +283,8 @@ void CConstraint :: FactorAdd (CConstraint & p_TermSol, int p_Factor)
 	int		nTerms;
 	double	fDiff;
 	double	fNewDiff;
-	int		Diff;
-	int		NewDiff;
+//	int		Diff;
+//	int		NewDiff;
 	char	bChange;
 
 	m_Term += p_Factor * p_TermSol.m_Term;

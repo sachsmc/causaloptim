@@ -13,7 +13,7 @@
 
 typedef double *	Pdouble_;
 
-typedef enum OptimizeStyle_
+enum OptimizeStyle_
 {
 	Opt_Minimize,	// Minimize objective function.
 	Opt_Maximize	// Maximize objective function.

@@ -5,9 +5,27 @@
 #' 
 #' @param graphres an igraph object
 #' @return None
+#' @seealso \link{plot.linearcausalproblem} which plots a graph with attributes
 #' @export
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(2,2,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' plot(b)
 
 plot_graphres <- function(graphres) {
+    
+    if (is.null(V(graphres)$exposure)) {
+        V(graphres)$exposure <- 0
+    }
+    if (is.null(V(graphres)$outcome)) {
+        V(graphres)$outcome <- 0
+    }
     
     nvals_info <- ifelse(any(vertex_attr(graphres)$nvals > 2), 
                          paste("Number of possible values of each variable:\n", print_nvals(graphres)), 

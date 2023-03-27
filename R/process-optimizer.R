@@ -4,11 +4,12 @@
 #' using the c++ code developed by Alex Balke. Bounds are returned as text but can
 #' be converted to R functions using \link{interpret_bounds}, or latex code using
 #' \link{latex_bounds}.
+#' This legacy function has been replaced as default with the more efficient \link{optimize_effect_2}.
 #' 
 #' @param obj Object as returned by \link{analyze_graph}
 #' 
 #' @return An object of class "balkebound" that contains the bounds and logs as character strings
-#' 
+#' @seealso \link{optimize_effect_2} which is the current default
 #' @export
 #' @examples 
 #' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
@@ -124,7 +125,7 @@ print.balkebound <- function(x, ...){
 #' @param obj Object as returned by \link{analyze_graph}
 #' 
 #' @return An object of class "balkebound" that contains the bounds and logs as character strings
-#' 
+#' @seealso \link{optimize_effect} which is a legacy version
 #' @export
 #' @examples 
 #' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)

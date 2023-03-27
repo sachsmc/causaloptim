@@ -243,12 +243,25 @@ analyze_graph <- function(graph, constraints, effectt) {
     
 }
 
-#' Plot the graph from the causal problem
+#' Plot the graph from the causal problem with a legend describing attributes
 #' 
-#' @param x object of class "linearcausaloptim"
+#' @param x object of class "linearcausalproblem"
 #' @param ... Not used
 #' @return Nothing
+#' @seealso \link{plot_graphres} which plots the graph only
 #' @export
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(2,2,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' q <- "p{Y(X=1)=1}-p{Y(X=0)=1}"
+#' obj <- analyze_graph(graph = b, constraints = NULL, effectt <- q)
+#' plot(obj)
 
 plot.linearcausalproblem <- function(x, ...) {
   

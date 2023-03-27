@@ -27,3 +27,6 @@ E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 optimize_effect_2(obj)
 }
+\seealso{
+\link{optimize_effect} which is a legacy version
+}

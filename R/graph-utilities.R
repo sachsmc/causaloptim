@@ -97,7 +97,9 @@ find_cycles = function(g) {
 #' @return A string that can be passed to \link{parse_effect}
 #' @export
 get_default_effect <- function(graphres) {
-    
+    if (length(E(graphres)) == 0) {
+        return("")
+    }
     rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
     
     expo <- V(graphres)[V(graphres)$exposure == 1]

@@ -81,7 +81,9 @@ NULL
 #' analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 
 analyze_graph <- function(graph, constraints, effectt) {
-    
+    if (length(E(graph)) == 0 | effectt == "") {
+        return(NULL)
+    }
     leftind <- vertex_attr(graph)$leftside
     
     if(sum(edge_attr(graph)$rlconnect) > 0) stop("No edges can go from right to left")

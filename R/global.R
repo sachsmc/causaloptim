@@ -2,6 +2,10 @@
 
 # A UI that appears at the top of the Shiny app web interface, just beneath the title.
 # Contains two paragraphs of instructional text.
+#' Generate HTML for a UI displaying instructional text on method and usage.
+#' @return HTML code for a UI with text.
+# @examples
+# helptextUI()
 helptextUI <- function() {
   fluidRow(
     id = "helptext",
@@ -22,6 +26,10 @@ helptextUI <- function() {
 
 # A UI for drawing an appropriate DAG. Appears just beneath helptextUI.
 # Divided into a left side and a right side.
+#' Generate HTML for a UI for GUI digraph input.
+#' @return HTML code for a UI for digraph input.
+# @examples
+# dagUI()
 dagUI <- function() {
   fluidRow(
     id = "graphrow",
@@ -94,6 +102,13 @@ dagUI <- function() {
 # effectUI(default_effect = "p{Y(X = 1)=1} - p{Y(X = 0)=1}")
 # if exposure and outcome has been set inn GUI,
 # else default_effect = "".
+#' Generate HTML for a UI for textual input of causal query.
+#' @param default_effect A string representing a causal query.
+#' @return HTML code for a text field with default value \code{default_effect} 
+#' and an action button for parsing it.
+# @examples
+# effectUI(default_effect = "p{Y(X = 1)=1} - p{Y(X = 0)=1}")
+# effectUI(default_effect = "")
 effectUI <- function(default_effect) {
   div(
     id = "effect",
@@ -126,6 +141,10 @@ effectUI <- function(default_effect) {
 # A UI for optional input of extra constraints.
 # Contains instructional text and a button to open a text input field for constraints.
 # Appears just beneath effectUI once the 'analyze' button is pressed.
+#' Generate HTML for a UI for textual input of optional extra constraints.
+#' @return HTML code for a text input field and an action button for parsing.
+# @examples
+# constraintUI()
 constraintUI <- function() {
   div(
     id = "constraintsdiv",
@@ -146,6 +165,7 @@ constraintUI <- function() {
 # Opens a UI for text input of optional additional user-provided constraints.
 # Contains a text input field for constraints and a button for parsing them.
 # Appears just beneath constraintUI if the 'constraints' button is pressed.
+#' Dynamically open a new UI for textual input of optional additional constraints.
 open_constraintinputUI <- function() {
   if (!isRunning()) {
     return(NULL)
@@ -180,6 +200,10 @@ open_constraintinputUI <- function() {
 # A UI for computing the bounds.
 # Contains a message and a button to start the computation and display the bounds.
 # Appears just beneath constraintUI once the 'analyze' button is pressed.
+#' Generate HTML for a UI with an action button for computing bounds for a causal problem.
+#' @return HTML code with a text message and an action button for computing bounds.
+# @examples
+# resultsUI()
 resultsUI <- function() {
   div(
     id = "results",
@@ -199,6 +223,7 @@ resultsUI <- function() {
 }
 
 # Removes certain UI elements once the 'analyze' button is pressed.
+#' Dynamically remove parts of the UI after clicking the 'analyze' action button. 
 remove_oldUI <- function() {
   if (!isRunning()) {
     return(NULL)
@@ -212,6 +237,8 @@ remove_oldUI <- function() {
 }
 
 # Opens a UI to display the plot of the augmented DAG once the 'analyze' button is pressed.
+#' Dynamically open a new UI to display a plot of the DAG to be optimized over.
+#' @param id A Shiny module identifier. Should match that of \code{plotServer}.
 plotUI <- function(id) {
   if (!isRunning()) {
     return(NULL)
@@ -233,6 +260,10 @@ plotUI <- function(id) {
 
 # A server function that renders the plot of the augmented DAG in plotUI.
 # Takes an 'igraph' object 'graphres' as argument, which may be an empty graph.
+#' A Shiny module server to go with \code{plotUI}.
+#' Renders to \code{plotUI} a plot of the DAG of the causal problem.
+#' @param id A Shiny module identifier. Should match that of \code{plotUI}.
+#' @param graphres An \code{igraph} object representing the DAG.
 plotServer <- function(id, graphres) {
   moduleServer(
     id = id,
@@ -244,6 +275,18 @@ plotServer <- function(id, graphres) {
 
 # Opens the UIs effectUI, constraintUI and resultsUI once the 'analyze' button is pressed.
 # Takes a string argument to pre-populate the causal query text input field.
+#' Dynamically open a new UI for causal query entry and parsing, 
+#' as well as UIs for optional extra constraints 
+#' and subsequent display of results.
+#' @param default_effect A string representing a causal query.
+#' This parameter is expected to be returned by \code{get_default_effect(graphres)}, 
+#' where \code{graphres} is an \code{igraph} representation of the DAG of interest.
+#' This parameter will be non-empty if in the DAG GUI 
+#' one vertex has been set as the exposure and another as the outcome, 
+#' in which case it will be the total causal risk difference 
+#' comparing the probability that the outcome is \code{1} 
+#' if the exposure had been intervened on to be \code{1} 
+#' against if the exposure had instead been set to \code{0}.
 open_newUI <- function(default_effect) {
   if (!isRunning()) {
     return(NULL)
@@ -261,6 +304,9 @@ open_newUI <- function(default_effect) {
 
 # Changes the UI once the query parsing button is pressed,
 # after which the query is fixed, if parsing successful.
+#' Dynamically change the UI for entry of causal query.
+#' @param effecttext A string representing a causal query.
+#' This string will be the default value in the text input field for the causal query.
 querychangeUI <- function(effecttext) {
   if (!isRunning()) {
     return(NULL)
@@ -281,6 +327,10 @@ querychangeUI <- function(effecttext) {
 
 # Changes the UI once the constraints parsing button is pressed,
 # after which the constraint is fixed.
+#' Dynamically change the UI for input of optional constraints.
+#' This fixes the constraint entered into the constraint text input field, 
+#' once it has been successfully parsed.
+#' @param constrainttext A string representing the user-provided constraint.
 constraintschangeUI <- function(constrainttext) {
   if (!isRunning()) {
     return(NULL)
@@ -306,6 +356,7 @@ constraintschangeUI <- function(constrainttext) {
 # Changes the UI once the 'optimize' button is pressed.
 # Opens a text output field the display the bounds, together with
 # information on the causal problem and parameter interpretation.
+#' Dynamically change the UI for display of results of optimized bounds.
 resultschangeUI <- function() {
   if (!isRunning()) {
     return(NULL)
@@ -331,6 +382,9 @@ resultschangeUI <- function() {
 # and a button to display LaTeX code for the bounds.
 # Once the bounds have been computed and displayed textually,
 # this UI appears beneath the textual display of the bounds.
+#' Dynamically open a new UI with two action buttons; 
+#' one for downloading the results to R and
+#' one for displaying LaTeX code for the bounds.
 open_finalUI <- function() {
   if (!isRunning()) {
     return(NULL)
@@ -359,6 +413,7 @@ open_finalUI <- function() {
 }
 
 # Opens a UI for textual display of LaTeX code for the bounds.
+#' Dynamically open a new UI for display of LaTeX code for the computed bounds.
 open_latexUI <- function() {
   if (!isRunning()) {
     return(NULL)
@@ -416,6 +471,10 @@ edges_from_input <- function(myin) {
 
 # Check for right to left edges.
 # edges: A 'data.frame' as output by 'edges_from_input'.
+#' Check that a data frame containing the edges of a digraph with certain attributes 
+#' satisfies the condition of no edges going from the 'right side' to the 'left side'.
+#' @param edges A data.frame representing a digraph.
+#' @return \code{TRUE} if the condition is satisfied; else \code{FALSE}.
 rlcheck0 <- function(edges) {
   if (sum(edges$rlconnect) > 0) {
     error_message <- "No connections from right to left are allowed!"
@@ -518,12 +577,26 @@ graphres_from_edges <- function(edges) {
 
 # Check for right side to left side edges in a digraph.
 # graphres: An 'igraph' object as e.g. output by 'graphres_from_edges'.
+#' Check that no edges of a given digraph go from the 'right side' to the 'left side'.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' This digraph should have at least the binary edge attribute \code{rlconnect}.
+#' @return \code{TRUE} if the condition is satisfied; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
+# rlcheck(graphres = graphres) # TRUE
 rlcheck <- function(graphres) {
   edges <- E(graph = graphres)
   rlcheck0(edges = edges)
 }
 
 # Check that vertices are named appropriately.
+#' Check that the names given to the vertices of a digraph are all valid.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if all the variable names are valid; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# vertexnamecheck(graphres = graphres) # TRUE
 vertexnamecheck <- function(graphres) {
   vnames <- names(V(graphres))
   badnames <- grep(
@@ -552,6 +625,12 @@ vertexnamecheck <- function(graphres) {
 }
 
 # Check that the digraph is acyclic.
+#' Check that a given digraph is a DAG, i.e., contains no cycles.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if \code{graphres} is a DAG; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# cyclecheck(graphres = graphres) # TRUE
 cyclecheck <- function(graphres) {
   if (is.dag(graph = graphres)) {
     return(TRUE)
@@ -569,6 +648,13 @@ cyclecheck <- function(graphres) {
 }
 
 # Check that each categorical variable is at least dichotomous.
+#' Check that the number of categorical levels for each variable in a graph is at least 2.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if each variable is at least binary; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# V(graphres)$nvals <- c(3, 2, 4, 2, 2)
+# nvalscheck(graphres = graphres) # TRUE
 nvalscheck <- function(graphres) {
   if (any(vertex_attr(graph = graphres)$nvals < 2)) {
     error_message <-
@@ -588,6 +674,24 @@ nvalscheck <- function(graphres) {
 
 # Check all conditions on the digraph.
 # Set 'ret = TRUE' to also return 'graphres' if all checks are passed.
+#' Check that a given digraph satisfies the conditions of 
+#' 'no left to right edges', 'no cycles', 'valid number of categories' and 'valid variable names'.
+#' Optionally returns the digraph if all checks are passed.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @param ret A logical value. Default is \code{FALSE}.
+#' Set to \code{TRUE} to also return \code{graphres} if all checks are passed.
+#' @return If \code{ret=FALSE} (default): \code{TRUE} if all checks pass; else \code{FALSE}.
+#' If \code{ret=TRUE}: \code{graphres} if all checks pass; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+# V(graphres)$latent <- c(0, 0, 0, 1, 1)
+# V(graphres)$nvals <- c(2, 2, 2, 2, 2)
+# V(graphres)$exposure <- c(0, 0, 0, 0, 0)
+# V(graphres)$outcome <- c(0, 0, 0, 0, 0)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
+# E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0, 0)
+# graphrescheck(graphres = graphres) # TRUE
 graphrescheck <- function(graphres, ret = FALSE) {
   if (rlcheck(graphres = graphres)) {
     if (cyclecheck(graphres = graphres)) {
@@ -609,6 +713,12 @@ graphrescheck <- function(graphres, ret = FALSE) {
 
 # Check that causal query is parsable.
 # effecttext: A string, e.g., "p{Y(X = 1)=1} - p{Y(X = 0)=1}".
+#' Check that a string representing a causal query can be successfully parsed.
+#' @param effecttext A string representing a causal query.
+#' @return \code{TRUE} if \code{effecttext} can be successfully parsed; else \code{FALSE}.
+# @examples
+# effecttext <- "p{Y(X = 1)=1} - p{Y(X = 0)=1}"
+# queryparsecheck(effecttext = effexttext) # TRUE
 queryparsecheck <- function(effecttext) {
   parsed.test <- tryCatch(
     expr = parse_effect(text = effecttext),
@@ -625,6 +735,24 @@ queryparsecheck <- function(effecttext) {
 # Check that the query 'effecttext' can be parsed and that
 # the causal problem (effecttext, graphres) satisfies
 # the conditions on the query / intervention-set.
+#' Given an admissible causal DAG, check that given a causal query satisfies 
+#' conditions that guarantee the corresponding causal problem to be a linear program.
+#' Throws error messages detailing any conditions violated.
+#' @param effecttext A string representing a causal query.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if \code{effecttext} is parsable, contains only variables in \code{V(graphres)} 
+#' and satisfies conditions for linearity; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+# V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+# V(graphres)$latent <- c(0, 0, 0, 1, 1)
+# V(graphres)$nvals <- c(2, 2, 2, 2, 2)
+# V(graphres)$exposure <- c(0, 0, 0, 0, 0)
+# V(graphres)$outcome <- c(0, 0, 0, 0, 0)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
+# E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0, 0)
+# effecttext <- "p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}"
+# querycheck(effecttext = effecttext, graphres = graphres) # TRUE
 querycheck <- function(effecttext, graphres) {
   # Check parsability
   if (!queryparsecheck(effecttext = effecttext)) {
@@ -758,6 +886,21 @@ querycheck <- function(effecttext, graphres) {
 
 # Check parsability of constraints.
 # constrainttext: A string, e.g., "X(Z = 1) >= X(Z = 0)".
+#' Check that a user-provided optional constraint is parsable.
+#' @param constrainttext A string representing a constraint.
+#' @param graphres An \code{igraph} object representing a DAG.
+#' @return \code{TRUE} if \code{constrainttext} is parsable; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+# V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+# V(graphres)$latent <- c(0, 0, 0, 1, 1)
+# V(graphres)$nvals <- c(3, 2, 2, 2, 2)
+# V(graphres)$exposure <- c(0, 1, 0, 0, 0)
+# V(graphres)$outcome <- c(0, 0, 1, 0, 0)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
+# E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+# constrainttext <- "X(Z = 1) >= X(Z = 0)"
+# constraintparsecheck(constrainttext = constrainttext, graphres = graphres) # TRUE
 constraintsparsecheck <- function(constrainttext, graphres) {
   obsnames <-
     names(V(graphres)[!names(V(graphres)) %in% c("Ur", "Ul")])
@@ -785,6 +928,24 @@ constraintsparsecheck <- function(constrainttext, graphres) {
 # leftout rightout operator leftcond rightcond
 # 1       X        X       >=      Z=1       Z=0
 # as output by 'parse_constraints' with "X(Z = 1) >= X(Z = 0)".
+#' Given a DAG, check that the variables in a parsed constraint are in the vertex set of that DAG.
+#' @param parsed_constraints A data frame representing a parsed constraint 
+#' (as returned by \code{parse_constraints}).
+#' @param graphres An \code{igraph} object representing a DAG.
+#' @return \code{TRUE} if the variable names in\code{parsed_constraints} correspond to ones in \code{V(graphres)}; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+# V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+# V(graphres)$latent <- c(0, 0, 0, 1, 1)
+# V(graphres)$nvals <- c(3, 2, 2, 2, 2)
+# V(graphres)$exposure <- c(0, 1, 0, 0, 0)
+# V(graphres)$outcome <- c(0, 0, 1, 0, 0)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
+# E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+# constrainttext <- "X(Z = 1) >= X(Z = 0)"
+# obsnames <- names(V(graphres)[!names(V(graphres)) %in% c("Ur", "Ul")])
+# parsed_constraints <- parse_constraints(constraints = constrainttext, obsnames = obsnames)
+# constraintsnamecheck(parsed_constraints = parsed_constraints, graphres = graphres) # TRUE
 constraintsnamecheck <- function(parsed_constraints, graphres) {
   allnmes <- unique(c(
     parsed_constraints$leftout,
@@ -818,6 +979,16 @@ constraintsnamecheck <- function(parsed_constraints, graphres) {
 }
 
 # Check validity of relations in parsed constraint.
+#' Check that the relations in parsed constraints are valid, 
+#' i.e., one of "==", "<", ">", "<=", ">=".
+#' @param parsed_constraints A data frame representing a parsed constraint 
+#' (as returned by \code{parse_constraints}).
+#' @return \code{TRUE} if the realations in\code{parsed_constraints} are valid; else \code{FALSE}.
+# @examples
+# constrainttext <- "X(Z = 1) >= X(Z = 0)"
+# obsnames <- names(V(graphres)[!names(V(graphres)) %in% c("Ur", "Ul")])
+# parsed_constraints <- parse_constraints(constraints = constrainttext, obsnames = obsnames)
+# constraintsoperatorcheck(parsed_constraints = parsed_constraints) # TRUE
 constraintsoperatorcheck <- function(parsed_constraints) {
   if (any(!parsed_constraints$operator %in% c("==", "<", ">", "<=", ">="))) {
     showNotification(
@@ -830,6 +1001,21 @@ constraintsoperatorcheck <- function(parsed_constraints) {
 }
 
 # A complete check of user-provided constraint.
+#' Check that a user-provided constraint is parsable, has valid variables and relations.
+#' @param constrainttext A string representing a constraint.
+#' @param graphres An \code{igraph} object representing a DAG.
+#' @return \code{TRUE} if all check pass; else \code{FALSE}.
+# @examples
+# graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+# V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+# V(graphres)$latent <- c(0, 0, 0, 1, 1)
+# V(graphres)$nvals <- c(3, 2, 2, 2, 2)
+# V(graphres)$exposure <- c(0, 1, 0, 0, 0)
+# V(graphres)$outcome <- c(0, 0, 1, 0, 0)
+# E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
+# E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+# constrainttext <- "X(Z = 1) >= X(Z = 0)"
+# constraintscheck(constrainttext = constrainttext, graphres = graphres) # TRUE
 constraintscheck <- function(constrainttext, graphres) {
   if (constraintsparsecheck(constrainttext = constrainttext, graphres = graphres)) {
     obsnames <-
@@ -850,6 +1036,10 @@ constraintscheck <- function(constrainttext, graphres) {
 
 # Construct and return a string containing the results of a causal problem.
 # resultslist: A list of results as returned by 'specify_graph'.
+#' Generate a string describing the results of a linear causal problem.
+#' @param resultslist A list of results, as returned by \code{specify_graph()}.
+#' @param effecttext A string representing a causal query.
+#' @return HTML code with text describing the bounds from a linear causal problem.
 resultstext <- function(resultslist, effecttext) {
   effecttext <- sprintf(
     "Computed bounds for the effect %s",

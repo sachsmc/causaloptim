@@ -3,8 +3,8 @@
 # Contains two paragraphs of instructional text.
 #' Generate HTML for a UI displaying instructional text on method and usage.
 #' @return HTML code for a UI with text.
-# @examples
-# helptextUI()
+#' @examples
+#' helptextUI()
 helptextUI <- function() {
   fluidRow(
     id = "helptext",
@@ -27,8 +27,8 @@ helptextUI <- function() {
 # Divided into a left side and a right side.
 #' Generate HTML for a UI for GUI digraph input.
 #' @return HTML code for a UI for digraph input.
-# @examples
-# dagUI()
+#' @examples
+#' dagUI()
 dagUI <- function() {
   fluidRow(
     id = "graphrow",
@@ -105,9 +105,9 @@ dagUI <- function() {
 #' @param default_effect A string representing a causal query.
 #' @return HTML code for a text field with default value \code{default_effect} 
 #' and an action button for parsing it.
-# @examples
-# effectUI(default_effect = "p{Y(X = 1)=1} - p{Y(X = 0)=1}")
-# effectUI(default_effect = "")
+#' @examples
+#' effectUI(default_effect = "p{Y(X = 1)=1} - p{Y(X = 0)=1}")
+#' effectUI(default_effect = "")
 effectUI <- function(default_effect) {
   div(
     id = "effect",
@@ -142,8 +142,8 @@ effectUI <- function(default_effect) {
 # Appears just beneath effectUI once the 'analyze' button is pressed.
 #' Generate HTML for a UI for textual input of optional extra constraints.
 #' @return HTML code for a text input field and an action button for parsing.
-# @examples
-# constraintUI()
+#' @examples
+#' constraintUI()
 constraintUI <- function() {
   div(
     id = "constraintsdiv",
@@ -201,8 +201,8 @@ open_constraintinputUI <- function() {
 # Appears just beneath constraintUI once the 'analyze' button is pressed.
 #' Generate HTML for a UI with an action button for computing bounds for a causal problem.
 #' @return HTML code with a text message and an action button for computing bounds.
-# @examples
-# resultsUI()
+#' @examples
+#' resultsUI()
 resultsUI <- function() {
   div(
     id = "results",

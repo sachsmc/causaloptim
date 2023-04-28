@@ -2,9 +2,7 @@
 % Please edit documentation in R/graph-utilities.R
 \name{graphrescheck}
 \alias{graphrescheck}
-\title{Check that a given digraph satisfies the conditions of 
-'no left to right edges', 'no cycles', 'valid number of categories' and 'valid variable names'.
-Optionally returns the digraph if all checks are passed.}
+\title{Check conditions on digraph}
 \usage{
 graphrescheck(graphres, ret = FALSE)
 }

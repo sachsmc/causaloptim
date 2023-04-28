@@ -164,6 +164,9 @@ symb.subtract <- function(x1, x2) {
 #'        is a potential outcome and FALSE if it is an observational quantity.}
 #'        }
 #' @export
+#' @examples
+#' effectt <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
+#' parse_effect(text = effectt)
 parse_effect <- function(text) {
     
     text <- gsub("(\\n|\\t| )", "", text)
@@ -228,6 +231,10 @@ parse_effect <- function(text) {
 #' @param obsnames Vector of names of the observed variables in the graph
 #' @return A data frame with columns indicating the variables being constrained, what the values of their parents are for the constraints, and the operator defining the constraint (equality or inequalities).
 #' @export
+#' @examples
+#' constrainttext <- "X(Z = 1) >= X(Z = 0)"
+#' obsnames <- c("Z", "X", "Y")
+#' parse_constraints(constraints = constrainttext, obsnames = obsnames)
 parse_constraints <- function(constraints, obsnames) {
     
     parsed.constraints <- NULL
@@ -267,8 +274,6 @@ parse_constraints <- function(constraints, obsnames) {
     parsed.constraints
     
 }
-
-
 
 #' Latex bounds equations
 #' 

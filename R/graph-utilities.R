@@ -49,6 +49,16 @@ plot_graphres <- function(graphres) {
 #' @param graphres an igraph object
 #' @return None
 #' @noRd
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(3,4,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' print_nvals(graphres = b)
 print_nvals <- function(graphres) {
     df <- data.frame(name_of_variable = vertex_attr(graph = graphres)$name, 
                      number_of_possible_values = vertex_attr(graph = graphres)$nvals)
@@ -63,6 +73,16 @@ print_nvals <- function(graphres) {
 #' @param varname A string. The name of a vertex in 'graph'.
 #' @return An integer greater than 1. The number of values of 'varname'.
 #' @noRd
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(3,4,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' numberOfValues(graph = b, varname = "X")
 numberOfValues <- function(graph, varname) {
     df <- data.frame(name_of_variable = vertex_attr(graph = graph)$name, 
                      number_of_possible_values = vertex_attr(graph = graph)$nvals)
@@ -105,7 +125,7 @@ find_cycles = function(g) {
 #' V(graphres)$outcome <- c(0, 0, 1, 0, 0)
 #' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
 #' E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
-#' get_default_effect(graphres = graphres) == "p{Y(X = 1)=1} - p{Y(X = 0)=1}"
+#' get_default_effect(graphres = graphres) == "p{Y(X = 1)=1} - p{Y(X = 0)=1}" # TRUE
 get_default_effect <- function(graphres) {
     if (length(E(graphres)) == 0) {
         return("")
@@ -289,6 +309,8 @@ nvalscheck <- function(graphres) {
 
 # Check all conditions on the digraph.
 # Set 'ret = TRUE' to also return 'graphres' if all checks are passed.
+#' Check conditions on digraph
+#' 
 #' Check that a given digraph satisfies the conditions of 
 #' 'no left to right edges', 'no cycles', 'valid number of categories' and 'valid variable names'.
 #' Optionally returns the digraph if all checks are passed.

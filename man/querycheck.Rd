@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{querycheck}
 \alias{querycheck}
-\title{Given an admissible causal DAG, check that given a causal query satisfies 
-conditions that guarantee the corresponding causal problem to be a linear program.
-Throws error messages detailing any conditions violated.}
+\title{Check conditions on query}
 \usage{
 querycheck(effecttext, graphres)
 }

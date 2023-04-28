@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{constraintscheck}
 \alias{constraintscheck}
-\title{Check that a user-provided constraint is parsable, has valid variables and relations.}
+\title{Check constraints}
 \usage{
 constraintscheck(constrainttext, graphres)
 }

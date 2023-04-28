@@ -111,7 +111,7 @@ evaluate_objective <- function(c1_num, p, y) {
 #' @noRd
 #' @examples
 #' effecttext <- "p{Y(X = 1)=1} - p{Y(X = 0)=1}"
-#' queryparsecheck(effecttext = effexttext) # TRUE
+#' queryparsecheck(effecttext = effecttext) # TRUE
 queryparsecheck <- function(effecttext) {
     parsed.test <- tryCatch(
         expr = parse_effect(text = effecttext),
@@ -128,6 +128,8 @@ queryparsecheck <- function(effecttext) {
 # Check that the query 'effecttext' can be parsed and that
 # the causal problem (effecttext, graphres) satisfies
 # the conditions on the query / intervention-set.
+#' Check conditions on query
+#' 
 #' Given an admissible causal DAG, check that given a causal query satisfies 
 #' conditions that guarantee the corresponding causal problem to be a linear program.
 #' Throws error messages detailing any conditions violated.
@@ -295,7 +297,7 @@ querycheck <- function(effecttext, graphres) {
 #' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
 #' E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
 #' constrainttext <- "X(Z = 1) >= X(Z = 0)"
-#' constraintparsecheck(constrainttext = constrainttext, graphres = graphres) # TRUE
+#' constraintsparsecheck(constrainttext = constrainttext, graphres = graphres) # TRUE
 constraintsparsecheck <- function(constrainttext, graphres) {
     obsnames <-
         names(V(graphres)[!names(V(graphres)) %in% c("Ur", "Ul")])
@@ -309,10 +311,15 @@ constraintsparsecheck <- function(constrainttext, graphres) {
         }
     )
     if (!is.list(parsed.ctest)) {
-        showNotification(
-            ui = "Unable to parse constraints!",
-            type = "error"
-        )
+        error_message <- "Unable to parse constraints!"
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            print(error_message)
+        }
         return(FALSE)
     }
     TRUE
@@ -356,7 +363,7 @@ constraintsnamecheck <- function(parsed_constraints, graphres) {
         )
     ))
     realnms <- names(V(graphres))
-    if (any(!allnmes %in% realnms &
+    if (any(!allnmes %in% realnms |
             !is.na(suppressWarnings(expr = as.numeric(allnmes))))) {
         error_message <-
             sprintf(
@@ -365,10 +372,14 @@ constraintsnamecheck <- function(parsed_constraints, graphres) {
                       collapse = ", "
                 )
             )
-        showNotification(
-            ui = error_message,
-            type = "error"
-        )
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            print(error_message)
+        }
         return(FALSE)
     }
     TRUE
@@ -388,16 +399,23 @@ constraintsnamecheck <- function(parsed_constraints, graphres) {
 #' constraintsoperatorcheck(parsed_constraints = parsed_constraints) # TRUE
 constraintsoperatorcheck <- function(parsed_constraints) {
     if (any(!parsed_constraints$operator %in% c("==", "<", ">", "<=", ">="))) {
-        showNotification(
-            ui = "Operator not allowed!",
-            type = "error"
-        )
+        error_message <- "Operator not allowed!"
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            print(error_message)
+        }
         return(FALSE)
     }
     TRUE
 }
 
 # A complete check of user-provided constraint.
+#' Check constraints
+#' 
 #' Check that a user-provided constraint is parsable, has valid variables and relations.
 #' @param constrainttext A string representing a constraint.
 #' @param graphres An \code{igraph} object representing a DAG.

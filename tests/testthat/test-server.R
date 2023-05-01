@@ -340,10 +340,10 @@ graphres0 <- structure(list(
 class = "igraph")
 
 graphres1 <- graphres_from_edges(edges)
-graphres1[[10]] <- "<environment>"
+graphres0 <- upgrade_graph(graphres0)
 
 test_that("graphres_from_edges works", {
-    test0 <- all.equal(graphres0, graphres1)
+    test0 <- identical_graphs(graphres0, graphres1)
     expect_equal(object = test0, expected = TRUE)
 })
 
@@ -360,10 +360,10 @@ test_that("vertexnamecheck works", {
     test1 <- vertexnamecheck(graphres_1)
     expect_equal(object = test1, expected = TRUE)
     graphres_2 <- graph_from_literal(A-+2)
-    test2 <- vertexnamecheck(graphres_2)
+    expect_message(test2 <- vertexnamecheck(graphres_2))
     expect_equal(object = test2, expected = FALSE)
     graphres_3 <- graph_from_literal(A-+B_2)
-    test3 <- vertexnamecheck(graphres_3)
+    expect_message(test3 <- vertexnamecheck(graphres_3))
     expect_equal(object = test3, expected = FALSE)
 })
 
@@ -371,7 +371,7 @@ test_that("cyclecheck works", {
     test0 <- cyclecheck(graphres = graphres1)
     expect_equal(object = test0, expected = TRUE)
     graphres_bad <- graph_from_literal(A-+B, B-+C, C-+A)
-    test1 <- cyclecheck(graphres = graphres_bad)
+    expect_message(test1 <- cyclecheck(graphres = graphres_bad))
     expect_equal(object = test1, expected = FALSE)
 })
 
@@ -473,24 +473,24 @@ queryB4 <- "p{X(Z2 = 1)=1} - p{X(Z2 = 0)=1}"
 
 test_that(desc = "checking query conditions works for bad queries",
           code = {
-              test13 <- querycheck(effecttext = query3,
-                                   graphres = graphres1)
+              expect_message(test13 <- querycheck(effecttext = query3,
+                                   graphres = graphres1))
               expect_equal(object = test13,
                            expected = FALSE)
-              test01 <- querycheck(effecttext = queryB1,
-                                   graphres = graphres0)
+              expect_message(test01 <- querycheck(effecttext = queryB1,
+                                   graphres = graphres0))
               expect_equal(object = test01,
                            expected = FALSE)
-              test02 <- querycheck(effecttext = queryB2,
-                                   graphres = graphres0)
+              expect_message(test02 <- querycheck(effecttext = queryB2,
+                                   graphres = graphres0))
               expect_equal(object = test02,
                            expected = FALSE)
-              test03 <- querycheck(effecttext = queryB3,
-                                   graphres = graphres0)
+              expect_message(test03 <- querycheck(effecttext = queryB3,
+                                   graphres = graphres0))
               expect_equal(object = test03,
                            expected = FALSE)
-              test04 <- querycheck(effecttext = queryB4,
-                                   graphres = graphres0)
+              expect_message(test04 <- querycheck(effecttext = queryB4,
+                                   graphres = graphres0))
               expect_equal(object = test04,
                            expected = FALSE)
           })
@@ -517,25 +517,25 @@ test_that(
             graphres = graphres
         )
         expect_equal(test_good, TRUE)
-        test_parsefail <- constraintscheck(
+        expect_message(test_parsefail <- constraintscheck(
             constrainttext = constrainttext_parsefail,
             graphres = graphres
-        )
+        ))
         expect_equal(test_parsefail, FALSE)
-        test_parsefail2 <- constraintscheck(
+        expect_message(test_parsefail2 <- constraintscheck(
             constrainttext = constrainttext_parsefail2,
             graphres = graphres
-        )
+        ))
         expect_equal(test_parsefail2, FALSE)
-        test_namefail <- constraintscheck(
+        expect_message(test_namefail <- constraintscheck(
             constrainttext = constrainttext_namefail,
             graphres = graphres
-        )
+        ))
         expect_equal(test_namefail, FALSE)
-        test_operatorfail <- constraintscheck(
+        expect_message(test_operatorfail <- constraintscheck(
             constrainttext = constrainttext_operatorfail,
             graphres = graphres
-        )
+        ))
         expect_equal(test_operatorfail, FALSE)
     }
 )

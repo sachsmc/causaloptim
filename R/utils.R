@@ -159,7 +159,7 @@ querycheck <- function(effecttext, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -189,7 +189,7 @@ querycheck <- function(effecttext, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -216,7 +216,7 @@ querycheck <- function(effecttext, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -251,7 +251,7 @@ querycheck <- function(effecttext, graphres) {
                     type = "error"
                 )
             } else {
-                print(error_message)
+                message(error_message)
             }
             return(FALSE)
         }
@@ -273,7 +273,7 @@ querycheck <- function(effecttext, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -318,7 +318,7 @@ constraintsparsecheck <- function(constrainttext, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -378,7 +378,7 @@ constraintsnamecheck <- function(parsed_constraints, graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -406,7 +406,7 @@ constraintsoperatorcheck <- function(parsed_constraints) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }

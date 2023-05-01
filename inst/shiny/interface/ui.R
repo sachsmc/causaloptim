@@ -28,12 +28,12 @@ shinyUI(
         # Plot the augmented DAG with attributes:
         actionButton(
             inputId = "analyze",
-            label = "Analyze the graph",
+            label = "Analyze the graph and go to next step",
             style = "background-color: #69fb82"
         ),
         # A link to open a page with further usage instructions:
         headerPanel(
-            a(href = 'shinyapp.html',
+            a(href = 'shinyapp.html',  ## this is automatically built from one of the vignettes
               target = '_blank',
               'Help and more information')
         ),

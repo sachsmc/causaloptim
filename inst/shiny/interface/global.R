@@ -9,15 +9,39 @@ helptextUI <- function() {
   fluidRow(
     id = "helptext",
     column(
-      width = 12,
+      width = 10,
+      h3("How does this work?"),
       helpText(
-        "The graph is divided into a left side and a right side. There is no confounding allowed between the left and right sides. All variables on the right side are confounded. Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. On the left side, arbitrary connections are allowed and the model assumes that all nodes are observed and connected. On the right side, unmeasured variables are allowed, and the procedure assumes unmeasured confounding between all nodes. Once you press 'Analyze the graph', the algorithm will automatically add common causes to each side. "
+    "The first step is to draw a graph, but it cannot be just any graph, there are some important rules to follow: ",
+        "The graph is divided into a left side and a right side. Within each side, all variables must be mutually confounded by unmeasured confounders. There must be at least 1 variable in the right side, but the left side can be empty.", 
+        strong("But you do not have to draw the unmeasured confounders"), 
+        ", once you press 'Analyze the graph', the algorithm will automatically add common causes to each side.",
+        "Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. The left side and right side variables are unconfounded. Generally speaking, you want to put outcome variables of interest on the right side, things like instruments or randomized treatments on the left side, and exposures of interest on the right side. "
       )
     ),
     column(
-      width = 12,
+      width = 10,
+      h3("Getting started"),
       helpText(
-        "Shift+click to add nodes. Shift+drag to connect nodes. Click to select nodes/edges and press 'd' to remove. Click a node to select and then press 'u' to mark it as unobserved/latent or press 'y' to mark it as the outcome of interest, or press 'e' to mark it as the exposure of interest. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press 'c' and enter a number into the prompt. Click an edge and press 'm' to enforce monotonicity for that connection. Other constraints can be specified later. "
+        strong("To add new variables/nodes:"), "Hold shift and click where you want the node, then type a name for the node. Choose a short name, starting with a letter.", 
+        br(), 
+        strong("To draw a directed edge connecting two nodes."), "Hold shift, and use the mouse to click and drag from the first node to the second.", 
+        br(),
+        strong("Click on a node to select it, it will turn salmon colored."),
+        br(),
+        strong("If you made a mistake,"), "select a node and press 'd' to remove.",
+        br(),
+        strong("Select a node, then use the keyboard to mark it with special information (optional):"), 
+        br(),
+        "- press 'u' to mark it as unobserved/latent", 
+        br(),
+        "- press 'y' to mark it as the outcome of interest", 
+        br(),
+        "- press 'e' to mark it as the exposure of interest", 
+        br(),
+        "- select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press 'c' and enter a number into the prompt.",
+        br(),
+        "Click an edge and press 'm' to enforce monotonicity for that connection. Other constraints can be specified later. "
       )
     )
   )
@@ -113,7 +137,16 @@ effectUI <- function(default_effect) {
     id = "effect",
     h3("Specify causal effect of interest (required)"),
     helpText(
-      "Use the text box to describe your causal effect of interest. The effects must be of the form p{V11(X=a)=a; V12(X=a)=b;...; W1=a; ...} op1 p{V21(X=b)=a; V22(X=c)=b;...; W1=b} op2 ... where Vij and Wk are names of variables in the graph, a, b are numeric values in the appropriate value sets, and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses, and if there is nothing on the left side, they may also be observed outcomes which do not have parentheses. Variables may also be nested inside potential outcomes."
+      "Use the text box to describe your causal effect of interest.", br(),
+      "The effects must be described using sums or differences of probability statements involving counterfactuals, for example 'p{Y(X = 1) = 1} - p{Y(X = 0) = 1}'. ", 
+      br(), 
+      "You must describe them using only the names of variables in the graph, and numeric values in the appropriate range of the categorical variable (e.g., if Y has 4 levels, then the possibly values it takes on is 0, 1, 2, 3)." ,
+      br(), 
+      "You can specify complex queries, but note that the probability statements begin with little p, and use curly braces, and events inside the probability statements are separated by ';', e.g., 'p{Y(X = 1) = 1; X(Z = 1) = 1}'.",
+      br(),
+      "The variables may be potential outcomes which are denoted using smooth parentheses, and they can be arbitrarily nested.", 
+      br(), 
+      strong("There are 2 important rules to follow:"), "1) Only variables on the right side can be in the probability events, and if the left side is not empty: 2) none of the variables in the left side that are intervened upon can have any children in the left side, and all paths from the left to the right must be blocked by the intervention set. Here the intervention set is anything that is inside the smooth brackets (i.e., variable set to values)."
     ),
     fluidRow(
       id = "effecttext",

@@ -24,3 +24,7 @@ A nested list that contains the following components:
 \description{
 Parse text that defines a causal effect
 }
+\examples{
+effectt <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
+parse_effect(text = effectt)
+}

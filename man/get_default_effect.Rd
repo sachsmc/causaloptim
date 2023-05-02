@@ -15,3 +15,14 @@ A string that can be passed to \link{parse_effect}
 \description{
 Define default effect for a given graph
 }
+\examples{
+graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+V(graphres)$latent <- c(0, 0, 0, 1, 1)
+V(graphres)$nvals <- c(3, 2, 2, 2, 2)
+V(graphres)$exposure <- c(0, 1, 0, 0, 0)
+V(graphres)$outcome <- c(0, 0, 1, 0, 0)
+E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
+E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+get_default_effect(graphres = graphres) == "p{Y(X = 1)=1} - p{Y(X = 0)=1}" # TRUE
+}

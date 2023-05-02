@@ -2,7 +2,7 @@
 % Please edit documentation in R/response-functional.R
 \name{analyze_graph}
 \alias{analyze_graph}
-\title{Analyze the causal graph to determine constraints and objective}
+\title{Analyze the causal graph and effect to determine constraints and objective}
 \usage{
 analyze_graph(graph, constraints, effectt)
 }
@@ -15,8 +15,8 @@ analyze_graph(graph, constraints, effectt)
 }
 \value{
 A an object of class "linearcausalproblem", which is a list with the
-  following components. This list can be passed to \link{optimize_effect}
-  which interfaces with Balke's code. Print and plot methods are also
+  following components. This list can be passed to \link{optimize_effect_2}
+  which interfaces with the symbolic optimization program. Print and plot methods are also
   available. \describe{ 
   \item{variables}{Character vector of variable names
   of potential outcomes, these start with 'q' to match Balke's notation}
@@ -53,7 +53,7 @@ The graph object must contain the following named vertex attributes: \describe{
 \item{name}{The name of each vertex must be a valid R object name starting with a letter and no special characters. Good candidate names are for example, Z1, Z2, W2, X3, etc. }
 \item{leftside}{An indicator of whether the vertex is on the left side of the graph, 1 if yes, 0 if no.}
 \item{latent}{An indicator of whether the variable is latent (unobserved). There should always be a variable Ul on the left side that is latent and a parent of all variables on the left side, and another latent variable Ur on the right side that is a parent of all variables on the right side. }
-\item{nvals}{The number of possible values that the variable can take on, the default and minimum is 2 for 2 categories (0,1). }
+\item{nvals}{The number of possible values that the variable can take on, the default and minimum is 2 for 2 categories (0,1). In general, a variable with nvals of K can take on values 0, 1, ..., (K-1).}
 }
 In addition, there must be the following edge attributes: \describe{
 \item{rlconnect}{An indicator of whether the edge goes from the right side to the left side. Should be 0 for all edges.}
@@ -63,7 +63,10 @@ The effectt parameter describes your causal effect of interest. The effectt para
 
 \code{p{V11(X=a)=a; V12(X=a)=b;...} op1 p{V21(X=b)=a; V22(X=c)=b;...} op2 ...}
 
-where Vij are names of variables in the graph, a, b are numeric values from 0:(nvals - 1), and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as \code{p{Y = 1}} are not allowed if the left side contains any variables. If the left side contains any variables, then they mush be ancestors of the intervention set variables (or the intervention variables themselves). All of the following are valid effect statements:
+where Vij are names of variables in the graph, a, b are numeric values from 0:(nvals - 1), and op are either - or +. You can specify a single probability statement (i.e., no operator). Note that the probability statements begin with little p, and use curly braces, and items inside the probability statements are separated by ;. The variables may be potential outcomes which are denoted by parentheses. Variables may also be nested inside potential outcomes. Pure observations such as \code{p{Y = 1}} are not allowed if the left side contains any variables. 
+There are 2 important rules to follow: 1) Only variables on the right side can be in the probability events, and if the left side is not empty: 2) none of the variables in the left side that are intervened upon can have any children in the left side, and all paths from the left to the right must be blocked by the intervention set. Here the intervention set is anything that is inside the smooth brackets (i.e., variable set to values).
+
+ All of the following are valid effect statements:
 
 \code{p{Y(X = 1) = 1} - p{Y(X = 0) = 1}}
 

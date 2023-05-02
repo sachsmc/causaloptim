@@ -250,7 +250,7 @@ vertexnamecheck <- function(graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }
@@ -276,7 +276,7 @@ cyclecheck <- function(graphres) {
             type = "error"
         )
     } else {
-        print(error_message)
+        message(error_message)
     }
     FALSE
 }
@@ -300,7 +300,7 @@ nvalscheck <- function(graphres) {
                 type = "error"
             )
         } else {
-            print(error_message)
+            message(error_message)
         }
         return(FALSE)
     }

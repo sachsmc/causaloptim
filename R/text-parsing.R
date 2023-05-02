@@ -280,7 +280,7 @@ parse_constraints <- function(constraints, obsnames) {
 #' @param bounds Vector of bounds as returned by \link{optimize_effect}
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
-#' @param brackets Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\\{", "\\}")
+#' @param brackets Length 2 vector with opening and closing bracket, usually \code{c("(", ")")}, or \code{c(" \{", "\}")}
 #' @return A character string with latex code for the bounds
 #' @export
 #' @examples

@@ -5,8 +5,7 @@
 ## allow for monotonicity specification on the arrows
 ## allow for exposure marking on the graph. Then the default estimand is the total effect
 
-shinyUI(
-    ui = fluidPage(
+fluidPage(
         # Web interface parameters:
         tags$head(
             tags$link(rel = "stylesheet",
@@ -16,7 +15,7 @@ shinyUI(
         # Title:
         headerPanel("Causal Network Analysis and Optimization"),
         # Instructional text:
-        helptextUI(),
+        helptextUI("helptext"),
         # Interactive DAG input GUI:
         dagUI(),
         # Return to R the drawn DAG with attributes:
@@ -40,5 +39,5 @@ shinyUI(
         # Web interface JavaScript for drawing digraphs:
         tags$script(src = "js/d3.v3.min.js"),
         tags$script(src = "js/graph-creator.js")
-    )
 )
+

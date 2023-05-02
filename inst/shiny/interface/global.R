@@ -5,9 +5,11 @@
 #' @return HTML code for a UI with text.
 #' @examples
 #' helptextUI()
-helptextUI <- function() {
+helptextUI <- function(id) {
+  ns <- NS(id)
+  
   fluidRow(
-    id = "helptext",
+    id = ns("helptext"),
     column(
       width = 10,
       h3("How does this work?"),

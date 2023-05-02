@@ -1,4 +1,17 @@
 function(input, output, session) {
+    
+    onStop(function(){ 
+        rm(list = c("constraintschangeUI", "constraintUI", "dagUI", 
+                    "edges_from_input", "effectUI", "graphres_from_edges", 
+                    "helptextUI", "open_constraintinputUI", 
+                    "open_finalUI", "open_latexUI", "open_newUI", 
+                    "plotServer", "plotUI", 
+                    "querychangeUI", "remove_oldUI", "resultschangeUI", "resultstext", 
+                    "resultsUI"), 
+           envir = .GlobalEnv
+           )
+        })
+    
     ########################## Causal diagram input ##########################
     
     # Read directed graph input from GUI.

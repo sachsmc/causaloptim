@@ -35,3 +35,33 @@ A list with the R matrix and the string representation
 \description{
 Matrix and text representation of constraints on observed probabilities
 }
+\examples{
+graph <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+V(graph)$leftside <- c(1, 0, 0, 1, 0)
+V(graph)$latent <- c(0, 0, 0, 1, 1)
+V(graph)$nvals <- c(3, 2, 2, 2, 2)
+V(graph)$exposure <- c(0, 1, 0, 0, 0)
+V(graph)$outcome <- c(0, 0, 1, 0, 0)
+E(graph)$rlconnect <- c(0, 0, 0, 0, 0)
+E(graph)$edge.monotone <- c(0, 0, 0, 0, 0)
+constraints <- "X(Z = 1) >= X(Z = 0)"
+effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
+leftind <- vertex_attr(graph)$leftside
+cond.vars <- V(graph)[leftind == 1 & names(V(graph)) != "Ul"]
+right.vars <- V(graph)[leftind == 0 & names(V(graph)) != "Ur"] 
+obsvars <- c(right.vars, cond.vars)
+observed.variables <- V(graph)[V(graph)$latent == 0]
+var.values <- lapply(names(observed.variables), 
+function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
+names(var.values) <- names(observed.variables)
+p.vals <- do.call(expand.grid, var.values)
+jd <- do.call(paste0, p.vals[, names(right.vars[right.vars$latent == 0]), drop = FALSE])
+cond <- do.call(paste0, p.vals[, names(cond.vars[cond.vars$latent == 0]), drop = FALSE])
+parameters <- paste0("p", paste(jd, cond, sep = "_"))
+parameters.key <- paste(paste(names(right.vars[right.vars$latent == 0]), collapse = ""), 
+paste(names(cond.vars[cond.vars$latent == 0]), collapse = ""), sep = "_")
+respvars <- create_response_function(graph, right.vars, cond.vars)
+q.list <- create_q_matrix(respvars, right.vars, cond.vars, constraints)
+variables <- as.character(unique(q.list$q.vals.all.lookup$vars))
+linconstr.list <- create_R_matrix(graph, obsvars, respvars, p.vals, parameters, q.list, variables)
+}

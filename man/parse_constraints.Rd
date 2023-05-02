@@ -17,3 +17,8 @@ A data frame with columns indicating the variables being constrained, what the v
 \description{
 Parse text that defines a the constraints
 }
+\examples{
+constrainttext <- "X(Z = 1) >= X(Z = 0)"
+obsnames <- c("Z", "X", "Y")
+parse_constraints(constraints = constrainttext, obsnames = obsnames)
+}

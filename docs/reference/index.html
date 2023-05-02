@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
       </tr></tbody><tbody><tr><td>
           <p><code><a href="analyze_graph.html">analyze_graph()</a></code> </p>
         </td>
-        <td><p>Analyze the causal graph to determine constraints and objective</p></td>
+        <td><p>Analyze the causal graph and effect to determine constraints and objective</p></td>
       </tr><tr><td>
           <p><code><a href="optimize_effect.html">optimize_effect()</a></code> </p>
         </td>
@@ -109,7 +109,7 @@
       </tr><tr><td>
           <p><code><a href="plot.linearcausalproblem.html">plot(<i>&lt;linearcausalproblem&gt;</i>)</a></code> </p>
         </td>
-        <td><p>Plot the graph from the causal problem</p></td>
+        <td><p>Plot the graph from the causal problem with a legend describing attributes</p></td>
       </tr><tr><td>
           <p><code><a href="print.linearcausalproblem.html">print(<i>&lt;linearcausalproblem&gt;</i>)</a></code> </p>
         </td>
@@ -119,77 +119,13 @@
           <p class="section-desc"></p><p>Internal functions</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="plot_graphres.html">plot_graphres()</a></code> </p>
+          <p><code><a href="causalproblemcheck.html">causalproblemcheck()</a></code> </p>
         </td>
-        <td><p>Plot the analyzed graph object</p></td>
+        <td><p>Check conditions on causal problem</p></td>
       </tr><tr><td>
-          <p><code><a href="symb.subtract.html">symb.subtract()</a></code> </p>
+          <p><code><a href="constraintscheck.html">constraintscheck()</a></code> </p>
         </td>
-        <td><p>Symbolic subtraction</p></td>
-      </tr><tr><td>
-          <p><code><a href="parse_effect.html">parse_effect()</a></code> </p>
-        </td>
-        <td><p>Parse text that defines a causal effect</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_default_effect.html">get_default_effect()</a></code> </p>
-        </td>
-        <td><p>Define default effect for a given graph</p></td>
-      </tr><tr><td>
-          <p><code><a href="shortentxt.html">shortentxt()</a></code> </p>
-        </td>
-        <td><p>Shorten strings to 80 characters wide</p></td>
-      </tr><tr><td>
-          <p><code><a href="btm_var.html">btm_var()</a></code> </p>
-        </td>
-        <td><p>Recursive function to get the last name in a list</p></td>
-      </tr><tr><td>
-          <p><code><a href="const.to.sets.html">const.to.sets()</a></code> </p>
-        </td>
-        <td><p>Translate lists of constraints to lists of vectors</p></td>
-      </tr><tr><td>
-          <p><code><a href="constant_term.html">constant_term()</a></code> </p>
-        </td>
-        <td><p>Compute the scalar product of two numeric vectors of the same length</p></td>
-      </tr><tr><td>
-          <p><code><a href="evaluate_objective.html">evaluate_objective()</a></code> </p>
-        </td>
-        <td><p>Compute the scalar product of a vector of numbers and a vector of both numbers and strings</p></td>
-      </tr><tr><td>
-          <p><code><a href="expand_cond.html">expand_cond()</a></code> </p>
-        </td>
-        <td><p>Expand potential outcome conditions</p></td>
-      </tr><tr><td>
-          <p><code><a href="find_cycles.html">find_cycles()</a></code> </p>
-        </td>
-        <td><p>Find cycles in a graph</p></td>
-      </tr><tr><td>
-          <p><code><a href="linear_expression.html">linear_expression()</a></code> </p>
-        </td>
-        <td><p>Compute the scalar product of a vector of numbers and a vector of strings</p></td>
-      </tr><tr><td>
-          <p><code><a href="linear_term.html">linear_term()</a></code> </p>
-        </td>
-        <td><p>Compute the product of a single numeric scalar and a single string</p></td>
-      </tr><tr><td>
-          <p><code><a href="list_to_path.html">list_to_path()</a></code> </p>
-        </td>
-        <td><p>Recursive function to translate an effect list to a path sequence</p></td>
-      </tr><tr><td>
-          <p><code><a href="opt_effect.html">opt_effect()</a></code> </p>
-        </td>
-        <td><p>Compute a bound on the average causal effect</p></td>
-      </tr><tr><td>
-          <p><code><a href="parse_constraints.html">parse_constraints()</a></code> </p>
-        </td>
-        <td><p>Parse text that defines a the constraints</p></td>
-      </tr><tr><td>
-          <p><code><a href="pastestar.html">pastestar()</a></code> </p>
-        </td>
-        <td><p>Paste with asterisk sep</p></td>
-      </tr><tr><td>
-          <p><code><a href="reduce.sets.html">reduce.sets()</a></code> </p>
-        </td>
-        <td><p>Algebraically reduce sets</p></td>
+        <td><p>Check constraints</p></td>
       </tr><tr><td>
           <p><code><a href="create_effect_vector.html">create_effect_vector()</a></code> </p>
         </td>
@@ -207,13 +143,33 @@
         </td>
         <td><p>Create constraint matrix</p></td>
       </tr><tr><td>
-          <p><code><a href="numberOfValues.html">numberOfValues()</a></code> </p>
+          <p><code><a href="graphrescheck.html">graphrescheck()</a></code> </p>
         </td>
-        <td><p>Get the number of values of a given variable in the graph</p></td>
+        <td><p>Check conditions on digraph</p></td>
       </tr><tr><td>
-          <p><code><a href="print_nvals.html">print_nvals()</a></code> </p>
+          <p><code><a href="get_default_effect.html">get_default_effect()</a></code> </p>
         </td>
-        <td><p>Print the number of values of each variable/vertex of the analyzed graph object</p></td>
+        <td><p>Define default effect for a given graph</p></td>
+      </tr><tr><td>
+          <p><code><a href="opt_effect.html">opt_effect()</a></code> </p>
+        </td>
+        <td><p>Compute a bound on the average causal effect</p></td>
+      </tr><tr><td>
+          <p><code><a href="parse_constraints.html">parse_constraints()</a></code> </p>
+        </td>
+        <td><p>Parse text that defines a the constraints</p></td>
+      </tr><tr><td>
+          <p><code><a href="parse_effect.html">parse_effect()</a></code> </p>
+        </td>
+        <td><p>Parse text that defines a causal effect</p></td>
+      </tr><tr><td>
+          <p><code><a href="plot_graphres.html">plot_graphres()</a></code> </p>
+        </td>
+        <td><p>Plot the analyzed graph object</p></td>
+      </tr><tr><td>
+          <p><code><a href="querycheck.html">querycheck()</a></code> </p>
+        </td>
+        <td><p>Check conditions on query</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

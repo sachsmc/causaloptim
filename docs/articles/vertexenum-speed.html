@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -99,6 +99,7 @@ bounds</h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim" class="external-link">causaloptim</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: igraph</span></span>
+<span><span class="co">#&gt; Warning: package 'igraph' was built under R version 4.2.3</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Attaching package: 'igraph'</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
@@ -233,11 +234,11 @@ the <code>constraints</code> element of <code>obj</code>).</p>
 compare:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">eval_newbnds</span>, <span class="va">params</span><span class="op">)</span> </span>
-<span><span class="co">#&gt;           lower      upper</span></span>
-<span><span class="co">#&gt; q0_0 -0.8497802 -0.7039564</span></span>
+<span><span class="co">#&gt;           lower     upper</span></span>
+<span><span class="co">#&gt; q0_0 -0.1204899 0.5948471</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">eval_oldbnds</span>, <span class="va">params</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           lower      upper</span></span>
-<span><span class="co">#&gt; q0_0 -0.8497802 -0.7039564</span></span></code></pre></div>
+<span><span class="co">#&gt;           lower     upper</span></span>
+<span><span class="co">#&gt; q0_0 -0.1204899 0.5948471</span></span></code></pre></div>
 <p>Success!</p>
 <p>This improvement was achieved by modernizing a key back-end
 optimization algorithm and implementation. To see how it fits into the
@@ -422,7 +423,7 @@ you expect it to do (here <code>(c1_num,p)</code><span class="math inline">\(=(\
 separates the dual objective gradient into its numeric and symbolic
 parts).</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">expressions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">vertices</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu"><a href="../reference/evaluate_objective.html">evaluate_objective</a></span><span class="op">(</span>c1_num <span class="op">=</span> <span class="va">c1_num</span>, p <span class="op">=</span> <span class="va">p</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">expressions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">vertices</span>, <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="fu">evaluate_objective</span><span class="op">(</span>c1_num <span class="op">=</span> <span class="va">c1_num</span>, p <span class="op">=</span> <span class="va">p</span>, y <span class="op">=</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>There are still a few places in <code>causaloptim</code> that are
 worthwhile to optimize, but with this major one resolved we looking
 forward to researchers taking advantage of the generalized class of

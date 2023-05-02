@@ -1,3 +1,9 @@
+# causaloptim 0.9.8
+
+- complete refactor of shiny app (@gjo11)
+- add tests for shiny ui and server components (@gjo11)
+- update documentation and clean up exports (@gjo11)
+
 # causaloptim 0.9.7
 
 - More fixes to snprintf and LEN_LABEL

@@ -2,7 +2,7 @@
 #' Paste with asterisk sep
 #' 
 #' @param ... Things to paste together
-#' 
+#' @noRd
 pastestar <- function(...) paste(..., sep = "*")
 
 
@@ -10,6 +10,7 @@ pastestar <- function(...) paste(..., sep = "*")
 #' 
 #' @param cond Text string of the condition
 #' @param obsnames Vector of names of observed variables
+#' @noRd
 expand_cond <- function(cond, obsnames) {
     
     chk1 <- sapply(cond, function(x) substr(x, nchar(x), nchar(x))) %in% obsnames
@@ -34,6 +35,7 @@ expand_cond <- function(cond, obsnames) {
 #' 
 #' @param constr List of constraint terms as character strings
 #' @param objterms Vector of terms in the objective function
+#' @noRd
 const.to.sets <- function(constr, objterms) {
     
     sets <- lapply(strsplit(constr, " = "), function(x) {
@@ -76,6 +78,7 @@ const.to.sets <- function(constr, objterms) {
 #' Identifies and reduces redundant variables
 #' 
 #' @param sets List of constraints as sets of variables
+#' @noRd
 reduce.sets <- function(sets){
     #find commonalities
     K <- length(sets)
@@ -130,7 +133,7 @@ reduce.sets <- function(sets){
 #' Like setdiff but doesn't remove duplicates x1 - x2
 #' @param x1 First term (subtract from)
 #' @param x2 Second term (subtract)
-#' 
+#' @noRd
 symb.subtract <- function(x1, x2) {
     ## x1 - x2
     res1 <- x1
@@ -161,6 +164,9 @@ symb.subtract <- function(x1, x2) {
 #'        is a potential outcome and FALSE if it is an observational quantity.}
 #'        }
 #' @export
+#' @examples
+#' effectt <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
+#' parse_effect(text = effectt)
 parse_effect <- function(text) {
     
     text <- gsub("(\\n|\\t| )", "", text)
@@ -225,6 +231,10 @@ parse_effect <- function(text) {
 #' @param obsnames Vector of names of the observed variables in the graph
 #' @return A data frame with columns indicating the variables being constrained, what the values of their parents are for the constraints, and the operator defining the constraint (equality or inequalities).
 #' @export
+#' @examples
+#' constrainttext <- "X(Z = 1) >= X(Z = 0)"
+#' obsnames <- c("Z", "X", "Y")
+#' parse_constraints(constraints = constrainttext, obsnames = obsnames)
 parse_constraints <- function(constraints, obsnames) {
     
     parsed.constraints <- NULL
@@ -265,14 +275,12 @@ parse_constraints <- function(constraints, obsnames) {
     
 }
 
-
-
 #' Latex bounds equations
 #' 
 #' @param bounds Vector of bounds as returned by \link{optimize_effect}
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
-#' @param brackets Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\\{", "\\}")
+#' @param brackets Length 2 vector with opening and closing bracket, usually \code{c("(", ")")}, or \code{c(" \{", "\}")}
 #' @return A character string with latex code for the bounds
 #' @export
 #' @examples

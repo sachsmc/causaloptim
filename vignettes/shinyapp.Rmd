@@ -144,6 +144,6 @@ cat(latex_bounds(results$bounds.obs$bounds, results$obj$parameters))
 ```
 
 
-Please sends any bugs or feedback to michael.sachs@ki.se or file an issue on https://github.com/sachsmc/causaloptim . 
+Please sends any bugs or feedback to sachsmc@gmail.com or file an issue on https://github.com/sachsmc/causaloptim . 
 
 

@@ -260,6 +260,7 @@ interpret_bounds <- function(bounds, parameters) {
 #' 
 #' @param x String
 #' @return A string with line breaks to keep the width less than 80 characters
+#' @noRd
 
 shortentxt <- function(x) {
     

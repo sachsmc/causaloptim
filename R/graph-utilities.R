@@ -48,7 +48,17 @@ plot_graphres <- function(graphres) {
 #' 
 #' @param graphres an igraph object
 #' @return None
-#' @export
+#' @noRd
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(3,4,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' print_nvals(graphres = b)
 print_nvals <- function(graphres) {
     df <- data.frame(name_of_variable = vertex_attr(graph = graphres)$name, 
                      number_of_possible_values = vertex_attr(graph = graphres)$nvals)
@@ -62,7 +72,17 @@ print_nvals <- function(graphres) {
 #' @param graph An igraph object.
 #' @param varname A string. The name of a vertex in 'graph'.
 #' @return An integer greater than 1. The number of values of 'varname'.
-#' @export
+#' @noRd
+#' @examples
+#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
+#' V(b)$leftside <- c(0,0,0)
+#' V(b)$latent <- c(0,0,1)
+#' V(b)$nvals <- c(3,4,2)
+#' V(b)$exposure <- c(1,0,0)
+#' V(b)$outcome <- c(0,1,0)
+#' E(b)$rlconnect <- c(0,0,0)
+#' E(b)$edge.monotone <- c(0,0,0)
+#' numberOfValues(graph = b, varname = "X")
 numberOfValues <- function(graph, varname) {
     df <- data.frame(name_of_variable = vertex_attr(graph = graph)$name, 
                      number_of_possible_values = vertex_attr(graph = graph)$nvals)
@@ -73,7 +93,7 @@ numberOfValues <- function(graph, varname) {
 #' 
 #' @param g an igraph object
 #' @return A list of vectors of integers, indicating the vertex sequences for the cycles found in the graph
-#' @export
+#' @noRd
 find_cycles = function(g) {
     Cycles = NULL
     for(v1 in V(g)) {
@@ -96,8 +116,20 @@ find_cycles = function(g) {
 #' 
 #' @return A string that can be passed to \link{parse_effect}
 #' @export
+#' @examples
+#' graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
+#' V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+#' V(graphres)$latent <- c(0, 0, 0, 1, 1)
+#' V(graphres)$nvals <- c(3, 2, 2, 2, 2)
+#' V(graphres)$exposure <- c(0, 1, 0, 0, 0)
+#' V(graphres)$outcome <- c(0, 0, 1, 0, 0)
+#' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
+#' E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+#' get_default_effect(graphres = graphres) == "p{Y(X = 1)=1} - p{Y(X = 0)=1}" # TRUE
 get_default_effect <- function(graphres) {
-    
+    if (length(E(graphres)) == 0) {
+        return("")
+    }
     rightvars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"]
     
     expo <- V(graphres)[V(graphres)$exposure == 1]
@@ -150,3 +182,169 @@ get_default_effect <- function(graphres) {
     }
         default.effect
 } 
+
+# Check for right to left edges.
+# edges: A 'data.frame' as output by 'edges_from_input'.
+#' Check that a data frame containing the edges of a digraph with certain attributes 
+#' satisfies the condition of no edges going from the 'right side' to the 'left side'.
+#' @param edges A data.frame representing a digraph.
+#' @return \code{TRUE} if the condition is satisfied; else \code{FALSE}.
+#' @noRd
+rlcheck0 <- function(edges) {
+    if (sum(edges$rlconnect) > 0) {
+        error_message <- "No connections from right to left are allowed!"
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            print(error_message)
+        }
+        return(FALSE)
+    }
+    TRUE
+}
+
+# Check for right side to left side edges in a digraph.
+# graphres: An 'igraph' object as e.g. output by 'graphres_from_edges'.
+#' Check that no edges of a given digraph go from the 'right side' to the 'left side'.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' This digraph should have at least the binary edge attribute \code{rlconnect}.
+#' @return \code{TRUE} if the condition is satisfied; else \code{FALSE}.
+#' @noRd
+#' @examples
+#' graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+#' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
+#' rlcheck(graphres = graphres) # TRUE
+rlcheck <- function(graphres) {
+    edges <- E(graph = graphres)
+    rlcheck0(edges = edges)
+}
+
+# Check that vertices are named appropriately.
+#' Check that the names given to the vertices of a digraph are all valid.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if all the variable names are valid; else \code{FALSE}.
+#' @noRd
+#' @examples
+#' graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+#' vertexnamecheck(graphres = graphres) # TRUE
+vertexnamecheck <- function(graphres) {
+    vnames <- names(V(graphres))
+    badnames <- grep(
+        pattern = "(^[^[:alpha:]])|([[:punct:]])|(^p)",
+        x = vnames,
+        value = TRUE
+    )
+    if (length(badnames) > 0) {
+        error_message <- sprintf(
+            "Invalid names: %s, found in graph vertices!",
+            paste(badnames,
+                  collapse = ","
+            )
+        )
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            message(error_message)
+        }
+        return(FALSE)
+    }
+    TRUE
+}
+
+# Check that the digraph is acyclic.
+#' Check that a given digraph is a DAG, i.e., contains no cycles.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if \code{graphres} is a DAG; else \code{FALSE}.
+#' @noRd
+#' @examples
+#' graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+#' cyclecheck(graphres = graphres) # TRUE
+cyclecheck <- function(graphres) {
+    if (is.dag(graph = graphres)) {
+        return(TRUE)
+    }
+    error_message <- "No cycles in the graph are allowed!"
+    if (isRunning()) {
+        showNotification(
+            ui = error_message,
+            type = "error"
+        )
+    } else {
+        message(error_message)
+    }
+    FALSE
+}
+
+# Check that each categorical variable is at least dichotomous.
+#' Check that the number of categorical levels for each variable in a graph is at least 2.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @return \code{TRUE} if each variable is at least binary; else \code{FALSE}.
+#' @noRd
+#' @examples
+#' graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+#' V(graphres)$nvals <- c(3, 2, 4, 2, 2)
+#' nvalscheck(graphres = graphres) # TRUE
+nvalscheck <- function(graphres) {
+    if (any(vertex_attr(graph = graphres)$nvals < 2)) {
+        error_message <-
+            "Each variable needs to be able to take on at least two distinct possible values!"
+        if (isRunning()) {
+            showNotification(
+                ui = error_message,
+                type = "error"
+            )
+        } else {
+            message(error_message)
+        }
+        return(FALSE)
+    }
+    TRUE
+}
+
+# Check all conditions on the digraph.
+# Set 'ret = TRUE' to also return 'graphres' if all checks are passed.
+#' Check conditions on digraph
+#' 
+#' Check that a given digraph satisfies the conditions of 
+#' 'no left to right edges', 'no cycles', 'valid number of categories' and 'valid variable names'.
+#' Optionally returns the digraph if all checks are passed.
+#' @param graphres An \code{igraph} object representing a digraph.
+#' @param ret A logical value. Default is \code{FALSE}.
+#' Set to \code{TRUE} to also return \code{graphres} if all checks are passed.
+#' @return If \code{ret=FALSE} (default): \code{TRUE} if all checks pass; else \code{FALSE}.
+#' If \code{ret=TRUE}: \code{graphres} if all checks pass; else \code{FALSE}.
+#' @export
+#' @examples
+#' graphres <- graph_from_literal(X -+ Y, X -+ M, M -+ Y, Ul -+ X, Ur -+ M, Ur -+ Y)
+#' V(graphres)$leftside <- c(1, 0, 0, 1, 0)
+#' V(graphres)$latent <- c(0, 0, 0, 1, 1)
+#' V(graphres)$nvals <- c(2, 2, 2, 2, 2)
+#' V(graphres)$exposure <- c(0, 0, 0, 0, 0)
+#' V(graphres)$outcome <- c(0, 0, 0, 0, 0)
+#' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
+#' E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0, 0)
+#' graphrescheck(graphres = graphres) # TRUE
+graphrescheck <- function(graphres, ret = FALSE) {
+    if (rlcheck(graphres = graphres)) {
+        if (cyclecheck(graphres = graphres)) {
+            if (vertexnamecheck(graphres = graphres)) {
+                if (nvalscheck(graphres = graphres)) {
+                    if (ret) {
+                        if (isRunning()) {
+                            stopApp(returnValue = graphres)
+                        }
+                        return(graphres)
+                    }
+                    return(TRUE)
+                }
+            }
+        }
+    }
+    FALSE
+}

@@ -13,7 +13,7 @@ latex_bounds(bounds, parameters, prob.sym = "P", brackets = c("(", ")"))
 
 \item{prob.sym}{Symbol to use for probability statements in latex, usually "P" or "pr"}
 
-\item{brackets}{Length 2 vector with opening and closing bracket, usually c("(", ")"), or c("\\{", "\\}")}
+\item{brackets}{Length 2 vector with opening and closing bracket, usually \code{c("(", ")")}, or \code{c(" \{", "\}")}}
 }
 \value{
 A character string with latex code for the bounds

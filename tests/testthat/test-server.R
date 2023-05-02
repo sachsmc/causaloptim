@@ -154,6 +154,7 @@ test_that("dag input 2", {
     })
 })
 
+source(file.path(appDir, "global.R"))
 # Example digraph input from GUI:
 myin <-
     c(

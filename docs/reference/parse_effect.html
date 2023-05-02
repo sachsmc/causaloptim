@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -100,6 +100,53 @@
        
 </dl></div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">effectt</span> <span class="op">&lt;-</span> <span class="st">"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span></span></span>
+<span class="r-in"><span><span class="fu">parse_effect</span><span class="op">(</span>text <span class="op">=</span> <span class="va">effectt</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[1]]$Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[1]]$Y$X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[2]]$Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $vars[[2]]$Y$X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $oper</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $oper[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "-"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $values</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[1]]$Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $values[[2]]$Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $pcheck</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $pcheck[[1]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $pcheck[[2]]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

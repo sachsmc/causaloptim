@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -97,6 +97,200 @@
 <p>A list of 3 data frames of counterfactuals and their associated labels</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">graphres</span> <span class="op">&lt;-</span> <span class="fu">graph_from_literal</span><span class="op">(</span><span class="va">Z</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ul</span> <span class="op">-</span><span class="op">+</span> <span class="va">Z</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">latent</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">nvals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">E</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">rlconnect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">E</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">edge.monotone</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">constraints</span> <span class="op">&lt;-</span> <span class="st">"X(Z = 1) &gt;= X(Z = 0)"</span></span></span>
+<span class="r-in"><span><span class="va">cond.vars</span> <span class="op">&lt;-</span> <span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">[</span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">==</span> <span class="fl">1</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"Ul"</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">right.vars</span> <span class="op">&lt;-</span> <span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">[</span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">$</span><span class="va">leftside</span> <span class="op">==</span> <span class="fl">0</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">V</span><span class="op">(</span><span class="va">graphres</span><span class="op">)</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"Ur"</span><span class="op">]</span> </span></span>
+<span class="r-in"><span><span class="va">respvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="create_response_function.html">create_response_function</a></span><span class="op">(</span><span class="va">graphres</span>, <span class="va">right.vars</span>, <span class="va">cond.vars</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">create_q_matrix</span><span class="op">(</span><span class="va">respvars</span>, <span class="va">right.vars</span>, <span class="va">cond.vars</span>, <span class="va">constraints</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $q.vals</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    X Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  6 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  7 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 4 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 6 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 7 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 4 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 6 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 7 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 0 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 2 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 3 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 4 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 6 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 7 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $q.vals.all</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    X Y Z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  2 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  3 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  4 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  6 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  7 0 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  2 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  3 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 4 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 6 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 7 1 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 0 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 2 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 3 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 4 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 6 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 7 2 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 0 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 2 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 3 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 4 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 6 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 7 3 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 0 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 2 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 3 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28 4 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 6 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 7 0 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 0 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 2 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 3 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 4 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 6 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 7 1 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 0 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 2 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39 3 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 4 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 6 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42 7 2 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43 0 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44 2 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45 3 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46 4 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47 6 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48 7 3 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49 0 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50 2 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51 3 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52 4 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53 6 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54 7 0 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55 0 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56 2 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57 3 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58 4 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59 6 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60 7 1 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61 0 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62 2 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63 3 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64 4 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65 6 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66 7 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67 0 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68 2 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69 3 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70 4 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71 6 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72 7 3 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $q.vals.all.lookup</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    X Y Z vars</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0 0 0 q0_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0 0 2 q0_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0 0 1 q0_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0 1 0 q0_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0 1 2 q0_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0 1 1 q0_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0 2 2 q0_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0 2 1 q0_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0 2 0 q0_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0 3 2 q0_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11 0 3 1 q0_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12 0 3 0 q0_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13 2 0 2 q2_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14 2 0 1 q2_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15 2 0 0 q2_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16 2 1 0 q2_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17 2 1 1 q2_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18 2 1 2 q2_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19 2 2 0 q2_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20 2 2 2 q2_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21 2 2 1 q2_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22 2 3 0 q2_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23 2 3 2 q2_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24 2 3 1 q2_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25 3 0 0 q3_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26 3 0 2 q3_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27 3 0 1 q3_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28 3 1 1 q3_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29 3 1 0 q3_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30 3 1 2 q3_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31 3 2 2 q3_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32 3 2 1 q3_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33 3 2 0 q3_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34 3 3 0 q3_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35 3 3 1 q3_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36 3 3 2 q3_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37 4 0 0 q4_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38 4 0 1 q4_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39 4 0 2 q4_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40 4 1 2 q4_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41 4 1 1 q4_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42 4 1 0 q4_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43 4 2 0 q4_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44 4 2 2 q4_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45 4 2 1 q4_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46 4 3 1 q4_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47 4 3 0 q4_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48 4 3 2 q4_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49 6 0 1 q6_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50 6 0 0 q6_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51 6 0 2 q6_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52 6 1 1 q6_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53 6 1 0 q6_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54 6 1 2 q6_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55 6 2 0 q6_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56 6 2 1 q6_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57 6 2 2 q6_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58 6 3 2 q6_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59 6 3 1 q6_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60 6 3 0 q6_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61 7 0 2 q7_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62 7 0 1 q7_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63 7 0 0 q7_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64 7 1 2 q7_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65 7 1 1 q7_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66 7 1 0 q7_1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67 7 2 1 q7_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68 7 2 0 q7_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69 7 2 2 q7_2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70 7 3 1 q7_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71 7 3 0 q7_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72 7 3 2 q7_3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>

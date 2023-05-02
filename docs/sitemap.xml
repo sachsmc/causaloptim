@@ -46,6 +46,9 @@
     <loc>/reference/causaloptim-package.html</loc>
   </url>
   <url>
+    <loc>/reference/causalproblemcheck.html</loc>
+  </url>
+  <url>
     <loc>/reference/check_linearity.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>/reference/constant_term.html</loc>
+  </url>
+  <url>
+    <loc>/reference/constraintscheck.html</loc>
   </url>
   <url>
     <loc>/reference/create_effect_vector.html</loc>
@@ -77,6 +83,9 @@
   </url>
   <url>
     <loc>/reference/get_default_effect.html</loc>
+  </url>
+  <url>
+    <loc>/reference/graphrescheck.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
@@ -128,6 +137,9 @@
   </url>
   <url>
     <loc>/reference/print_nvals.html</loc>
+  </url>
+  <url>
+    <loc>/reference/querycheck.html</loc>
   </url>
   <url>
     <loc>/reference/reduce.sets.html</loc>

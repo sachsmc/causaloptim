@@ -21,28 +21,17 @@ reference:
   - title: "Utilities"
     desc: "Internal functions"
     contents:
-      - plot_graphres
-      - symb.subtract
-      - parse_effect
-      - get_default_effect
-      - shortentxt
-      - btm_var
-      - const.to.sets
-      - constant_term
-      - evaluate_objective
-      - expand_cond
-      - find_cycles
-      - linear_expression
-      - linear_term
-      - list_to_path
-      - opt_effect
-      - parse_constraints
-      - pastestar
-      - reduce.sets
+      - causalproblemcheck
+      - constraintscheck
       - create_effect_vector
       - create_q_matrix
       - create_response_function
       - create_R_matrix
-      - numberOfValues
-      - print_nvals
+      - graphrescheck
+      - get_default_effect
+      - opt_effect
+      - parse_constraints
+      - parse_effect
+      - plot_graphres
+      - querycheck
       

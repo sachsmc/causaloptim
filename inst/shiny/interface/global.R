@@ -18,7 +18,7 @@ helptextUI <- function(id) {
         "The graph is divided into a left side and a right side. Within each side, all variables must be mutually confounded by unmeasured confounders. There must be at least 1 variable in the right side, but the left side can be empty.", 
         strong("But you do not have to draw the unmeasured confounders"), 
         ", once you press 'Analyze the graph', the algorithm will automatically add common causes to each side.",
-        "Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. The left side and right side variables are unconfounded. Generally speaking, you want to put outcome variables of interest on the right side, things like instruments or randomized treatments on the left side, and exposures of interest on the right side. "
+        "Connections between the left and right sides must originate from the left. I.e, no connections from the right to left are allowed. The left side and right side variables are unconfounded. Generally speaking, you want to put outcome variables of interest on the right side, things like instruments or randomized treatments on the left side, and confounded exposures of interest on the right side. "
       )
     ),
     column(

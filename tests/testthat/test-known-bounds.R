@@ -1,6 +1,8 @@
 test_that("## simple unconfounded X -> Y", {
 
 b <- readRDS(test_path("test-graphs", "simple-unconfounded.RData"))
+# igraph::upgrade_graph(b)
+# saveRDS(object = b, file = test_path("test-graphs", "simple-unconfounded.RData"))
 V(b)$nvals <- c(2,2)
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
@@ -21,6 +23,8 @@ expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p0_0 - p0_1\n}\n",
 test_that("## simple confounded X -> Y", {
 
 b <- readRDS(test_path("test-graphs", "simple-confounded.RData"))
+# igraph::upgrade_graph(b)
+# saveRDS(object = b, file = test_path("test-graphs", "simple-confounded.RData"))
 V(b)$nvals <- c(2,2,2)
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
@@ -54,6 +58,8 @@ test_that("instrumental variable", {
     ## instrument Z -> X -> Y
     
     b <- readRDS(test_path("test-graphs", "instrument.RData"))
+    # igraph::upgrade_graph(b)
+    # saveRDS(object = b, file = test_path("test-graphs", "instrument.RData"))
     V(b)$nvals <- c(2,2,2,2)
     eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
     
@@ -141,6 +147,8 @@ test_that("Mediator", {
     
     
     b <- readRDS(test_path("test-graphs", "mediator.RData"))
+    # igraph::upgrade_graph(b)
+    # saveRDS(object = b, file = test_path("test-graphs", "mediator.RData"))
     V(b)$nvals <- c(2,2,2,2)
     
     ## total effect: identifiable
@@ -358,3 +366,4 @@ test_that("Missing paths filling in works properly", {
     
     
 })
+

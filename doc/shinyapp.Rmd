@@ -56,7 +56,7 @@ In the main window below the text, Shift+click to add nodes. When a node is adde
 
 ![Naming nodes](screen2.png)
 
-Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press 'u' to mark it as unobserved/latent. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press 'c' and enter a number into the prompt. Click to select nodes/edges and press delete to remove. If there are problems selecting nodes, try restarting your browser.  
+Click on an existing node to select it, and shift+click on a node to change the name. Shift+drag to connect nodes. Remember than no edges may go from the right side to the left side. Click a node to select and then press 'u' to mark it as unobserved/latent. Select a node and press a digit to set that number of possible categorical values (all variables default to binary), or press 'c' and enter a number into the prompt. Click to select nodes/edges and press 'd' to remove. If there are problems selecting nodes, try restarting your browser.  
 
 ![Connections](screen3.png)
 
@@ -144,6 +144,6 @@ cat(latex_bounds(results$bounds.obs$bounds, results$obj$parameters))
 ```
 
 
-Please sends any bugs or feedback to sachsmc@gmail.com or file an issue on https://github.com/sachsmc/causaloptim . 
+Please sends any bugs or feedback to michael.sachs@ki.se or file an issue on https://github.com/sachsmc/causaloptim . 
 
 

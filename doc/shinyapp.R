@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -22,7 +22,7 @@ results <- list(graphres = b, obj = obj, bounds.obs = opp,
 ## ----setup, eval = FALSE------------------------------------------------------
 #  library(causaloptim)
 
-## ---- eval = FALSE------------------------------------------------------------
+## ----eval = FALSE-------------------------------------------------------------
 #  results <- specify_graph()
 
 ## -----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ print(results$boundsFunction)
 sim <- simulate_bounds(results$obj, results$bounds.obs, nsim = 100)
 head(sim)
 
-## ---- results = "asis"--------------------------------------------------------
+## ----results = "asis"---------------------------------------------------------
 cat(latex_bounds(results$bounds.obs$bounds, results$obj$parameters))
 
 

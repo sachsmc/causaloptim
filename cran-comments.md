@@ -1,1 +1,2 @@
-This is a resubmission that improved documentation and functionality. 
+This is a resubmission to address some bugs, improve testing for the graphical interface, and improve documentation. 
+

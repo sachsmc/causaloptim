@@ -12,7 +12,7 @@ This package is in stable development. The interface is unlikely to have major c
 
 ## Installation
 
-```{r}
+``` r
 install.packages("causaloptim")
 # or
 remotes::install_github("sachsmc/causaloptim")
@@ -25,7 +25,7 @@ Or use the web application: https://sachsmc.shinyapps.io/causaloptimweb/
 
 Launch the shiny app to get started, results are saved in the `results` object: 
 
-```{r}
+``` r
 results <- specify_graph()
 ```
 

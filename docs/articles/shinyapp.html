@@ -104,8 +104,8 @@ that are produced in the web interface.</p>
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/specify_graph.html">specify_graph</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>A new window in your system’s default web browser is opened with the
 following interface:</p>
-<div class="figure">
-<img src="screen1.png" alt=""><p class="caption">Startup</p>
+<div class="float">
+<img src="screen1.png" alt="Startup"><div class="figcaption">Startup</div>
 </div>
 <p>The instructions at the top provide details on how to specify the
 graph. The graph is divided into a left side and a right side. There is
@@ -123,8 +123,8 @@ use a valid R variable name, but without underscores. This means it
 cannot start with a number, and cannot contain spaces, underscores or
 special characters. Single capital letters are good choices, possibly
 with trailing numbers.</p>
-<div class="figure">
-<img src="screen2.png" alt=""><p class="caption">Naming nodes</p>
+<div class="float">
+<img src="screen2.png" alt="Naming nodes"><div class="figcaption">Naming nodes</div>
 </div>
 <p>Click on an existing node to select it, and shift+click on a node to
 change the name. Shift+drag to connect nodes. Remember than no edges may
@@ -132,10 +132,10 @@ go from the right side to the left side. Click a node to select and then
 press ‘u’ to mark it as unobserved/latent. Select a node and press a
 digit to set that number of possible categorical values (all variables
 default to binary), or press ‘c’ and enter a number into the prompt.
-Click to select nodes/edges and press delete to remove. If there are
+Click to select nodes/edges and press ‘d’ to remove. If there are
 problems selecting nodes, try restarting your browser.</p>
-<div class="figure">
-<img src="screen3.png" alt=""><p class="caption">Connections</p>
+<div class="float">
+<img src="screen3.png" alt="Connections"><div class="figcaption">Connections</div>
 </div>
 <p>Once we have our graph specified, we can optionally make some
 annotations. You may specify the outcome of interest, and the exposure
@@ -144,8 +144,8 @@ outcome of interest, and then select the exposure node and press ‘e’ to
 mark it as the exposure of interest. The default causal contrast is the
 total effect. The exposure will be colored blue, and the outcome colored
 red.</p>
-<div class="figure">
-<img src="screen4.png" alt=""><p class="caption">Final graph</p>
+<div class="float">
+<img src="screen4.png" alt="Final graph"><div class="figcaption">Final graph</div>
 </div>
 <p>We now have a graph specified that is ready to be analyzed.
 Optionally, click an edge and press ‘m’ to enforce monotonicity for that
@@ -164,8 +164,8 @@ interest. In our current example, we are interested in the causal risk
 difference in Y comparing X = 1 to X = 0, i.e., Y(X = 1) - Y(X = 0). The
 optimizer will compute bounds for the expected value of this
 quantity.</p>
-<div class="figure">
-<img src="screen5.png" alt=""><p class="caption">Interpreted graph</p>
+<div class="float">
+<img src="screen5.png" alt="Interpreted graph"><div class="figcaption">Interpreted graph</div>
 </div>
 <p>Use the text box to describe your causal effect of interest. The
 effects must be of the form</p>
@@ -255,13 +255,13 @@ bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
-<span><span class="co">#&gt;      objective bound.lower bound.upper</span></span>
-<span><span class="co">#&gt; 1 -0.121237265 -0.40481926   0.2048871</span></span>
-<span><span class="co">#&gt; 2  0.050994423 -0.36204998   0.4019316</span></span>
-<span><span class="co">#&gt; 3  0.168411283 -0.30054236   0.2586737</span></span>
-<span><span class="co">#&gt; 4  0.224625020 -0.07575797   0.4496428</span></span>
-<span><span class="co">#&gt; 5 -0.003303575 -0.35451552   0.3395537</span></span>
-<span><span class="co">#&gt; 6  0.089360728 -0.27591653   0.3641212</span></span></code></pre></div>
+<span><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
+<span><span class="co">#&gt; 1  0.12041837  -0.1074550   0.5006213</span></span>
+<span><span class="co">#&gt; 2  0.12067895  -0.2635277   0.3617893</span></span>
+<span><span class="co">#&gt; 3  0.06320870  -0.3462978   0.3797830</span></span>
+<span><span class="co">#&gt; 4 -0.09857439  -0.2553938   0.3273650</span></span>
+<span><span class="co">#&gt; 5 -0.04301793  -0.3430274   0.2565260</span></span>
+<span><span class="co">#&gt; 6 -0.16399004  -0.4175398   0.1888496</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex
 equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">

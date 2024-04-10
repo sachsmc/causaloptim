@@ -1,3 +1,7 @@
+# causaloptim 0.10.0
+
+- experimental functionality for automated linearity checking
+
 # causaloptim 0.9.8
 
 - complete refactor of shiny app (@gjo11)

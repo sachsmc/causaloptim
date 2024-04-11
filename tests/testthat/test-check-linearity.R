@@ -1,4 +1,4 @@
-test_that("## IV case", {
+test_that("## regular and contaminated IV case", {
     
     
     b <- graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Z -+ Y, Ur -+ Y)
@@ -20,6 +20,37 @@ test_that("## IV case", {
     prob.form <- list(out = c("Y", "X"), cond = "Z")
     
     expect_true(check_linear_constraints(respvars, p.vals, prob.form))
+    
+    effectt <- "p{Y(X = 1) = 1}"
+    
+    expect_false(check_linear_objective(respvars, graph, effectt, prob.form))
+    
+    ## regular IV case
+    
+    b <- graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y)
+    V(b)$leftside <- c(1,0,0,0)
+    V(b)$latent <- c(0, 0,0,1)
+    V(b)$nvals <- c(2,2,2,2)
+    E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0, 0)
+    
+    graph <- b
+    
+    observed.variables <- V(graph)[V(graph)$latent == 0]
+    var.values <- lapply(names(observed.variables), 
+                         function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
+    names(var.values) <- names(observed.variables)
+    p.vals <- do.call(expand.grid, var.values)
+    
+    respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
+    
+    prob.form <- list(out = c("Y", "X"), cond = "Z")
+    
+    expect_true(check_linear_constraints(respvars, p.vals, prob.form))
+    
+    effectt <- "p{Y(X = 1) = 1}"
+    
+    expect_true(check_linear_objective(respvars, graph, effectt, prob.form))
+    
 
 })
 
@@ -68,5 +99,8 @@ test_that("## interventional direct effects", {
     prob.form <- list(out = c("Y", "M"), cond = c("A"))
     expect_true(check_linear_constraints(respvars, p.vals, prob.form))
     
+    effectt <- "p{Y(Ay = 1, Am = 1) = 1} - p{Y(Ay = 0, Am = 1) = 1}"
+    
+    expect_true(check_linear_objective(respvars, graph, effectt, prob.form))
     
 })

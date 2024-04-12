@@ -23,7 +23,7 @@ test_that("## regular and contaminated IV case", {
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_false(check_linear_objective(respvars, graph, effectt, prob.form))
+    expect_false(check_linear_objective(respvars, effectt, prob.form))
     
     ## regular IV case
     
@@ -49,7 +49,7 @@ test_that("## regular and contaminated IV case", {
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_true(check_linear_objective(respvars, graph, effectt, prob.form))
+    expect_true(check_linear_objective(respvars, effectt, prob.form))
     
 
 })
@@ -101,6 +101,11 @@ test_that("## interventional direct effects", {
     
     effectt <- "p{Y(Ay = 1, Am = 1) = 1} - p{Y(Ay = 0, Am = 1) = 1}"
     
-    expect_true(check_linear_objective(respvars, graph, effectt, prob.form))
+    expect_true(check_linear_objective(respvars, effectt, prob.form))
+    
+    restest <- optimize_effect_2(linearcausalproblem_from_response_functions(respvars, p.vals, 
+                                                                             prob.form, effectt, 
+                                                                             constraints = NULL) )
+        
     
 })

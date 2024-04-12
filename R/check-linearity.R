@@ -270,12 +270,12 @@ check_linear_objective <- function(respvars, effectt, prob.form) {
                         
                     } else {
                         
-                        lookin <- lapply(names(parents), function(gu) {
+                        lookin <- lapply(parents, function(gu) {
                             
                             as.numeric(gee_r(r, which(obsvarnames == gu)))
                             
                         })
-                        names(lookin) <- names(parents)
+                        names(lookin) <- parents
                         inres <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
                         do.call(inres, lookin)
                         

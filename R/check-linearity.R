@@ -195,10 +195,10 @@ check_linear_constraints <- function(respvars, p.vals, prob.form) {
 #' prob.form <- list(out = c("Y", "X"), cond = "Z")
 #' 
 #' effectt <- "p{Y(X = 1) = 1}"
-#' check_linear_objective(respvars, graph, effectt, prob.form)
+#' check_linear_objective(respvars, effectt, prob.form)
 #' 
 
-check_linear_objective <- function(respvars, graph, effectt, prob.form) {
+check_linear_objective <- function(respvars, effectt, prob.form) {
     
     prob.form <- lapply(prob.form, \(x) {
         names(x) <- x
@@ -250,7 +250,7 @@ check_linear_objective <- function(respvars, graph, effectt, prob.form) {
         for(v2 in 1:length(thisterm)){
             
             thisvar <- thisterm[[v2]]
-            outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
+            outcome <- names(thisterm)[v2]
             #intervene <- vector(mode = "list")
             
             if(effect$pcheck[[v]][v2] == FALSE) { ## observation
@@ -298,22 +298,30 @@ check_linear_objective <- function(respvars, graph, effectt, prob.form) {
                 
             } else { ## intervention
                 
-                thisintervene <- unlist(causaloptim:::list_to_path(thisvar, names(outcome)))
+                thisintervene <- unlist(causaloptim:::list_to_path(thisvar, outcome))
                 basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
-                ## check for missing paths from intervention sets to outcome
-                ## only do this if any of the top level intervention sets doesn't contain all
-                ## parents of the outcome
-                ## the logic being that if the user wrote that as an effect, then 
-                ## the intention was to propagate that intervention set forward through
-                ## all paths in the graph to the outcome
                 
-                parents <- adjacent_vertices(graph, v = outcome, mode = "in")[[1]]
-                if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                parents <- parent_lookup[[outcome]]
+                if(length(setdiff(parents, 
                                   names(thisvar))) > 0) {
-                    isets <- unique(causaloptim:::btm_var(thisvar))
+                    isets <- unique(btm_var(thisvar))
                     missingpaths <- lapply(isets, function(cc) {
-                        allpaths <- all_simple_paths(graph, from = cc, to = names(outcome), mode = "out")
-                        paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
+                        
+                        #allpaths <- all_simple_paths(graph, from = cc, to = outcome, mode = "out")
+                       
+                        allpaths <- check_parents(parent_lookup, cc, outcome)
+                        if(!is.list(allpaths)) {
+                            allpaths <- list(allpaths)
+                        } 
+                        ap2 <- NULL
+                        for(i in 1:length(allpaths)) {
+                            la <- unlist(allpaths[[i]])
+                            if(la[1] == cc & la[length(la)] == outcome) {
+                                ap2[[length(ap2) + 1]] <- la
+                            }
+                        }
+                        
+                        paths2 <- unlist(lapply(ap2, function(x) paste(x, collapse = " -> ")))
                         setdiff(paths2, names(thisintervene))
                     })
                     for(pp in 1:length(missingpaths)) {
@@ -328,7 +336,7 @@ check_linear_objective <- function(respvars, graph, effectt, prob.form) {
                         
                     }
                 }
-                
+               
                 gee_rA <- function(r, i, path = NULL) {
                     
                     parents <- parent_lookup[[obsvarnames[i]]]

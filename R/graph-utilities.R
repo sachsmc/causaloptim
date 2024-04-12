@@ -348,3 +348,43 @@ graphrescheck <- function(graphres, ret = FALSE) {
     }
     FALSE
 }
+
+#' Check for paths from from to to 
+#' 
+#' Internal function
+#' 
+#' @param parent_lookup A list of vectors
+#' @param from character
+#' @param to character
+#' @param prev Should always be null when first called
+#' @returns A list of paths or null if no path is found
+#' @examples
+#' parent_lookup <- list(M = "Am", Y = c("M", "Ay"), A = NULL, Am = "A", Ay = "A")
+#' check_parents(parent_lookup, "A", "Y")
+
+check_parents <- function(parent_lookup, from, to, prev = NULL) {
+    
+    this <- if(is.null(prev)){
+        prev <- to
+        to 
+    } else prev[1]
+    parents <- parent_lookup[[this]]
+    nprev <- c(this, prev)
+    
+    if(is.null(parents)) {
+        prev
+    } else if(from %in% parents) {
+        c(from, prev)
+    } else {
+        res <- list()
+        for(pa in parents) {
+            res[[pa]] <- check_parents(parent_lookup, from = from, to = to, 
+                                       prev = c(pa, prev))
+        }
+        
+        res
+    }
+    
+    
+    
+}

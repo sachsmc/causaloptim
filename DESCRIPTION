@@ -2,8 +2,8 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects
-Version: 0.10.1
-Date: 2024-04-10
+Version: 0.10.2
+Date: 2024-08-20
 Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 
@@ -31,7 +31,7 @@ License: MIT + file LICENSE
 Imports: methods, Rcpp (>= 1.0.1), shiny, rcdd
 Depends: R (>= 3.5.0), igraph
 LinkingTo: Rcpp
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

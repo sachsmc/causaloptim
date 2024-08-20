@@ -4,16 +4,16 @@
 \alias{check_linear_objective}
 \title{Check linearity of objective function implied by a set of response functions, graph, and effect}
 \usage{
-check_linear_objective(respvars, graph, effectt, prob.form)
+check_linear_objective(respvars, effectt, prob.form)
 }
 \arguments{
 \item{respvars}{List of response functions as produced by \link{create_response_function}}
 
-\item{graph}{igraph object}
-
 \item{effectt}{A character string that represents the causal effect of interest}
 
 \item{prob.form}{A list with two named elements "out", "cond" where each element is a character vector}
+
+\item{graph}{igraph object}
 }
 \value{
 A logical value that is TRUE if the objective function is linear
@@ -67,6 +67,6 @@ respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
 prob.form <- list(out = c("Y", "X"), cond = "Z")
 
 effectt <- "p{Y(X = 1) = 1}"
-check_linear_objective(respvars, graph, effectt, prob.form)
+check_linear_objective(respvars, effectt, prob.form)
 
 }

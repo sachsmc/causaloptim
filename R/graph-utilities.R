@@ -415,7 +415,8 @@ initialize_graph <- function(graph) {
     if(is.null(V(graph)$leftside)) {
         V(graph)$leftside <- rep(0, nvars)
         rightV <- neighbors(graph, "Ur", mode = "out")
-        leftdex <- match(names(V(graph)), setdiff(names(V(graph)), c("Ur", names(rightV))))
+        leftdex <- match(setdiff(names(V(graph)), c("Ur", names(rightV))), 
+                    names(V(graph)))
         V(graph)$leftside[leftdex] <- 1
     }
     

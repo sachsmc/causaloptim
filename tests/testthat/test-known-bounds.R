@@ -22,10 +22,9 @@ expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p0_0 - p0_1\n}\n",
 
 test_that("## simple confounded X -> Y", {
 
-b <- readRDS(test_path("test-graphs", "simple-confounded.RData"))
-# igraph::upgrade_graph(b)
-# saveRDS(object = b, file = test_path("test-graphs", "simple-confounded.RData"))
-V(b)$nvals <- c(2,2,2)
+# b <- readRDS(test_path("test-graphs", "simple-confounded.RData"))
+b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y) |> initialize_graph()
+    
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)
@@ -57,10 +56,10 @@ test_that("instrumental variable", {
     
     ## instrument Z -> X -> Y
     
-    b <- readRDS(test_path("test-graphs", "instrument.RData"))
-    # igraph::upgrade_graph(b)
-    # saveRDS(object = b, file = test_path("test-graphs", "instrument.RData"))
-    V(b)$nvals <- c(2,2,2,2)
+    #b <- readRDS(test_path("test-graphs", "instrument.RData"))
+    
+    b <- igraph::graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y) |> 
+        initialize_graph()
     eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
     
     obj <- analyze_graph(b, constraints = NULL, effectt = eff)
@@ -146,10 +145,9 @@ test_that("Mediator", {
     ## bounds should match https://onlinelibrary.wiley.com/doi/full/10.1111/j.1541-0420.2007.00949.x
     
     
-    b <- readRDS(test_path("test-graphs", "mediator.RData"))
-    # igraph::upgrade_graph(b)
-    # saveRDS(object = b, file = test_path("test-graphs", "mediator.RData"))
-    V(b)$nvals <- c(2,2,2,2)
+    #b <- readRDS(test_path("test-graphs", "mediator.RData"))
+    b <- igraph::graph_from_literal(X -+ Z, Z -+ Y, X -+ Y, Ur -+ Z, Ur -+ Y) |> 
+        initialize_graph()
     
     ## total effect: identifiable
     
@@ -259,12 +257,12 @@ test_that("Multiple IV numeric comparison", {
     
     
     ## comparison of multiple IV bounds results
-    b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y)
-    V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
-    V(b)$latent <- c(0, 0, 0, 1, 0, 1)
-    V(b)$nvals <- c(2, 2, 2, 2, 2, 2)
-    E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
-    E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
+    b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y) |> initialize_graph()
+#    V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
+#    V(b)$latent <- c(0, 0, 0, 1, 0, 1)
+#    V(b)$nvals <- c(2, 2, 2, 2, 2, 2)
+#    E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
+#    E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
     obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
     
     mivold <- readRDS(test_path("test-graphs", "MIV-bounds-result.RData"))
@@ -303,12 +301,13 @@ test_that("Missing paths filling in works properly", {
     
     
     b2 <- graph_from_literal(X -+ Y, Ul -+ X, X -+ M1, X -+ M2, M1 -+ Y, M2 -+ Y,
-                             Ur -+ M1, Ur -+ M2, Ur -+ Y, M1 -+ M2)
-    V(b2)$leftside <- c(1, 0, 1, 0, 0, 0)
-    V(b2)$latent <- c(0, 0, 1, 0, 0, 1)
-    V(b2)$nvals <- c(2, 2, 2, 2, 2, 2)
-    E(b2)$rlconnect <- rep(0, 10)
-    E(b2)$edge.monotone <- rep(0, 10)
+                             Ur -+ M1, Ur -+ M2, Ur -+ Y, M1 -+ M2) |> 
+        initialize_graph()
+    # V(b2)$leftside <- c(1, 0, 1, 0, 0, 0)
+    # V(b2)$latent <- c(0, 0, 1, 0, 0, 1)
+    # V(b2)$nvals <- c(2, 2, 2, 2, 2, 2)
+    # E(b2)$rlconnect <- rep(0, 10)
+    # E(b2)$edge.monotone <- rep(0, 10)
     
     nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1(X = 1))) = 1}"
     nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1 = 1)) = 1}"
@@ -333,12 +332,14 @@ test_that("Missing paths filling in works properly", {
         
     }
     
-    b1 <- graph_from_literal(X -+ M1, M1 -+ Y, X -+ Y, Ul -+ X, Ur -+ M1, Ur -+ Y)
-    V(b1)$leftside <- c(1, 0, 0, 1, 0)
-    V(b1)$latent <- c(0, 0, 0, 1, 1)
-    V(b1)$nvals <- c(2, 2, 2, 2, 2)
-    E(b1)$rlconnect <- rep(0, 6)
-    E(b1)$edge.monotone <- rep(0, 6)
+    b1 <- graph_from_literal(X -+ M1, M1 -+ Y, X -+ Y, Ul -+ X, Ur -+ M1, Ur -+ Y) |> 
+        initialize_graph()
+    
+    # V(b1)$leftside <- c(1, 0, 0, 1, 0)
+    # V(b1)$latent <- c(0, 0, 0, 1, 1)
+    # V(b1)$nvals <- c(2, 2, 2, 2, 2)
+    # E(b1)$rlconnect <- rep(0, 6)
+    # E(b1)$edge.monotone <- rep(0, 6)
     
     fill <- "p{Y(X = 1) = 1}"
     eff1 <- parse_effect(fill)$vars[[1]][[1]]

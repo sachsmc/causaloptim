@@ -1,9 +1,9 @@
 test_that("## simple unconfounded X -> Y", {
 
-b <- readRDS(test_path("test-graphs", "simple-unconfounded.RData"))
-# igraph::upgrade_graph(b)
-# saveRDS(object = b, file = test_path("test-graphs", "simple-unconfounded.RData"))
-V(b)$nvals <- c(2,2)
+# b <- readRDS(test_path("test-graphs", "simple-unconfounded.RData"))
+
+b <- igraph::graph_from_literal(X -+ Y, Ur -+ Y) |> initialize_graph()
+
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
 bound <- optimize_effect(obj)

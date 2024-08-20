@@ -388,3 +388,54 @@ check_parents <- function(parent_lookup, from, to, prev = NULL) {
     
     
 }
+
+
+#' Initialize an igraph object for use with causaloptim
+#' 
+#' Checks for required attributes and adds defaults if missing
+#'
+#' @param graph An object of class igraph
+#' @returns An igraph with the vertex attributes leftside, latent, and nvals, and edge attributes rlconnect and edge.monotone
+#' @export
+#' @examples
+#' b <- igraph::graph_from_literal(X -+ Y)
+#' b2 <- initialize_graph(b)
+#' V(b2)$nvals
+#' 
+initialize_graph <- function(graph) {
+    
+    nvars <- length(V(graph))
+    
+    if(is.null(V(graph)$latent)) {
+        Unodes <- grep("^U", names(V(graph)))
+        V(graph)$latent <- rep(0, nvars)
+        V(graph)$latent[Unodes] <- 1
+    }
+    
+    if(is.null(V(graph)$leftside)) {
+        V(graph)$leftside <- rep(0, nvars)
+        rightV <- neighbors(graph, "Ur", mode = "out")
+        leftdex <- match(names(V(graph)), setdiff(names(V(graph)), c("Ur", names(rightV))))
+        V(graph)$leftside[leftdex] <- 1
+    }
+    
+    if(is.null(V(graph)$nvals)) {
+        V(graph)$nvals <- rep(2, nvars)
+    }
+    
+    if(is.null(E(graph)$rlconnect)) {
+        E(graph)$rlconnect <- rep(0, length(E(graph)))
+        
+        rlchk <- E(graph)[V(graph)[leftside == 1] %<-% V(graph)[leftside == 0]]
+        edge_attr(graph, "rlconnect", index = rlchk) <- 1
+        
+    } 
+    
+    if(is.null(E(graph)$edge.monotone)) {
+        E(graph)$edge.monotone <- rep(0, length(E(graph)))
+    }
+    
+    graph
+    
+}
+

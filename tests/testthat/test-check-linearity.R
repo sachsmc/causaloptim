@@ -15,7 +15,7 @@ test_that("## regular and contaminated IV case", {
     names(var.values) <- names(observed.variables)
     p.vals <- do.call(expand.grid, var.values)
     
-    respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
+    respvars <- create_response_function(graph)
     
     prob.form <- list(out = c("Y", "X"), cond = "Z")
     
@@ -41,7 +41,7 @@ test_that("## regular and contaminated IV case", {
     names(var.values) <- names(observed.variables)
     p.vals <- do.call(expand.grid, var.values)
     
-    respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
+    respvars <- create_response_function(graph)
     
     prob.form <- list(out = c("Y", "X"), cond = "Z")
     
@@ -89,7 +89,7 @@ test_that("## interventional direct effects", {
                             paste(names(cond.vars[cond.vars$latent ==
                                                       0]), collapse = ""), sep = "_")
     
-    respvars <- create_response_function(graph, right.vars, cond.vars)
+    respvars <- create_response_function(graph)
     respvars$Ay$index <- respvars$Ay$index[1]
     respvars$Ay$values <- respvars$Ay$values[3]
     respvars$Am$index <- respvars$Am$index[1]

@@ -112,7 +112,7 @@ analyze_graph <- function(graph, constraints, effectt) {
     
     ## response variable for each variable observed or unobserved
     
-    respvars <- create_response_function(graph, right.vars, cond.vars)
+    respvars <- create_response_function(graph)
     
     ## matrix of unobserved counterfactual probabilities
     

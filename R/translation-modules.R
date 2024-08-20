@@ -11,16 +11,13 @@
 #' @examples 
 #' ### confounded exposure and outcome
 
-#' b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
-#' V(b)$leftside <- c(0,0,0)
-#' V(b)$latent <- c(0,0,1)
-#' V(b)$nvals <- c(2,2,2)
-#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
-#' cond.vars <- V(b)[V(b)$leftside == 1 & names(V(b)) != "Ul"]
-#' right.vars <- V(b)[V(b)$leftside == 0 & names(V(b)) != "Ur"] 
-#' create_response_function(b, right.vars, cond.vars)
+#' b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
+#' create_response_function(b)
 
-create_response_function <- function(graph, right.vars, cond.vars) {
+create_response_function <- function(graph) {
+    
+    cond.vars <- V(graph)[leftside == 1 & names(V(graph)) != "Ul"]
+    right.vars <- V(graph)[leftside == 0 & names(V(graph)) != "Ur"] 
     
     obsvars <- c(right.vars, cond.vars) 
     respvars <- vector(mode = "list", length = length(obsvars))

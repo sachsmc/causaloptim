@@ -1,25 +1,17 @@
 test_that("## regular and contaminated IV case", {
     
     
-    b <- graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Z -+ Y, Ur -+ Y)
-    V(b)$leftside <- c(1,0,0,0)
-    V(b)$latent <- c(0, 0,0,1)
-    V(b)$nvals <- c(2,2,2,2)
-    E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0, 0, 0)
+    graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Z -+ Y, Ur -+ Y))
     
-    graph <- b
-    
-    observed.variables <- V(graph)[V(graph)$latent == 0]
-    var.values <- lapply(names(observed.variables), 
-                         function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
-    names(var.values) <- names(observed.variables)
-    p.vals <- do.call(expand.grid, var.values)
+    p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
     
     respvars <- create_response_function(graph)
     
-    prob.form <- list(out = c("Y", "X"), cond = "Z")
+    prob.form <- list(out = c("X", "Y"), cond = "Z")
     
-    expect_true(check_linear_constraints(respvars, p.vals, prob.form))
+    contamiv <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form)
+    
+    expect_true(contamiv$conterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(X = 1) = 1}"
     
@@ -27,29 +19,17 @@ test_that("## regular and contaminated IV case", {
     
     ## regular IV case
     
-    b <- graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y)
-    V(b)$leftside <- c(1,0,0,0)
-    V(b)$latent <- c(0, 0,0,1)
-    V(b)$nvals <- c(2,2,2,2)
-    E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0, 0)
-    
-    graph <- b
-    
-    observed.variables <- V(graph)[V(graph)$latent == 0]
-    var.values <- lapply(names(observed.variables), 
-                         function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
-    names(var.values) <- names(observed.variables)
-    p.vals <- do.call(expand.grid, var.values)
-    
-    respvars <- create_response_function(graph)
+    graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
+    p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
     
     prob.form <- list(out = c("Y", "X"), cond = "Z")
     
-    expect_true(check_linear_constraints(respvars, p.vals, prob.form))
+    regiv <- create_causalmodel(graph = graph, p.vals = p.vals, prob.form = prob.form)
+    expect_true(regiv$conterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_true(check_linear_objective(respvars, effectt, prob.form))
+    expect_true(check_linear_objective(create_response_function(graph), effectt, prob.form))
     
 
 })
@@ -58,37 +38,14 @@ test_that("## regular and contaminated IV case", {
 test_that("## interventional direct effects", {
     
     
-    b <- graph_from_literal(A -+ Am, A -+ Ay, Ul -+ A, Ul -+ Am, Ul -+ Ay, 
-                            Am -+ M, Ay -+ Y, M -+ Y, Ur -+ M, Ur -+ Y)
-    V(b)$leftside <-c(rep(1, 4), rep(0, 3))
-    V(b)$latent <- c(0, 1,1,1, 0, 0, 1)
-    V(b)$nvals <- rep(2, length(V(b)))
-    E(b)$rlconnect <- E(b)$edge.monotone <- rep(0, length(E(b)))
+    graph <- initialize_graph(graph_from_literal(A -+ Am, A -+ Ay, Ul -+ A, Ul -+ Am, Ul -+ Ay, 
+                            Am -+ M, Ay -+ Y, M -+ Y, Ur -+ M, Ur -+ Y))
     
-    graph <- b
+    
+    V(graph)$latent <- c(0, 1,1,1, 0, 0, 1)
+    
+    p.vals <- expand.grid(A = 0:1, M = 0:1, Y = 0:1)
    
-    leftind <- vertex_attr(graph)$leftside
-    cond.vars <- V(graph)[leftind == 1 & names(V(graph)) != "Ul"]
-    right.vars <- V(graph)[leftind == 0 & names(V(graph)) != "Ur"]
-    obsvars <- c(right.vars, cond.vars)
-    observed.variables <- V(graph)[V(graph)$latent == 0]
-    var.values <- lapply(names(observed.variables), function(varname) seq(from = 0, 
-                                                                          to = causaloptim:::numberOfValues(graph, varname) - 1))
-    names(var.values) <- names(observed.variables)
-    p.vals <- do.call(expand.grid, var.values)
-    
-    jd <- do.call(paste0, p.vals[, names(right.vars[right.vars$latent == 
-                                                        0]), drop = FALSE])
-    cond <- do.call(paste0, p.vals[, names(cond.vars[cond.vars$latent == 
-                                                         0]), drop = FALSE])
-    parameters <- paste0("p", paste(jd, cond, sep = "_"))
-    
-    
-    parameters.key <- paste(paste(names(right.vars[right.vars$latent ==
-                                                       0]), collapse = ""),
-                            paste(names(cond.vars[cond.vars$latent ==
-                                                      0]), collapse = ""), sep = "_")
-    
     respvars <- create_response_function(graph)
     respvars$Ay$index <- respvars$Ay$index[1]
     respvars$Ay$values <- respvars$Ay$values[3]
@@ -97,7 +54,8 @@ test_that("## interventional direct effects", {
     
     
     prob.form <- list(out = c("Y", "M"), cond = c("A"))
-    expect_true(check_linear_constraints(respvars, p.vals, prob.form))
+    medmod <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form)
+    expect_true(medmod$conterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(Ay = 1, Am = 1) = 1} - p{Y(Ay = 0, Am = 1) = 1}"
     

@@ -193,7 +193,8 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
     character = inequalities.text)
     
     counterfactual_constraints <- list(numeric = list(R = R), 
-                                       character = p.constraints)
+                                       character = p.constraints, 
+                                       linear.if.true = linear.if.true)
     
     data <- list(variables = variables[[1]], parameters = parameters, 
                  p.vals = p.vals, q.vals = q.vals.all.lookup

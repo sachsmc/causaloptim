@@ -27,13 +27,7 @@ It is assumed that probabilities of the form p(out | cond) are observed, for eac
 \examples{
  ## regular IV case
 
-b <- graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y)
-V(b)$leftside <- c(1,0,0,0)
-V(b)$latent <- c(0, 0,0,1)
-V(b)$nvals <- c(2,2,2,2)
-E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0, 0)
-
-graph <- b
+graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
 
 observed.variables <- V(graph)[V(graph)$latent == 0]
 var.values <- lapply(names(observed.variables), 
@@ -41,7 +35,7 @@ var.values <- lapply(names(observed.variables),
 names(var.values) <- names(observed.variables)
 p.vals <- do.call(expand.grid, var.values)
 
-respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
+respvars <- create_response_function(graph)
 prob.form <- list(out = c("Y", "X"), cond = "Z")
 
 effectt <- "p{Y(X = 1) = 1}"
@@ -49,7 +43,7 @@ check_linear_objective(respvars, graph, effectt, prob.form)
 
 #'  ## contaminated IV case
 
-b <- graph_from_literal(Z -+ X, X -+ Y, Z-+ Y, Ur -+ X, Ur -+ Y)
+graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Z-+ Y, Ur -+ X, Ur -+ Y))
 V(b)$leftside <- c(1,0,0,0)
 V(b)$latent <- c(0, 0,0,1)
 V(b)$nvals <- c(2,2,2,2)
@@ -63,7 +57,7 @@ var.values <- lapply(names(observed.variables),
 names(var.values) <- names(observed.variables)
 p.vals <- do.call(expand.grid, var.values)
 
-respvars <- create_response_function(graph, V(b)[2:3], V(b)[1])
+respvars <- create_response_function(graph)
 prob.form <- list(out = c("Y", "X"), cond = "Z")
 
 effectt <- "p{Y(X = 1) = 1}"

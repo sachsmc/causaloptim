@@ -489,3 +489,21 @@ causalproblemcheck <- function(digraph, query) {
     }
     FALSE
 }
+
+
+#' Sample from a Dirichlet distribution
+#' 
+#' Generate a random vector from the k-dimensional symmetric Dirichlet distribution with concentration parameter alpha
+#' 
+#' @param k Length of the vector
+#' @param alpha Concentration parameters
+#' @returns a numeric vector
+#' @export
+#' @examples
+#' qvals <- rdirichlet(16, 1)
+#' sum(qvals)
+rdirichlet <- function(k, alpha = 1) {
+    tmp <- rgamma(k, alpha)
+    tmp / sum(tmp)
+}
+

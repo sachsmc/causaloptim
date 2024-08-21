@@ -22,17 +22,10 @@ A list of 3 data frames of counterfactuals and their associated labels
 Translate response functions into matrix of counterfactuals
 }
 \examples{
-graphres <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
-V(graphres)$leftside <- c(1, 0, 0, 1, 0)
-V(graphres)$latent <- c(0, 0, 0, 1, 1)
-V(graphres)$nvals <- c(3, 2, 2, 2, 2)
-V(graphres)$exposure <- c(0, 1, 0, 0, 0)
-V(graphres)$outcome <- c(0, 0, 1, 0, 0)
-E(graphres)$rlconnect <- c(0, 0, 0, 0, 0)
-E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0)
+graphres <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y))
 constraints <- "X(Z = 1) >= X(Z = 0)"
 cond.vars <- V(graphres)[V(graphres)$leftside == 1 & names(V(graphres)) != "Ul"]
 right.vars <- V(graphres)[V(graphres)$leftside == 0 & names(V(graphres)) != "Ur"] 
-respvars <- create_response_function(graphres, right.vars, cond.vars)
+respvars <- create_response_function(graphres)
 create_q_matrix(respvars, right.vars, cond.vars, constraints)
 }

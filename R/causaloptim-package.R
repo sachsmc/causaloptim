@@ -7,9 +7,7 @@
 #'     Maintainer: Michael C Sachs <sachsmc at gmail.com>
 #' @references Sachs, M. C., Jonzon, G., Sjölander, A., & Gabriel, E. E. 2022, A general method for deriving tight symbolic bounds on causal effects. Journal of Computational and Graphical Statistics, In press. \url{https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905} .
 #' 
-#' @docType package
 #' @seealso \code{browseVignettes('causaloptim')} \link{specify_graph}
 #' @name causaloptim-package
 #' @aliases causaloptim
-
-NULL
+"_PACKAGE"

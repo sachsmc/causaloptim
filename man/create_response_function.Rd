@@ -4,7 +4,7 @@
 \alias{create_response_function}
 \title{Translate regular DAG to response functions}
 \usage{
-create_response_function(graph, right.vars, cond.vars)
+create_response_function(graph)
 }
 \arguments{
 \item{graph}{An \link[igraph]{aaa-igraph-package} object that represents a
@@ -23,12 +23,6 @@ Translate regular DAG to response functions
 }
 \examples{
 ### confounded exposure and outcome
-b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
-V(b)$leftside <- c(0,0,0)
-V(b)$latent <- c(0,0,1)
-V(b)$nvals <- c(2,2,2)
-E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
-cond.vars <- V(b)[V(b)$leftside == 1 & names(V(b)) != "Ul"]
-right.vars <- V(b)[V(b)$leftside == 0 & names(V(b)) != "Ur"] 
-create_response_function(b, right.vars, cond.vars)
+b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
+create_response_function(b)
 }

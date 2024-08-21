@@ -2,6 +2,7 @@
 
 S3method(plot,linearcausalproblem)
 S3method(print,balkebound)
+S3method(print,causalmodel)
 S3method(print,linearcausalproblem)
 export(analyze_graph)
 export(causalproblemcheck)

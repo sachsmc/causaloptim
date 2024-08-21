@@ -156,11 +156,6 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
     
     linear.if.true <- all(checkcond)
     
-    # move to print method
-    if(!linear.if.true) {
-        warning("Causal model does not imply linear constraints on observables. Proceed with caution")
-    }
-    
     ## inequalities
     
     vrep <- rcdd::makeV(points = t(R[-1,]))
@@ -196,12 +191,16 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
                                        character = p.constraints, 
                                        linear.if.true = linear.if.true)
     
-    data <- list(variables = variables[[1]], parameters = parameters, 
+    attr(parameters, "key") <- parameters.key
+    
+    data <- list(response_functions = respvars, graph = graph, 
+                 variables = variables[[1]], parameters = parameters, 
+                 prob.form = prob.form,
                  p.vals = p.vals, q.vals = q.vals.all.lookup
                  )
     
     obj <- list(data = data, observable_constraints = observable_constraints, 
-                conterfactual_constraints = counterfactual_constraints)
+                counterfactual_constraints = counterfactual_constraints)
    
     class(obj) <- "causalmodel"
     obj
@@ -227,12 +226,13 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
 sample_distribution <- function(obj, 
                                 simplex_sampler = function(k) { rdirichlet(k, alpha = 1) }) {
     
+    stopifnot(inherits(obj, "causalmodel"))
     sim.qs <- simplex_sampler(length(obj$data$variables))
     
     stopifnot(length(sim.qs) == length(obj$data$variables)) 
     stopifnot(abs(sum(sim.qs) - 1) < 1e-12)
     
-    res <- c(obj$conterfactual_constraints$numeric$R[-1, ] %*% sim.qs)
+    res <- c(obj$counterfactual_constraints$numeric$R[-1, ] %*% sim.qs)
     names(res) <- obj$data$parameters
     res
     
@@ -256,7 +256,8 @@ sample_distribution <- function(obj,
 
 check_constraints_violated <- function(obj, probs, tol = 1e-12) {
     
-    if(!identical(names(probs), obj$data$parameters)) {
+    stopifnot(inherits(obj, "causalmodel"))
+    if(!identical(names(probs), c(obj$data$parameters))) {
         
         warning("Vector of probabilities must be given in this form/order: ", 
                 paste(obj$data$parameters, collapse = " "))
@@ -292,3 +293,56 @@ check_constraints_violated <- function(obj, probs, tol = 1e-12) {
 
 
 
+#' Print relevant information about the causal model
+#' 
+#' @param x object of class "causalmodel"
+#' @param omit_cf_constraints Do not print the counterfactual constraints
+#' @param omit_obs_constraints Do not print the observable constraints
+#' @param ... Not used
+#' @return x, invisibly
+#' @export
+
+print.causalmodel <- function(x, omit_cf_constraints = FALSE, omit_obs_constraints = FALSE, ...) {
+    
+    
+    lkey <- letters[1:length(x$data$prob.form$out)]
+    rkey <- letters[(length(x$data$prob.form$out) + 1):(length(x$data$prob.form$out) + 
+                                                            length(x$data$prob.form$cond))]
+    
+    if(length(x$data$prob.form$cond) == 0) rkey <- NULL
+    
+    sampparm <- paste0("p", paste(lkey, collapse = ""), "_", 
+                       paste(rkey, collapse = ""))
+    
+    probstate <- paste0("P(", paste(paste0(x$data$prob.form$out, " = ", lkey), collapse = ", "), " | ", 
+                        paste0(x$data$prob.form$cond, " = ", rkey, collapse = ", "), ")")
+    
+    if(length(x$data$prob.form$cond) == 0) {
+        probstate <- paste0("P(", paste(paste0(x$data$prob.form$out, " = ", lkey), collapse = ", "), ")")
+    }
+    
+    variabletext <- sprintf("This is a causal model represented by the set of response functions in the %s$data$response_functions element, where it is assumed that we observe parameters (observables) of the form %s, which represents the probability %s. To sample a distribution from this model, use sample_distribution(%s).", deparse1(substitute(x)),
+                            sampparm, probstate, deparse1(substitute(x)))
+    
+    constrainttext <- sprintf("The observables relate to %s unobservable variables which represent probabilities of particular response functions. The constraints are in the following equations and are available in numeric matrix form in the %s$counterfactual_constraints$numeric$R element.", length(x$data$variables), deparse1(substitute(x)))
+    
+    cat(variabletext, constrainttext, sep = "\n")
+    if(!omit_cf_constraints) {
+        cat(x$counterfactual_constraints$character, sep = "\n")
+    }
+    
+    observabletext <- sprintf("The causal model implies the following observable constraints, which are available in numeric form in the %s$observable_constraints$numeric element. To test whether these constraints are violated, use check_constraints_violated(%s)", deparse1(substitute(x)), deparse1(substitute(x)))
+    
+    cat(observabletext, sep = "\n")
+    if(!omit_obs_constraints) {
+        cat(x$observable_constraints$character, sep = "\n")
+    }
+    
+    if(!x$counterfactual_constraints$linear.if.true) {
+        warning("Causal model does not imply linear constraints on observables. Proceed with caution")
+    }
+    
+    cat("To compute bounds, specify an effect of interest, and see the compute_bounds function.")
+    invisible(x)
+    
+}

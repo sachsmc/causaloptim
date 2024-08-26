@@ -227,55 +227,27 @@ update_effect <- function(obj, effectt) {
 
 create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL) {
     
+    linobj.if.true <- check_linear_objective(cont_iv, effectt = effectt)
+    if(!linobj.if.true) {
+        stop("Specified effect does not imply a linear objective function!")
+    }
+    
+    if(!causal_model$counterfactual_constraints$linear.if.true) {
+        stop("Specified causal model does not imply linear constraints!")
+    }
+    
     prob.form <- causal_model$prob.form
     
-    jd <- do.call(paste0, p.vals[, prob.form$out, drop = FALSE])
-    cond <- do.call(paste0, p.vals[, prob.form$cond, drop = FALSE])
-    
-    parameters <- paste0("p", paste(jd, cond, sep = "_"))
-    
-    parameters.key <- paste(paste(prob.form$out, collapse = ""), 
-                            paste(prob.form$cond, collapse = ""), sep = "_")
-    
     ## matrix of unobserved counterfactual probabilities
-    
-    q.list <- create_q_matrix(respvars, right.vars = prob.form$out, 
-                              cond.vars = prob.form$cond, constraints = constraints)
-    variables <- as.character(unique(q.list$q.vals.all.lookup$vars))
+    q.vals.all.lookup <- causal_model$data$q.vals[, -ncol(causal_model$data$q.vals)]
+   
+    variables <- as.character(unique(q.vals.all.lookup$vars))
     ## constraints identify set of qs that correspond to observed p.vals
     
-    obsvars <- names(q.list$q.vals.all.lookup)[-ncol(q.list$q.vals.all.lookup)]
-    names(obsvars) <- unlist(obsvars)
+    linconstr.list <- causal_model$counterfactual_constraints$numeric$R
     
-    glist <- lapply(1:length(respvars), \(df) {
-        pas <- unlist(lapply(respvars[[df]]$values, \(fn) {
-            names(formals(fn))
-        })) |> unique()
-        do.call(rbind, lapply(pas, \(ss) {
-            if(length(ss) == 0) NULL else c(ss, names(respvars)[df])
-          }))
-    })
-    graph <- graph_from_edgelist(do.call(rbind, glist))
-    nvals <- lapply(respvars, \(ve) {
-        unlist(lapply(ve$values, \(fn) {
-            
-            bd <- body(fn)
-            if(is.numeric(bd)) bd else {
-                bd2 <- as.character(bd)
-                bd2[-c(1:2)] |> as.numeric()
-            }
-            
-        })) |> unique() |> length()
-    })
-    
-    V(graph)$nvals <- unlist(nvals[names(V(graph))])
-    
-    
-    linconstr.list <- create_R_matrix(graph, obsvars, respvars, 
-                                      p.vals, parameters, q.list, variables)
-    
-    parameters <- linconstr.list$newparams
-    p.vals <- linconstr.list$newpvals
+    parameters <- causal_model$data$parameters
+    p.vals <- causal_model$data$p.vals
     ## determine objective based on exposure and outcome in terms of qs
     
     effect <- parse_effect(effectt)
@@ -294,10 +266,7 @@ create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL
         
     }
     
-    ## check linearity
-    
-    stopifnot(check_linear_objective(respvars, effectt, prob.form))
-    
+ 
     if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
         stop(sprintf("Operator '%s' not allowed!", chk0["oper"]))
     }

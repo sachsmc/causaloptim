@@ -269,39 +269,36 @@ create_R_matrix <- function(graph, obsvars, respvars, p.vals, parameters, q.list
     q.vals <- q.list$q.vals
     q.vals.all <- q.list$q.vals.all
     q.vals.all.lookup <- q.list$q.vals.all.lookup
-    obsvarnames <- names(obsvars)
     
-    parent_lookup <- lapply(1:length(obsvars), function(i) {
-        tmpar <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-        tmpar[!names(tmpar) %in% c("Ul", "Ur")]
+    parent_lookup <- lapply(respvars, \(var) {
+        
+        unlist(lapply(var$values, \(fun) {
+            names(formals(fun))
+        })) |> unique()
+        
     })
     
-     gee_r <- function(r, i) {
-        
-         parents <- parent_lookup[[i]]
-         
-        #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-        #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
-        
-        
-        if (length(parents) == 0){
-            
-            x <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
+    obsvars <- as.list(names(q.vals.all.lookup)[-c(ncol(q.vals.all.lookup))])
+    names(obsvars) <- unlist(obsvars)
+    
+    gee_r <- function(r, i) {
+        parents <- parent_lookup[[obsvars[[i]]]]
+        if (length(parents) == 0) {
+            x <- respvars[[obsvars[[i]]]]$values[[which(respvars[[obsvars[[i]]]]$index == 
+                                                            r[i])]]
             do.call(x, list())
-            
-        } else {
-            
-            lookin <- lapply(names(parents), function(gu) {
-                
-                as.numeric(gee_r(r, which(obsvarnames == gu)))
-                
+        }
+        else {
+            lookin <- lapply(parents, function(gu) {
+                as.numeric(gee_r(r, which(obsvars == gu)))
             })
-            names(lookin) <- names(parents)
-            inres <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
+            names(lookin) <- parents
+            inres <- respvars[[obsvars[[i]]]]$values[[which(respvars[[obsvars[[i]]]]$index == 
+                                                                r[i])]]
             do.call(inres, lookin)
-            
         }
     }
+    
     
     
     res.mat <- matrix(NA, ncol = ncol(q.vals.all), nrow = nrow(q.vals.all))
@@ -312,7 +309,7 @@ create_R_matrix <- function(graph, obsvars, respvars, p.vals, parameters, q.list
             
         }
     }
-    colnames(res.mat) <- obsvarnames
+    colnames(res.mat) <- names(obsvars)
     
     R <- matrix(0, nrow = nrow(p.vals) + 1, ncol = nrow(q.vals))
     R[1, ] <- 1
@@ -406,12 +403,20 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
     q.vals <- q.list$q.vals
     q.vals.all <- q.list$q.vals.all
     q.vals.all.lookup <- q.list$q.vals.all.lookup
+    
+    parent_lookup <- lapply(respvars, \(var) {
+        
+        unlist(lapply(var$values, \(fun) {
+            names(formals(fun))
+        })) |> unique()
+        
+    })
+    
+    obsvars <- as.list(names(q.vals.all.lookup)[-c(ncol(q.vals.all.lookup))])
+    names(obsvars) <- unlist(obsvars)
+    
     obsvarnames <- names(obsvars)
     
-    parent_lookup <- lapply(1:length(obsvars), function(i) {
-        tmpar <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-        tmpar[!names(tmpar) %in% c("Ul", "Ur")]
-    })
     
     var.eff <- NULL
     for(v in 1:length(effect$vars)) {
@@ -424,35 +429,28 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
         for(v2 in 1:length(thisterm)){
             
             thisvar <- thisterm[[v2]]
-            outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
+            #outcome <- V(graph)[names(V(graph)) == names(thisterm)[v2]]
             #intervene <- vector(mode = "list")
+            outcome <- names(thisterm)[v2]
             
             if(effect$pcheck[[v]][v2] == FALSE) { ## observation
                 
                 
                 gee_r <- function(r, i) {
-                    
-                    parents <- parent_lookup[[i]]
-                    #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
-                    #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
-                    
-                    
-                    if (length(parents) == 0){
-                        
-                        x <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
+                    parents <- parent_lookup[[obsvars[[i]]]]
+                    if (length(parents) == 0) {
+                        x <- respvars[[obsvars[[i]]]]$values[[which(respvars[[obsvars[[i]]]]$index == 
+                                                                        r[i])]]
                         do.call(x, list())
-                        
-                    } else {
-                        
-                        lookin <- lapply(names(parents), function(gu) {
-                            
-                            as.numeric(gee_r(r, which(obsvarnames == gu)))
-                            
+                    }
+                    else {
+                        lookin <- lapply(parents, function(gu) {
+                            as.numeric(gee_r(r, which(obsvars == gu)))
                         })
-                        names(lookin) <- names(parents)
-                        inres <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
+                        names(lookin) <- parents
+                        inres <- respvars[[obsvars[[i]]]]$values[[which(respvars[[obsvars[[i]]]]$index == 
+                                                                            r[i])]]
                         do.call(inres, lookin)
-                        
                     }
                 }
                 
@@ -472,7 +470,7 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 
             } else { ## intervention
                 
-                thisintervene <- unlist(list_to_path(thisvar, names(outcome)))
+                thisintervene <- unlist(list_to_path(thisvar, outcome))
                 basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
                 ## check for missing paths from intervention sets to outcome
                 ## only do this if any of the top level intervention sets doesn't contain all
@@ -481,13 +479,16 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 ## the intention was to propagate that intervention set forward through
                 ## all paths in the graph to the outcome
                 
-                parents <- adjacent_vertices(graph, v = outcome, mode = "in")[[1]]
-                if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
+                parents <- parent_lookup[[outcome]]
+                #adjacent_vertices(graph, v = outcome, mode = "in")[[1]]
+                
+                if(length(setdiff(parents, 
                                   names(thisvar))) > 0) {
                 isets <- unique(btm_var(thisvar))
                 missingpaths <- lapply(isets, function(cc) {
-                    allpaths <- all_simple_paths(graph, from = cc, to = names(outcome), mode = "out")
-                    paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
+                    #allpaths <- all_simple_paths(graph, from = cc, to = outcome, mode = "out")
+                    paths2 <- find_all_paths(respvars, from = cc, to = outcome)
+                    
                     setdiff(paths2, names(thisintervene))
                 })
                 for(pp in 1:length(missingpaths)) {
@@ -505,7 +506,7 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                 
                 gee_rA <- function(r, i, path = NULL) {
                     
-                    parents <- parent_lookup[[i]]
+                    parents <- parent_lookup[[obsvars[[i]]]]
                     #parents <- adjacent_vertices(graph, obsvars[i], "in")[[1]]
                     #parents <- parents[!names(parents) %in% c("Ul", "Ur")]
                     
@@ -523,12 +524,12 @@ create_effect_vector <- function(effect, graph, obsvars, respvars, q.list, varia
                         
                     } else {
                         
-                        lookin <- lapply(names(parents), function(gu) {
+                        lookin <- lapply(parents, function(gu) {
                             
                             as.numeric(gee_rA(r, which(obsvarnames == gu), path = paste(gu, "->", path)))
                             
                         })
-                        names(lookin) <- names(parents)
+                        names(lookin) <- parents
                         inres <- respvars[[obsvarnames[i]]]$values[[which(respvars[[obsvarnames[i]]]$index == r[i])]]
                         do.call(inres, lookin)
                         

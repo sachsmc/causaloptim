@@ -507,3 +507,68 @@ rdirichlet <- function(k, alpha = 1) {
     tmp / sum(tmp)
 }
 
+
+
+#' Find all paths in a causal model
+#' 
+#' Given a set of response functions, find all directed paths from from to to 
+#' 
+#' @param respvars A set of response functions as created by \link{create_response_function}
+#' @param from A character string indicating the start of the path
+#' @param to A character string indicating the end of the path
+#' @returns A list with all the paths or a list with NULL if there are none
+#' @export
+#' @examples
+#'  b <- initialize_graph(igraph::graph_from_literal(X -+ Z, Z -+ Y, X -+ Y, Ur -+ Z, Ur -+ Y))
+#'  medmod <- create_response_function(b)
+#'  find_all_paths(medmod, "X", "Y")
+#'  igraph::all_simple_paths(b, "X", "Y", mode = "out")
+#' 
+find_all_paths <- function(respvars, from, to) {
+    
+    parent_lookup <- lapply(respvars, \(var) {
+        
+        unlist(lapply(var$values, \(fun) {
+            names(formals(fun))
+        })) |> unique()
+        
+    })
+    
+    pathlist <- list(to)
+    k <- 0
+    repeat {
+        newplist <- pathlist
+        toadd <- NULL
+        toremove <- NULL
+        for(i in 1:length(pathlist)) {
+            if(is.null(parent_lookup[[pathlist[[i]][1]]])) {
+                newplist[[i]] <- c(path)
+            } else {
+                toadd[[i]] <- lapply(parent_lookup[[pathlist[[i]][1]]], \(x) c(x, pathlist[[i]]))
+                toremove <- c(toremove, i)
+            }
+        }
+        if(is.null(toremove)) break
+
+                pathlist <- pathlist[-toremove]
+        for(i in 1:length(toadd)) {
+            pathlist <- c(pathlist, toadd[[i]])
+        }
+        
+        k <- k + 1
+        if(k > 1000) {
+            stop("Greater than 1000 cycles, something wrong")
+        }
+
+    }
+    
+    unlist(lapply(pathlist, \(x) {
+      if(x[1] == from & x[length(x)] == to) {
+          paste(x , collapse = " -> ")
+          } else NULL  
+    }))
+    
+    
+    
+    
+}

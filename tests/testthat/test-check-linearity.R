@@ -29,7 +29,7 @@ test_that("## regular and contaminated IV case", {
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_true(check_linear_objective(contamiv, effectt))
+    expect_true(check_linear_objective(regiv, effectt))
     
 
 })

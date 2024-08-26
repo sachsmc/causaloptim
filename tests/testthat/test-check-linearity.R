@@ -11,11 +11,11 @@ test_that("## regular and contaminated IV case", {
     
     contamiv <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form)
     
-    expect_true(contamiv$conterfactual_constraints$linear.if.true)
+    expect_true(contamiv$counterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_false(check_linear_objective(respvars, effectt, prob.form))
+    expect_false(check_linear_objective(contamiv, effectt))
     
     ## regular IV case
     
@@ -25,11 +25,11 @@ test_that("## regular and contaminated IV case", {
     prob.form <- list(out = c("Y", "X"), cond = "Z")
     
     regiv <- create_causalmodel(graph = graph, p.vals = p.vals, prob.form = prob.form)
-    expect_true(regiv$conterfactual_constraints$linear.if.true)
+    expect_true(regiv$counterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(X = 1) = 1}"
     
-    expect_true(check_linear_objective(create_response_function(graph), effectt, prob.form))
+    expect_true(check_linear_objective(contamiv, effectt))
     
 
 })
@@ -55,11 +55,11 @@ test_that("## interventional direct effects", {
     
     prob.form <- list(out = c("Y", "M"), cond = c("A"))
     medmod <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form)
-    expect_true(medmod$conterfactual_constraints$linear.if.true)
+    expect_true(medmod$counterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(Ay = 1, Am = 1) = 1} - p{Y(Ay = 0, Am = 1) = 1}"
     
-    expect_true(check_linear_objective(respvars, effectt, prob.form))
+    expect_true(check_linear_objective(medmod, effectt))
     
     restest <- optimize_effect_2(linearcausalproblem_from_response_functions(respvars, p.vals, 
                                                                              prob.form, effectt, 

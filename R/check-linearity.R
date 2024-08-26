@@ -1,4 +1,4 @@
-#' Check linearity of objective function implied by a set of response functions, graph, and effect
+#' Check linearity of objective function implied by a causal model and effect
 #' 
 #' @param causal_model An object of class "causalmodel" as produce by \link{create_causal_model}
 #' @param effectt A character string that represents the causal effect of interest
@@ -19,7 +19,7 @@
 #' 
 #' \code{p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}}
 #' 
-#' The effect must be fully specified, that is, all parents of a variable that is intervened upon need to be specified. The function cannot infer or marginalize over some parents but not others. 
+#' The effect must be fully specified, that is, all parents of a variable that is intervened upon need to be specified. The function cannot infer missin values or marginalize over some parents but not others. 
 #' 
 #' @returns A logical value that is TRUE if the objective function is linear
 #' @export
@@ -29,10 +29,7 @@
 #' graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
 #' 
 #' observed.variables <- V(graph)[V(graph)$latent == 0]
-#' var.values <- lapply(names(observed.variables), 
-#'                      function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
-#' names(var.values) <- names(observed.variables)
-#' p.vals <- do.call(expand.grid, var.values)
+#' p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
 #' 
 #' respvars <- create_response_function(graph)
 #' prob.form <- list(out = c("Y", "X"), cond = "Z")
@@ -58,6 +55,7 @@
 
 check_linear_objective <- function(causal_model, effectt) {
     
+    stopifnot(inherits(causal_model, "causalmodel"))
     respvars <- causal_model$data$response_functions
     prob.form <- causal_model$data$prob.form
     # q.list <- create_q_matrix(respvars, right.vars = prob.form$out, cond.vars= prob.form$cond, 

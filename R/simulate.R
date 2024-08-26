@@ -61,10 +61,3 @@ simulate_bounds <- function(obj, bounds, nsim = 1e3) {
     
     
 }
-
-#' Randomly sample from a causal model
-#' 
-#' Generates a probability distribution of the observable variables from a structural causal model
-#' 
-#' @param scm An object of class "scm" as returned by \link{create_causal_model}
-

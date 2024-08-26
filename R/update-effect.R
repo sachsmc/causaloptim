@@ -221,17 +221,13 @@ update_effect <- function(obj, effectt) {
 #' ### confounded exposure and outcome
 
 #' b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
-#' respvars <- create_response_function(b)
 #' p.vals <- expand.grid(X = 0:1, Y = 0:1)
-#' linearcausalproblem_from_response_functions(respvars, p.vals, 
-#' prob.form = list(out = c("X", "Y"), cond = NULL), effectt = "p{Y(X = 1) = 1}")
+#' confmod <- create_causalmodel(graph = b, p.vals = p.vals, prob.form =  list(out = c("X", "Y"), cond = NULL))
+#' create_linearcausalproblem(confmod, effectt = "p{Y(X = 1) = 1}")
 
-linearcausalproblem_from_response_functions <- function(respvars, p.vals, prob.form, effectt, constraints = NULL) {
+create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL) {
     
-    prob.form <- lapply(prob.form, \(x) {
-        names(x) <- x
-        x
-    })
+    prob.form <- causal_model$prob.form
     
     jd <- do.call(paste0, p.vals[, prob.form$out, drop = FALSE])
     cond <- do.call(paste0, p.vals[, prob.form$cond, drop = FALSE])

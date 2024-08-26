@@ -266,7 +266,11 @@ analyze_graph <- function(graph, constraints, effectt) {
 
 plot.linearcausalproblem <- function(x, ...) {
   
-  plot_graphres(x$graph)
+    if(is.null(x$graph)) {
+        message("No graph is present to describe the causal model. Nothing to plot.")
+    } else {
+        plot_graphres(x$graph)
+    }
   
 }
 

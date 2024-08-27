@@ -4,9 +4,13 @@
 #' @param respvars List of response functions as produced by \link{create_response_function}
 #' @param p.vals Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form
 #' @param prob.form A list with two named elements "out", "cond" where each element is a character vector of variable names that appear in p.vals
+#' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
 #' 
 #' @details
 #' It is assumed that probabilities of the form p(out | cond) are observed, for each combination of values in p.vals. cond may be NULL in which case nothing is conditioned on.
+#' 
+#' The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
+#' \code{X(Z = 1) >= X(Z = 0)}
 #'
 #' @returns An object of class "causalmodel"
 #' @export
@@ -18,9 +22,12 @@
 #' prob.form <- list(out = c("X", "Y"), cond = "Z")
 #' 
 #' iv_model <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form)
+#' # with monotonicity
+#' iv_model_mono <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form, 
+#'                  constraints = list("X(Z = 1) >= X(Z = 0)"))
 #' 
-#' 
-create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form) { 
+create_causalmodel <- function(graph = NULL, respvars = NULL, 
+                               p.vals, prob.form, constraints = NULL) { 
     
     varnames1 <- colnames(p.vals)
     varnames2 <- unlist(prob.form)
@@ -55,7 +62,7 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
         x
     })
     q.list <- create_q_matrix(respvars, right.vars = prob.form$out, cond.vars= prob.form$cond, 
-                              constraints = NULL)
+                              constraints = constraints)
     
     q.vals <- q.list$q.vals
     q.vals.all <- q.list$q.vals.all
@@ -142,7 +149,9 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
             k.match <- q.vals.all.lookup[inp, ncol(q.vals.all.lookup)]
             
             R[pj + 1, match(unique(q.match), variables[[1]])] <- 1
-            checkcond[pj] <- all(k.match == obs.condvar)
+            tabkq <- table(q.match, k.match)
+            
+            checkcond[pj] <- all(tabkq == 1)#all(k.match == obs.condvar)
             if (length(q.match) == 0) {
                 q.match <- "0"
             }
@@ -196,7 +205,8 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, p.vals, prob.form)
     data <- list(response_functions = respvars, graph = graph, 
                  variables = variables[[1]], parameters = parameters, 
                  prob.form = prob.form,
-                 p.vals = p.vals, q.vals = q.vals.all.lookup
+                 p.vals = p.vals, q.vals = q.vals.all.lookup, 
+                 user_constraints = constraints
                  )
     
     obj <- list(data = data, observable_constraints = observable_constraints, 

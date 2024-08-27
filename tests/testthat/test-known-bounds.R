@@ -125,11 +125,16 @@ test_that("instrumental variable", {
     ## treatment effect among the treated? This one is not actually liner under the dag
     
     eff <- "p{Y(X = 1) = 1; X = 1} - p{Y(X = 0) = 1; X = 1}"
-    obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-    bound <- optimize_effect(obj)
+    
+    ivmod <- create_causalmodel(graph = b, respvars = NULL, p.vals = expand.grid(Z = 0:1, X = 0:1, Y = 0:1), 
+                                prob.form = list(out = c("X", "Y"), cond = "Z"))
+    expect_false(check_linear_objective(ivmod,eff))
+    
+    expect_error(obj <- analyze_graph(b, constraints = NULL, effectt = eff))
+#    bound <- optimize_effect(obj)
     
     # with new version of optimize_effect:
-    new_version_bound <- optimize_effect_2(obj)
+ #   new_version_bound <- optimize_effect_2(obj)
     #all(new_version_bound$bounds == c("\nMAX {\n  p00_0 - p00_1 - p10_0 - p10_1,\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_0 - p01_0,\n  -p10_1 - p01_1,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n", "\nMIN {\n  1 - p10_1 - p01_0,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  1 - p10_0 - p01_1,\n  2 - p00_0 - p00_1 - p10_0 - p10_1 - 2p01_1\n}\n"))
     # visual comparison:
     #cat(bound$bounds) # old version output string
@@ -151,7 +156,7 @@ test_that("Mediator", {
     
     ## total effect: identifiable
     
-    eff <- "p{Y(X = 1) = 1}"
+    eff <- "p{Y(Z(X = 1), X = 1) = 1}"
     obj <- analyze_graph(b, constraints = NULL, effectt = eff)
     #bound1 <- optimize_effect(obj) # with old version
     # with new version of optimize_effect:
@@ -263,6 +268,10 @@ test_that("Multiple IV numeric comparison", {
 #    V(b)$nvals <- c(2, 2, 2, 2, 2, 2)
 #    E(b)$rlconnect <- c(0, 0, 0, 0, 0, 0, 0, 0)
 #    E(b)$edge.monotone <- c(0, 0, 0, 0, 0, 0, 0, 0)
+    mivmod <- create_causalmodel(graph = b, p.vals = expand.grid(Z1 = 0:1, Z2 = 0:1, 
+                                                                 X = 0:1, Y = 0:1), 
+                                 prob.form = list(out = c("X", "Y"), cond = c("Z1", "Z2")))
+    
     obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
     
     mivold <- readRDS(test_path("test-graphs", "MIV-bounds-result.RData"))

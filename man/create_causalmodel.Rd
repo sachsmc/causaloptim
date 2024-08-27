@@ -4,7 +4,13 @@
 \alias{create_causalmodel}
 \title{Create a structural causal model from a graph or a set of response functions}
 \usage{
-create_causalmodel(graph = NULL, respvars = NULL, p.vals, prob.form)
+create_causalmodel(
+  graph = NULL,
+  respvars = NULL,
+  p.vals,
+  prob.form,
+  constraints = NULL
+)
 }
 \arguments{
 \item{graph}{A graph with special edge and vertex attributes, as produced by \link{initialize_graph}}
@@ -14,6 +20,8 @@ create_causalmodel(graph = NULL, respvars = NULL, p.vals, prob.form)
 \item{p.vals}{Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form}
 
 \item{prob.form}{A list with two named elements "out", "cond" where each element is a character vector of variable names that appear in p.vals}
+
+\item{constraints}{A vector of character strings that represent the constraints on counterfactual quantities}
 }
 \value{
 An object of class "causalmodel"
@@ -23,6 +31,9 @@ Create a structural causal model from a graph or a set of response functions
 }
 \details{
 It is assumed that probabilities of the form p(out | cond) are observed, for each combination of values in p.vals. cond may be NULL in which case nothing is conditioned on.
+
+The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
+\code{X(Z = 1) >= X(Z = 0)}
 }
 \examples{
  ## regular IV case
@@ -32,6 +43,8 @@ p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
 prob.form <- list(out = c("X", "Y"), cond = "Z")
 
 iv_model <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form)
-
+# with monotonicity
+iv_model_mono <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form, 
+                 constraints = list("X(Z = 1) >= X(Z = 0)"))
 
 }

@@ -157,16 +157,13 @@ update_effect <- function(obj, effectt) {
 }
 
 
-#' Determine constraints and objective from response function and probabilities
+#' Create linear causal problem from causal model and effect
 #' 
 #' A more flexible alternative to \link{analyze_graph} that takes as inputs the 
-#' list of response functions and p.vals object directly. 
+#' causal model and effect. 
 #' 
-#' @param respvars A list of response function specifications. See the `response.functions` element of an object of class `linearcausalproblem` for an example.
-#' @param p.vals A data from with the observed variables and their values
-#' @param prob.form A list denoting which variables are conditioned upon in `p.vals`. See examples.
+#' @param causal_model An object of class "causalmodel" as produce by \link{create_causal_model}
 #' @param effectt A character string that represents the causal effect of interest
-#' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
 #' 
 #' @details 
 #' The effectt parameter describes your causal effect of interest. The effectt parameter must be of the form
@@ -184,8 +181,6 @@ update_effect <- function(obj, effectt) {
 #' 
 #' \code{p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}}
 #' 
-#' The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
-#' \code{X(Z = 1) >= X(Z = 0)}
 #' 
 #' @return A an object of class "linearcausalproblem", which is a list with the
 #'   following components. This list can be passed to \link{optimize_effect_2}
@@ -225,9 +220,9 @@ update_effect <- function(obj, effectt) {
 #' confmod <- create_causalmodel(graph = b, p.vals = p.vals, prob.form =  list(out = c("X", "Y"), cond = NULL))
 #' create_linearcausalproblem(confmod, effectt = "p{Y(X = 1) = 1}")
 
-create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL) {
+create_linearcausalproblem <- function(causal_model, effectt) {
     
-    linobj.if.true <- check_linear_objective(cont_iv, effectt = effectt)
+    linobj.if.true <- check_linear_objective(causal_model, effectt = effectt)
     if(!linobj.if.true) {
         stop("Specified effect does not imply a linear objective function!")
     }
@@ -236,45 +231,83 @@ create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL
         stop("Specified causal model does not imply linear constraints!")
     }
     
-    prob.form <- causal_model$prob.form
+    prob.form <- causal_model$data$prob.form
     
-    ## matrix of unobserved counterfactual probabilities
-    q.vals.all.lookup <- causal_model$data$q.vals[, -ncol(causal_model$data$q.vals)]
-   
-    variables <- as.character(unique(q.vals.all.lookup$vars))
+    q.list <- NULL
+    q.list$q.vals.all.lookup = causal_model$data$q.vals[, -ncol(causal_model$data$q.vals)]
+    q.list$q.vals.all = q.list$q.vals.all.lookup[, -ncol(q.list$q.vals.all.lookup)]
+    q.list$q.vals = unique(q.list$q.vals.all[, unlist(causal_model$data$prob.form), drop = FALSE])
+    
+    variables <- causal_model$data$variables
     ## constraints identify set of qs that correspond to observed p.vals
     
-    linconstr.list <- causal_model$counterfactual_constraints$numeric$R
+    #linconstr.list <- create_R_matrix(graph, obsvars, respvars, 
+    #                                 p.vals, parameters, q.list, variables)
     
-    parameters <- causal_model$data$parameters
-    p.vals <- causal_model$data$p.vals
-    ## determine objective based on exposure and outcome in terms of qs
+    linconstr.list = list(p.constraints = causal_model$counterfactual_constraints$character, 
+                          R = causal_model$counterfactual_constraints$numeric$R)
+    
     
     effect <- parse_effect(effectt)
     
-    chk0 <- lapply(effect$vars, causaloptim:::btm_var)
+    chk0 <- lapply(effect$vars, btm_var)
     
     interven.vars <- unique(unlist(chk0))
     
     allnmes <- unique(c(interven.vars, unlist(lapply(effect$vars, names))))
     
-    realnms <- names(respvars)
+    graph <- causal_model$data$graph
+    if(!is.null(graph)) {
+    realnms <- names(V(graph))
     if(any(!allnmes %in% realnms)) {
         
-        stop(sprintf("Names %s in effect not specified in response functions!", 
+        stop(sprintf("Names %s in effect not specified in graph!", 
                      paste(allnmes[which(!allnmes %in% realnms)], collapse = ", ")))
         
     }
     
- 
+    ## check that children of intervention sets are on the right
+    
+    any.children.onleft <- sapply(interven.vars, function(v) {
+        
+        children <- neighbors(graph, V(graph)[v], mode = "out")
+        any(children$leftside == 1)
+        
+    })
+    
+    if(any(any.children.onleft) == TRUE) {
+        stop(sprintf("Cannot intervene on %s because it has children on the leftside!", 
+                     paste(interven.vars[which(any.children.onleft)], collapse = ", ")))
+    }
+    }
+    
     if("oper" %in% names(chk0) & !chk0["oper"] %in% c("+", "-")) {
         stop(sprintf("Operator '%s' not allowed!", chk0["oper"]))
     }
     
+    if(!is.null(graph)) {
+        cond.vars <- prob.form$cond
+    if(length(names(cond.vars)) > 0) {
+        
+        chkpaths <- unlist(lapply(cond.vars, function(x){ 
+            pths <- all_simple_paths(graph, from = x, to = allnmes, mode = "out")
+            unlist(lapply(pths, function(pth) {
+                any(interven.vars %in% names(pth))
+                
+            }))
+        }))
+        
+        if(any(!chkpaths)) {
+            stop(sprintf("Leftside variables %s not ancestors of intervention sets. Condition 6 violated.", 
+                         paste(names(chkpaths)[!chkpaths], collapse = ", ")))
+        }
+        
+    }}
+    
     
     ## handle addition and subtraction based on operator
     ## accumulate final effect based on subtraction and addition
-    var.eff <- create_effect_vector(effect, graph, obsvars, respvars, q.list, variables)
+    var.eff <- create_effect_vector(causal_model, effect)
     
     
     objective <- list(var.eff[[1]])
@@ -324,16 +357,16 @@ create_linearcausalproblem <- function(causal_model, effectt, constraints = NULL
         
     }
     
-    attr(parameters, "key") <- parameters.key
+    parameters <- causal_model$data$parameters
     attr(parameters, "rightvars") <- prob.form$out
     attr(parameters, "condvars") <- prob.form$cond
     
     res <- list(variables = variables, parameters = parameters, 
                 constraints = linconstr.list$p.constraints, 
-                objective = objective.fin, p.vals = p.vals, q.vals = q.list$q.vals, 
+                objective = objective.fin, p.vals = causal_model$data$p.vals, q.vals = q.list$q.vals, 
                 parsed.query = effect, unparsed.query = effectt, 
-                user.constraints = constraints, 
-                objective.nonreduced = objective, response.functions = respvars, 
+                user.constraints = causal_model$data$user_constraints, 
+                objective.nonreduced = objective, response.functions = causal_model$data$response_functions, 
                 graph = graph, R = linconstr.list$R, c0 = c0)
     class(res) <- "linearcausalproblem"
     res

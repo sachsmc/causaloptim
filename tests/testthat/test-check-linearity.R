@@ -61,9 +61,7 @@ test_that("## interventional direct effects", {
     
     expect_true(check_linear_objective(medmod, effectt))
     
-    restest <- optimize_effect_2(linearcausalproblem_from_response_functions(respvars, p.vals, 
-                                                                             prob.form, effectt, 
-                                                                             constraints = NULL) )
-        
+    restest <- optimize_effect_2(create_linearcausalproblem(medmod, effectt))
+    
     
 })

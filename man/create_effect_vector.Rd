@@ -4,20 +4,12 @@
 \alias{create_effect_vector}
 \title{Translate target effect to vector of response variables}
 \usage{
-create_effect_vector(effect, graph, obsvars, respvars, q.list, variables)
+create_effect_vector(causal_model, effect)
 }
 \arguments{
+\item{causal_model}{An object of class "causalmodel" as produce by \link{create_causal_model}}
+
 \item{effect}{Effect list, as returned by \link{parse_effect}}
-
-\item{graph}{The graph}
-
-\item{obsvars}{Vector of observed variable vertices from the graph}
-
-\item{respvars}{Response function, as returned by \link{create_response_function}}
-
-\item{q.list}{List with q matrices, as returned by \link{create_q_matrix}}
-
-\item{variables}{Vector of qs names}
 }
 \value{
 A list with the target effect in terms of qs
@@ -26,36 +18,13 @@ A list with the target effect in terms of qs
 Translate target effect to vector of response variables
 }
 \examples{
-graph <- graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y)
-V(graph)$leftside <- c(1, 0, 0, 1, 0)
-V(graph)$latent <- c(0, 0, 0, 1, 1)
-V(graph)$nvals <- c(3, 2, 2, 2, 2)
-V(graph)$exposure <- c(0, 1, 0, 0, 0)
-V(graph)$outcome <- c(0, 0, 1, 0, 0)
-E(graph)$rlconnect <- c(0, 0, 0, 0, 0)
-E(graph)$edge.monotone <- c(0, 0, 0, 0, 0)
+graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ul -+ Z, Ur -+ X, Ur -+ Y))
 constraints <- "X(Z = 1) >= X(Z = 0)"
 effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
-leftind <- vertex_attr(graph)$leftside
-cond.vars <- V(graph)[leftind == 1 & names(V(graph)) != "Ul"]
-right.vars <- V(graph)[leftind == 0 & names(V(graph)) != "Ur"] 
-obsvars <- c(right.vars, cond.vars)
-observed.variables <- V(graph)[V(graph)$latent == 0]
-var.values <- lapply(names(observed.variables), 
-function(varname) seq(from = 0, to = causaloptim:::numberOfValues(graph, varname) - 1))
-names(var.values) <- names(observed.variables)
-p.vals <- do.call(expand.grid, var.values)
-jd <- do.call(paste0, p.vals[, names(right.vars[right.vars$latent == 0]), drop = FALSE])
-cond <- do.call(paste0, p.vals[, names(cond.vars[cond.vars$latent == 0]), drop = FALSE])
-parameters <- paste0("p", paste(jd, cond, sep = "_"))
-parameters.key <- paste(paste(names(right.vars[right.vars$latent == 0]), collapse = ""), 
-paste(names(cond.vars[cond.vars$latent == 0]), collapse = ""), sep = "_")
-respvars <- create_response_function(graph, right.vars, cond.vars)
-q.list <- create_q_matrix(respvars, right.vars, cond.vars, constraints)
-variables <- as.character(unique(q.list$q.vals.all.lookup$vars))
-linconstr.list <- create_R_matrix(graph, obsvars, respvars, p.vals, parameters, q.list, variables)
-parameters <- linconstr.list$newparams
-p.vals <- linconstr.list$newpvals
+p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
+prob.form <- list(out = c("X", "Y"), cond = "Z")
 effect <- parse_effect(effectt)
-var.eff <- create_effect_vector(effect, graph, obsvars, respvars, q.list, variables)
+ivmod <- create_causalmodel(graph, respvars = NULL, p.vals = p.vals, prob.form = prob.form, 
+         constraints = constraints)
+var.eff <- create_effect_vector(ivmod, effect)
 }

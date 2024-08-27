@@ -2,20 +2,14 @@
 % Please edit documentation in R/update-effect.R
 \name{create_linearcausalproblem}
 \alias{create_linearcausalproblem}
-\title{Determine constraints and objective from response function and probabilities}
+\title{Create linear causal problem from causal model and effect}
 \usage{
-create_linearcausalproblem(causal_model, effectt, constraints = NULL)
+create_linearcausalproblem(causal_model, effectt)
 }
 \arguments{
+\item{causal_model}{An object of class "causalmodel" as produce by \link{create_causal_model}}
+
 \item{effectt}{A character string that represents the causal effect of interest}
-
-\item{constraints}{A vector of character strings that represent the constraints on counterfactual quantities}
-
-\item{respvars}{A list of response function specifications. See the `response.functions` element of an object of class `linearcausalproblem` for an example.}
-
-\item{p.vals}{A data from with the observed variables and their values}
-
-\item{prob.form}{A list denoting which variables are conditioned upon in `p.vals`. See examples.}
 }
 \value{
 A an object of class "linearcausalproblem", which is a list with the
@@ -49,7 +43,7 @@ A an object of class "linearcausalproblem", which is a list with the
 }
 \description{
 A more flexible alternative to \link{analyze_graph} that takes as inputs the 
-list of response functions and p.vals object directly.
+causal model and effect.
 }
 \details{
 The effectt parameter describes your causal effect of interest. The effectt parameter must be of the form
@@ -66,9 +60,6 @@ There are 2 important rules to follow: 1) Only variables on the right side can b
 \code{p{X(Z = 1) = 1; X(Z = 0) = 0}}
 
 \code{p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}}
-
-The constraints are specified in terms of potential outcomes to constrain by writing the potential outcomes, values of their parents, and operators that determine the constraint (equalities or inequalities). For example,
-\code{X(Z = 1) >= X(Z = 0)}
 }
 \examples{
 ### confounded exposure and outcome

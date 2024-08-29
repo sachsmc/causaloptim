@@ -179,14 +179,42 @@ create_causalmodel <- function(graph = NULL, respvars = NULL,
     # all(l * axb == 0)
     
     
+    if(!is.null(prob.form$cond)){
+        cond.vals <- p.vals[, prob.form$cond, drop = FALSE]
+        cond.str <- apply(cond.vals, MARGIN = 1, \(x) paste(x, collapse = "_"))
+        parmsets.that.sum.to.one <- lapply(unique(cond.str), \(x) which(cond.str == x))
+    } else {
+        parmsets.that.sum.to.one <- list(1:length(parameters))
+    }
+    
     inequalities.text <- rep(NA_character_, nrow(a))
     for(i in 1:nrow(a)) {
+        
+        ## checking conditions for standard probabilistic constraints that we omit
+        if(l[i] == 0) {  ## inequalities
+            if(sum(a[i,] == -1) == 1 & b[i] == 0) {
+                next
+            }
+            nonzeros <- which(a[i,] != 0)
+            nomatchparmsets <- sapply(parmsets.that.sum.to.one, \(x) length(setdiff(nonzeros, x)) == 0)
+            if(sum(nomatchparmsets == TRUE) == 1 & all(a[i,][nonzeros] == b[i]) & abs(b[i]) == 1) {
+                next
+            }
+            
+        } else if(l[i] == 1) { ## equalities
+            nonzeros <- which(a[i,] != 0)
+            matchparmsets <- sapply(parmsets.that.sum.to.one, \(x) length(setdiff(nonzeros, x)) == 0 & length(setdiff(x, nonzeros)) == 0)
+            if(sum(matchparmsets == TRUE) == 1 & all(a[i,][nonzeros] == b[i]) & abs(b[i]) == 1){
+                next
+            }
+        }
+        
         
         thisp <- c(parameters)[as.logical(abs(a[i,]))]
         
         inp <- paste(paste(a[i,a[i,]!=0], "*", thisp), collapse = " + ") 
         
-        inequalities.text[i] <- if(l[i] == 0) paste(inp, "<", b[i]) else{
+        inequalities.text[i] <- if(l[i] == 0) paste(inp, "<=", b[i]) else{
             paste(l[i], "*(", inp, " - ", b[i], ") = 0") 
         }
     }
@@ -194,7 +222,7 @@ create_causalmodel <- function(graph = NULL, respvars = NULL,
     observable_constraints <- list(numeric = list(
         a = a, b = b, l = l
     ), 
-    character = inequalities.text)
+    character = inequalities.text[!is.na(inequalities.text)])
     
     counterfactual_constraints <- list(numeric = list(R = R), 
                                        character = p.constraints, 
@@ -341,11 +369,15 @@ print.causalmodel <- function(x, omit_cf_constraints = FALSE, omit_obs_constrain
         cat(x$counterfactual_constraints$character, sep = "\n")
     }
     
-    observabletext <- sprintf("The causal model implies the following observable constraints, which are available in numeric form in the %s$observable_constraints$numeric element. To test whether these constraints are violated, use check_constraints_violated(%s)", deparse1(substitute(x)), deparse1(substitute(x)))
+    observabletext <- sprintf("The causal model implies the following observable constraints in addition to the standard probabilistic constraints, which are available in numeric form in the %s$observable_constraints$numeric element. To test whether these constraints are violated, use check_constraints_violated(%s)", deparse1(substitute(x)), deparse1(substitute(x)))
     
     cat(observabletext, sep = "\n")
     if(!omit_obs_constraints) {
-        cat(x$observable_constraints$character, sep = "\n")
+        if(length(x$observable_constraints$character) == 0) {
+            cat("No observable constraints other than the probabilistic constraints. ")
+        } else {
+            cat(x$observable_constraints$character, sep = "\n")
+        }
     }
     
     if(!x$counterfactual_constraints$linear.if.true) {

@@ -377,3 +377,33 @@ test_that("Missing paths filling in works properly", {
     
 })
 
+
+test_that("IV with outcome dependent sampling", {
+    
+    ## see https://www.tandfonline.com/doi/full/10.1080/01621459.2020.1832502#d1e1777
+    ## result 3
+    
+    graph_casecont <- initialize_graph(graph_from_literal(X -+ Y, Y -+ S, Ur -+ X, Ur -+ Y, Ur -+ S))
+    prob.form <- list(out = c("X", "Y", "S"), cond = NULL)
+    p.vals <- expand.grid(X = 0:1, Y = 0:1, S = 1)
+    casecont <- create_causalmodel(graph_casecont, respvars= NULL, p.vals = p.vals, prob.form = prob.form)
+    
+    bnds.cc <- create_linearcausalproblem(casecont, "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}") |> optimize_effect_2()
+    
+    
+    expect_true(all(bnds.cc$bounds == c("\nMAX {\n  -1 + p001_ + p111_\n}\n", "\nMIN {\n  1 - p101_ - p011_\n}\n")))
+    
+    
+    graph_ivcc <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Y -+ S, Ur -+ X, Ur -+ Y, Ur -+ S))
+    prob.form <- list(out = c("X", "Y", "S"), cond = "Z")
+    p.vals <- expand.grid(X = 0:1, Y = 0:1, S = 1, Z = 0:1)
+    ivcc <- create_causalmodel(graph_ivcc, respvars= NULL, p.vals = p.vals, prob.form = prob.form)
+    
+    bnds.ivcc <- create_linearcausalproblem(ivcc, "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}") |> optimize_effect_2()
+    
+    
+    expect_true(all(bnds.ivcc$bounds == c("\nMAX {\n  -1 - p011_0 - p111_0 + p001_1 + 2p111_1,\n  -1 - p001_0 - p101_0 - p011_0 - p111_0 + 2p001_1 + 2p111_1,\n  -1 + p001_0 + 2p111_0 - p011_1 - p111_1,\n  -1 + 2p001_0 + 2p111_0 - p001_1 - p101_1 - p011_1 - p111_1,\n  -1 + 2p001_0 + p111_0 - p001_1 - p101_1,\n  -1 + p001_0 + p111_0,\n  -1 + p001_1 + p111_1,\n  -1 + p001_0 + p111_1,\n  -1 + p111_0 + p001_1,\n  -1 - p001_0 - p101_0 + 2p001_1 + p111_1\n}\n",
+    "\nMIN {\n  1 - 2p101_0 - 2p011_0 + p001_1 + p101_1 + p011_1 + p111_1,\n  1 - p101_1 - p011_1,\n  1 - p101_0 - p011_0,\n  1 + p001_0 + p101_0 + p011_0 + p111_0 - 2p101_1 - 2p011_1,\n  1 + p001_0 + p101_0 - 2p101_1 - p011_1,\n  1 - p011_0 - p101_1,\n  1 - p101_0 - 2p011_0 + p011_1 + p111_1,\n  1 - p101_0 - p011_1,\n  1 + p011_0 + p111_0 - p101_1 - 2p011_1,\n  1 - 2p101_0 - p011_0 + p001_1 + p101_1\n}\n" )))
+    
+})
+

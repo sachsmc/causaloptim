@@ -5,6 +5,7 @@
 #' @param p.vals Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form
 #' @param prob.form A list with two named elements "out", "cond" where each element is a character vector of variable names that appear in p.vals
 #' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
+#' @param right.vars A vector of character strings indicating which variables are on the right side of the graph. Only required when graph is NULL. See examples.
 #' 
 #' @details
 #' It is assumed that probabilities of the form p(out | cond) are observed, for each combination of values in p.vals. cond may be NULL in which case nothing is conditioned on.
@@ -25,9 +26,21 @@
 #' # with monotonicity
 #' iv_model_mono <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form, 
 #'                  constraints = list("X(Z = 1) >= X(Z = 0)"))
+#'                  
+#' #showing the use of right.vars
+#' b <- initialize_graph(graph_from_literal(Ul -+ X -+ Y -+ Y2, Ur -+ Y, Ur -+ Y2))
+#' V(b)$latent <- c(1, 0, 1, 0, 1)
+#' respvars <- create_response_function(b)
+#' create_causalmodel(graph = b, constraints = "Y2(Y = 1) >= Y2(Y = 0)",
+#'                    p.vals = expand.grid(X = 0:1, Y2 = 0:1), prob.form = list(out = "Y2", cond = "X"))
+#'  ## need to specify right.vars because it cannot be inferred from the response functions alone
+#' create_causalmodel(graph = NULL, respvars = respvars, constraints = "Y2(Y = 1) >= Y2(Y = 0)",
+#'                    p.vals = expand.grid(X = 0:1, Y2 = 0:1), prob.form = list(out = "Y2", cond = "X"), 
+#'                    right.vars = c("Y", "Y2"))
 #' 
 create_causalmodel <- function(graph = NULL, respvars = NULL, 
-                               p.vals, prob.form, constraints = NULL) { 
+                               p.vals, prob.form, constraints = NULL, 
+                               right.vars = NULL) { 
     
     varnames1 <- colnames(p.vals)
     varnames2 <- unlist(prob.form)
@@ -49,19 +62,30 @@ create_causalmodel <- function(graph = NULL, respvars = NULL,
     
     if(!is.null(respvars) & !is.null(graph)) {
         message("Both graph and respvars provided, using respvars")
+        right.vars <- names(V(graph)[leftside == 0 & names(V(graph)) != "Ur"])
     }
     
     if(is.null(respvars) & !is.null(graph)) {
         
         respvars <- create_response_function(graph)
+        right.vars <- names(V(graph)[leftside == 0 & names(V(graph)) != "Ur"])
         
+    }
+    
+    if(is.null(right.vars)) {
+        needright <- setdiff(names(respvars), varnames1)
+        if(length(needright) > 0) {
+            stop("May need to specify right.vars for variable: ", paste(needright, collapse = ", "))
+        }
+        
+        right.vars <- prob.form$out
     }
     
     prob.form <- lapply(prob.form, \(x) {
         names(x) <- x
         x
     })
-    q.list <- create_q_matrix(respvars, right.vars = prob.form$out, cond.vars= prob.form$cond, 
+    q.list <- create_q_matrix(respvars, right.vars = right.vars, cond.vars= prob.form$cond, 
                               constraints = constraints)
     
     q.vals <- q.list$q.vals

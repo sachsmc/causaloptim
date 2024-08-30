@@ -54,7 +54,8 @@ test_that("## interventional direct effects", {
     
     
     prob.form <- list(out = c("Y", "M"), cond = c("A"))
-    medmod <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form)
+    medmod <- create_causalmodel(respvars = respvars, p.vals = p.vals, prob.form = prob.form, 
+                                 right.vars = c("M", "Y"))
     expect_true(medmod$counterfactual_constraints$linear.if.true)
     
     effectt <- "p{Y(Ay = 1, Am = 1) = 1} - p{Y(Ay = 0, Am = 1) = 1}"

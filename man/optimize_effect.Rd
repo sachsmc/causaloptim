@@ -10,7 +10,7 @@ optimize_effect(obj)
 \item{obj}{Object as returned by \link{analyze_graph}}
 }
 \value{
-An object of class "balkebound" that contains the bounds and logs as character strings
+An object of class "balkebound" that is a list that contains the bounds and logs as character strings and a function to compute the bounds.
 }
 \description{
 Given a object with the linear programming problem set up, compute the bounds

@@ -8,7 +8,7 @@
 #' 
 #' @param obj Object as returned by \link{analyze_graph}
 #' 
-#' @return An object of class "balkebound" that contains the bounds and logs as character strings
+#' @return An object of class "balkebound" that is a list that contains the bounds and logs as character strings and a function to compute the bounds. 
 #' @seealso \link{optimize_effect_2} which is the current default
 #' @export
 #' @examples 
@@ -99,7 +99,8 @@ optimize_effect <- function(obj) {
     bounds <- c(lower = res.lowerbound, upper = res.upperbound)
     logs <- list(lower = c(log = log1.min, display = disp.min), upper = c(log = log1.max, display = disp.max))
     
-    structure(list(bounds = bounds, logs = logs), class = "balkebound")
+    structure(list(bounds = bounds, logs = logs, 
+                   bounds_function = interpret_bounds(bounds, obj$parameters)), class = "balkebound")
     
     
 }
@@ -111,6 +112,7 @@ print.balkebound <- function(x, ...){
     cat("lower bound = ", x$bounds["lower"], ...)
     cat("----------------------------------------\n")
     cat("upper bound = ", x$bounds["upper"], ...)
+    cat("\nA function to compute the bounds for a given set of probabilities is available in the x$bounds_function element.\n")
     
     
 }
@@ -124,15 +126,11 @@ print.balkebound <- function(x, ...){
 #' 
 #' @param obj Object as returned by \link{analyze_graph}
 #' 
-#' @return An object of class "balkebound" that contains the bounds and logs as character strings
+#' @return An object of class "balkebound" that is a list that contains the bounds and logs as character strings, and a function to compute the bounds
 #' @seealso \link{optimize_effect} which is a legacy version
 #' @export
 #' @examples 
-#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
-#' V(b)$leftside <- c(0,0,0)
-#' V(b)$latent <- c(0,0,1)
-#' V(b)$nvals <- c(2,2,2)
-#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
+#' b <- initialize_graph(graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 #' optimize_effect_2(obj)
 optimize_effect_2 <- function(obj) {
@@ -140,7 +138,8 @@ optimize_effect_2 <- function(obj) {
     upper_bound <- opt_effect(opt = "max", obj = obj)
     bounds <- c(lower = lower_bound$expr, upper = upper_bound$expr)
     vreps_of_duals <- list(lower = lower_bound$dual_vrep, upper = upper_bound$dual_vrep)
-    structure(list(bounds = bounds, logs = vreps_of_duals), class = "balkebound")
+    structure(list(bounds = bounds, logs = vreps_of_duals, 
+                   bounds_function = interpret_bounds(bounds, obj$parameters)), class = "balkebound")
 }
 
 #' Compute a bound on the average causal effect

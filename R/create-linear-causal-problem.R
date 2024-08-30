@@ -208,8 +208,10 @@ create_linearcausalproblem <- function(causal_model, effectt) {
                 objective = objective.fin, p.vals = causal_model$data$p.vals, q.vals = q.list$q.vals, 
                 parsed.query = effect, unparsed.query = effectt, 
                 user.constraints = causal_model$data$user_constraints, 
-                objective.nonreduced = objective, response.functions = causal_model$data$response_functions, 
-                graph = graph, R = linconstr.list$R, c0 = c0)
+                objective.nonreduced = objective, 
+                response.functions = causal_model$data$response_functions, 
+                graph = graph, R = linconstr.list$R, c0 = c0, 
+                causal_model = causal_model)
     class(res) <- "linearcausalproblem"
     res
     

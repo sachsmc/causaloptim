@@ -296,8 +296,7 @@ update_effect <- function(obj, effectt) {
     ## accumulate final effect based on subtraction and addition
     q.list <- create_q_matrix(obj$response.functions, right.vars, cond.vars, obj$user.constraints)
     
-    var.eff <- create_effect_vector(effect, obsvars, obj$response.functions,
-                                    q.list, obj$variables)
+    var.eff <- create_effect_vector(obj$causal_model, effect)
     
     
     objective <- list(var.eff[[1]])

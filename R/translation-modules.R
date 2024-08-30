@@ -212,7 +212,7 @@ create_q_matrix <- function(respvars, right.vars, cond.vars, constraints) {
     variables <- paste0("q", do.call(paste, c(q.vals, sep = "_")))
     
     q.vals.tmp2 <- cbind(q.vals, vars = variables, stringsAsFactors = FALSE)
-    q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp2, by = names(right.vars), sort = TRUE)
+    q.vals.all.lookup <- merge(q.vals.all, q.vals.tmp2, by = right.vars, sort = TRUE)
     
     
     list(q.vals = q.vals, q.vals.all = q.vals.all, q.vals.all.lookup = q.vals.all.lookup)

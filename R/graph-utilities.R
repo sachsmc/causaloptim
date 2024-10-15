@@ -351,13 +351,13 @@ graphrescheck <- function(graphres, ret = FALSE) {
 
 #' Check for paths from from to to 
 #' 
-#' Internal function
 #' 
 #' @param parent_lookup A list of vectors
 #' @param from character
 #' @param to character
 #' @param prev Should always be null when first called
 #' @returns A list of paths or null if no path is found
+#' @export
 #' @examples
 #' parent_lookup <- list(M = "Am", Y = c("M", "Ay"), A = NULL, Am = "A", Ay = "A")
 #' check_parents(parent_lookup, "A", "Y")
@@ -414,10 +414,12 @@ initialize_graph <- function(graph) {
     
     if(is.null(V(graph)$leftside)) {
         V(graph)$leftside <- rep(0, nvars)
-        rightV <- neighbors(graph, "Ur", mode = "out")
-        leftdex <- match(setdiff(names(V(graph)), c("Ur", names(rightV))), 
-                    names(V(graph)))
-        V(graph)$leftside[leftdex] <- 1
+        if("Ur" %in% names(V(graph))) {
+            rightV <- neighbors(graph, "Ur", mode = "out")
+            leftdex <- match(setdiff(names(V(graph)), c("Ur", names(rightV))), 
+                             names(V(graph)))
+            V(graph)$leftside[leftdex] <- 1
+        }
     }
     
     if(is.null(V(graph)$nvals)) {
@@ -427,7 +429,7 @@ initialize_graph <- function(graph) {
     if(is.null(E(graph)$rlconnect)) {
         E(graph)$rlconnect <- rep(0, length(E(graph)))
         
-        rlchk <- E(graph)[V(graph)[leftside == 1] %<-% V(graph)[leftside == 0]]
+        rlchk <- E(graph)[V(graph)[V(graph)$leftside == 1] %<-% V(graph)[V(graph)$leftside == 0]]
         edge_attr(graph, "rlconnect", index = rlchk) <- 1
         
     } 

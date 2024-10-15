@@ -3,7 +3,10 @@
 #' @param x a list
 #' @param name name of the top element of the list
 #' @return The name of the deepest nested list element
-#' @noRd
+#' @export
+#' @examples
+#' btm_var(list(X = list(Y = list(K = 1))))
+#' 
 
 btm_var <- function(x, name = NULL) {
     
@@ -20,10 +23,15 @@ btm_var <- function(x, name = NULL) {
 
 #' Recursive function to translate an effect list to a path sequence
 #' 
-#' @param x A list of vars as returned by parse_effect
+#' @param x A list of vars as returned by \link{parse_effect}
 #' @param name The name of the outcome variable
 #' @return a list of characters describing the path sequence
-#' @noRd
+#' @export
+#' @examples
+#' nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1 = 1)) = 1}"
+#' eff2 <- parse_effect(nofill)$vars[[1]][[1]]
+#' list_to_path(eff2, "Y")
+#' 
 
 list_to_path <- function(x, name = NULL) {
     
@@ -148,7 +156,7 @@ queryparsecheck <- function(effecttext) {
 #' E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
 #' E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0, 0)
 #' effecttext <- "p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}"
-#' causaloptim:::querycheck(effecttext = effecttext, graphres = graphres) # TRUE
+#' querycheck(effecttext = effecttext, graphres = graphres) # TRUE
 querycheck <- function(effecttext, graphres) {
     # Check parsability
     if (!queryparsecheck(effecttext = effecttext)) {

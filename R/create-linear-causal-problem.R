@@ -4,7 +4,7 @@
 #' A more flexible alternative to \link{analyze_graph} that takes as inputs the 
 #' causal model and effect. 
 #' 
-#' @param causal_model An object of class "causalmodel" as produce by \link{create_causal_model}
+#' @param causal_model An object of class "causalmodel" as produce by \link{create_causalmodel}
 #' @param effectt A character string that represents the causal effect of interest
 #' 
 #' @details 
@@ -58,8 +58,7 @@
 #' ### confounded exposure and outcome
 
 #' b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
-#' p.vals <- expand.grid(X = 0:1, Y = 0:1)
-#' confmod <- create_causalmodel(graph = b, p.vals = p.vals, prob.form =  list(out = c("X", "Y"), cond = NULL))
+#' confmod <- create_causalmodel(graph = b, prob.form =  list(out = c("X", "Y"), cond = NULL))
 #' create_linearcausalproblem(confmod, effectt = "p{Y(X = 1) = 1}")
 
 create_linearcausalproblem <- function(causal_model, effectt) {

@@ -2,9 +2,8 @@
 #'
 #' @param graph An \link[igraph]{aaa-igraph-package} object that represents a
 #'   directed acyclic graph that contains certain edge attributes. 
-#'    The shiny app returns a graph in this format and see examples.
-#' @param right.vars Vertices of graph on the right side
-#' @param cond.vars Vertices of graph on the left side
+#'    The shiny app returns a graph in this format and \link{initialize_graph} 
+#'    will add them to a regular igraph object with sensible defaults.
 #' 
 #' @return A list of functions representing the response functions
 #' @export
@@ -16,8 +15,8 @@
 
 create_response_function <- function(graph) {
     
-    cond.vars <- V(graph)[leftside == 1 & names(V(graph)) != "Ul"]
-    right.vars <- V(graph)[leftside == 0 & names(V(graph)) != "Ur"] 
+    cond.vars <- V(graph)[V(graph)$leftside == 1 & names(V(graph)) != "Ul"]
+    right.vars <- V(graph)[V(graph)$leftside == 0 & names(V(graph)) != "Ur"] 
     
     obsvars <- c(right.vars, cond.vars) 
     respvars <- vector(mode = "list", length = length(obsvars))
@@ -39,6 +38,11 @@ create_response_function <- function(graph) {
                 environment(bin) <- baseenv()
                 bin
             })
+            matrices <- lapply(1:numberOfValues(graph, names(i)), function(j) {
+                mm <- matrix(j - 1)
+                colnames(mm) <- names(i)
+                mm
+            })
         } else {
             ## da matrix
             
@@ -53,11 +57,16 @@ create_response_function <- function(graph) {
             args <- vector(mode = "list", length = ncol(poss.ins))
             names(args) <- parents
             
-            values <- vector(mode = "list", length = nrow(ini.outs))
+            values <- matrices <- vector(mode = "list", length = nrow(ini.outs))
             for (j in 1:nrow(ini.outs)) {
                 f.tmp <- function() {
                 }
                 formals(f.tmp) <- as.pairlist(args)
+                ## matrix
+                
+                matrices[[j]] <- cbind(poss.ins, unlist(ini.outs[j,]))
+                rownames(matrices[[j]]) <- NULL
+                colnames(matrices[[j]])[ncol(matrices[[j]])] <- names(i)
                 
                 ## build body
                 a1 <-
@@ -84,7 +93,7 @@ create_response_function <- function(graph) {
         }
         
         respvars[[ini]] <-
-            list(index = 0:(length(values) - 1), values = values)
+            list(index = 0:(length(values) - 1), values = values, matrices = matrices)
         
     }
     
@@ -222,7 +231,7 @@ create_q_matrix <- function(respvars, right.vars, cond.vars, constraints) {
 
 #' Translate target effect to vector of response variables
 #' 
-#' @param causal_model An object of class "causalmodel" as produce by \link{create_causal_model}
+#' @param causal_model An object of class "causalmodel" as produced by \link{create_causalmodel}
 #' @param effect Effect list, as returned by \link{parse_effect}
 #' 
 #' @export

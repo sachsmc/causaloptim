@@ -7,8 +7,8 @@
 create_causalmodel(
   graph = NULL,
   respvars = NULL,
-  p.vals,
   prob.form,
+  p.vals,
   constraints = NULL,
   right.vars = NULL
 )
@@ -18,9 +18,9 @@ create_causalmodel(
 
 \item{respvars}{List of response functions as produced by \link{create_response_function}}
 
-\item{p.vals}{Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form}
-
 \item{prob.form}{A list with two named elements "out", "cond" where each element is a character vector of variable names that appear in p.vals}
+
+\item{p.vals}{Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form. If missing, will assume that all combinations of the variables values are observed.}
 
 \item{constraints}{A vector of character strings that represent the constraints on counterfactual quantities}
 
@@ -30,7 +30,7 @@ create_causalmodel(
 An object of class "causalmodel"
 }
 \description{
-Create a structural causal model from a graph or a set of response functions
+Given either a graph or a set of response functions (i.e., either \code{graph} or \code{respvars} may be provided), and a specification of what conditional probabilities are observed, produce a causal model.
 }
 \details{
 It is assumed that probabilities of the form p(out | cond) are observed, for each combination of values in p.vals. cond may be NULL in which case nothing is conditioned on.
@@ -42,12 +42,10 @@ The constraints are specified in terms of potential outcomes to constrain by wri
  ## regular IV case
 
 graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
-p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
-prob.form <- list(out = c("X", "Y"), cond = "Z")
 
-iv_model <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form)
+iv_model <- create_causalmodel(graph, prob.form = list(out = c("X", "Y"), cond = "Z"))
 # with monotonicity
-iv_model_mono <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form, 
+iv_model_mono <- create_causalmodel(graph, prob.form = list(out = c("X", "Y"), cond = "Z"),
                  constraints = list("X(Z = 1) >= X(Z = 0)"))
                  
 #showing the use of right.vars
@@ -55,10 +53,13 @@ b <- initialize_graph(graph_from_literal(Ul -+ X -+ Y -+ Y2, Ur -+ Y, Ur -+ Y2))
 V(b)$latent <- c(1, 0, 1, 0, 1)
 respvars <- create_response_function(b)
 create_causalmodel(graph = b, constraints = "Y2(Y = 1) >= Y2(Y = 0)",
-                   p.vals = expand.grid(X = 0:1, Y2 = 0:1), prob.form = list(out = "Y2", cond = "X"))
+                   p.vals = expand.grid(X = 0:1, Y2 = 0:1), 
+                   prob.form = list(out = "Y2", cond = "X"))
  ## need to specify right.vars because it cannot be inferred from the response functions alone
-create_causalmodel(graph = NULL, respvars = respvars, constraints = "Y2(Y = 1) >= Y2(Y = 0)",
-                   p.vals = expand.grid(X = 0:1, Y2 = 0:1), prob.form = list(out = "Y2", cond = "X"), 
+create_causalmodel(graph = NULL, respvars = respvars, 
+                   constraints = "Y2(Y = 1) >= Y2(Y = 0)",
+                   p.vals = expand.grid(X = 0:1, Y2 = 0:1), 
+                   prob.form = list(out = "Y2", cond = "X"), 
                    right.vars = c("Y", "Y2"))
 
 }

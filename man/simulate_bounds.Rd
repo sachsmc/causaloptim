@@ -9,7 +9,7 @@ simulate_bounds(obj, bounds, nsim = 1000)
 \arguments{
 \item{obj}{Object as returned by \link{analyze_graph}}
 
-\item{bounds}{Object as returned by \link{optimize_effect}}
+\item{bounds}{Object as returned by \link{optimize_effect_2}}
 
 \item{nsim}{Number of simulation replicates}
 }

@@ -1,6 +1,6 @@
 #' Check linearity of objective function implied by a causal model and effect
 #' 
-#' @param causal_model An object of class "causalmodel" as produce by \link{create_causal_model}
+#' @param causal_model An object of class "causalmodel" as produce by \link{create_causalmodel}
 #' @param effectt A character string that represents the causal effect of interest
 #' 
 #' @details 
@@ -83,7 +83,7 @@ check_linear_objective <- function(causal_model, effectt) {
     names(obsvars) <- unlist(obsvars)
     
     effect <- parse_effect(effectt)
-    chk0 <- lapply(effect$vars, causaloptim:::btm_var)
+    chk0 <- lapply(effect$vars, btm_var)
     interven.vars <- unique(unlist(chk0))
     allnmes <- unique(unlist(lapply(effect$vars, names)))
     realnms <- unlist(prob.form)
@@ -151,7 +151,7 @@ check_linear_objective <- function(causal_model, effectt) {
                 
             } else { ## intervention
                 
-                thisintervene <- unlist(causaloptim:::list_to_path(thisvar, outcome))
+                thisintervene <- unlist(list_to_path(thisvar, outcome))
                 basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
                 
                 parents <- parent_lookup[[outcome]]

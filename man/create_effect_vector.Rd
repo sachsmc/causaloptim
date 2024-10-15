@@ -7,7 +7,7 @@
 create_effect_vector(causal_model, effect)
 }
 \arguments{
-\item{causal_model}{An object of class "causalmodel" as produce by \link{create_causal_model}}
+\item{causal_model}{An object of class "causalmodel" as produced by \link{create_causalmodel}}
 
 \item{effect}{Effect list, as returned by \link{parse_effect}}
 }

@@ -25,10 +25,9 @@ Sample a distribution of observable probabilities that satisfy the causal model
 \examples{
 
 graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
-p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
 prob.form <- list(out = c("X", "Y"), cond = "Z")
 
-iv_model <- create_causalmodel(graph, respvars = NULL, p.vals, prob.form)
+iv_model <- create_causalmodel(graph, prob.form = prob.form)
 sample_distribution(iv_model)
 
 }

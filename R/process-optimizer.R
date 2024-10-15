@@ -1,110 +1,3 @@
-#' Run the Balke optimizer
-#' 
-#' Given a object with the linear programming problem set up, compute the bounds
-#' using the c++ code developed by Alex Balke. Bounds are returned as text but can
-#' be converted to R functions using \link{interpret_bounds}, or latex code using
-#' \link{latex_bounds}.
-#' This legacy function has been replaced as default with the more efficient \link{optimize_effect_2}.
-#' 
-#' @param obj Object as returned by \link{analyze_graph}
-#' 
-#' @return An object of class "balkebound" that is a list that contains the bounds and logs as character strings and a function to compute the bounds. 
-#' @seealso \link{optimize_effect_2} which is the current default
-#' @export
-#' @examples 
-#' b <- graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y)
-#' V(b)$leftside <- c(0,0,0)
-#' V(b)$latent <- c(0,0,1)
-#' V(b)$nvals <- c(2,2,2)
-#' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
-#' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
-#' optimize_effect(obj)
-
-
-optimize_effect <- function(obj) {
-    
-    special.terms <- grepl("p(.*) = 0", obj$constraints)
-    
-    red.sets <- const.to.sets(obj$constraints[!special.terms], obj$objective.nonreduced)
-    objective.fin <- paste(red.sets$objective.terms[[1]], collapse = " + ")
-    
-    if(!is.null(obj$parsed.query$oper) & length(obj$parsed.query$oper) > 0 & 
-       length(red.sets$objective.terms) > 1) {
-        
-        for(opp in 1:length(obj$parsed.query$oper)) {
-            
-            thiscol <- ifelse(obj$parsed.query$oper[[opp]] == "-", " - ", " + ")
-            objective.fin <- paste(objective.fin, obj$parsed.query$oper[[opp]], 
-                                   paste(red.sets$objective.terms[[opp + 1]], collapse = thiscol))
-            
-        }
-        
-    }
-    
-    obj$variables <- red.sets$variables
-    obj$constraints <- c(red.sets$constr, obj$constraints[special.terms])
-    obj$objective <- objective.fin
-    
-    
-    tbl.file <- tempfile(pattern = c("max", "min"))
-    cat("VARIABLES\n", file = tbl.file[1])
-    cat(obj$variables, file = tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nPARAMETERS\n", file = tbl.file[1], append = TRUE)
-    cat(obj$parameters, file = tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nCONSTRAINTS\n", file = tbl.file[1], append = TRUE)
-    cat(sapply(obj$constraints, shortentxt), file= tbl.file[1], append = TRUE, sep = "\n")
-    cat("\nMAXIMIZE\n", file = tbl.file[1], append = TRUE)
-    cat("\nOBJECTIVE\n", file =tbl.file[1], append = TRUE)
-    cat(shortentxt(obj$objective), file = tbl.file[1], append = TRUE)
-    cat("\nEND\n", file = tbl.file[1], append = TRUE)
-    
-    
-    test <- COptimization_$new()
-    fileParseSuccess <- test$ParseFileWrap(tbl.file[1])
-    stopifnot(fileParseSuccess == 1)
-    
-    test$CategorizeConstraints()
-    test$GaussianElimination()
-    
-    log1.min <- test$EnumerateVertices()
-    
-    res.upperbound <- test$OutputOptimum()
-    disp.min <- test$Display()
-    
-    cat("VARIABLES\n", file = tbl.file[2])
-    cat(obj$variables, file = tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nPARAMETERS\n", file = tbl.file[2], append = TRUE)
-    cat(obj$parameters, file = tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nCONSTRAINTS\n", file = tbl.file[2], append = TRUE)
-    cat(sapply(obj$constraints, shortentxt), file= tbl.file[2], append = TRUE, sep = "\n")
-    cat("\nMINIMIZE\n", file = tbl.file[2], append = TRUE)
-    cat("\nOBJECTIVE\n", file =tbl.file[2], append = TRUE)
-    cat(shortentxt(obj$objective), file = tbl.file[2], append = TRUE)
-    cat("\nEND\n", file = tbl.file[2], append = TRUE)
-    
-    
-    test2 <- COptimization_$new()
-    file2ParseSuccess <- test2$ParseFileWrap(tbl.file[2])
-    stopifnot(file2ParseSuccess == 1)
-    
-    test2$CategorizeConstraints()
-    test2$GaussianElimination()
-    
-    
-    log1.max <- test2$EnumerateVertices()
-    res.lowerbound <- test2$OutputOptimum()
-    disp.max <- test2$Display()
-    
-    
-    bounds <- c(lower = res.lowerbound, upper = res.upperbound)
-    logs <- list(lower = c(log = log1.min, display = disp.min), upper = c(log = log1.max, display = disp.max))
-    
-    structure(list(bounds = bounds, logs = logs, 
-                   bounds_function = interpret_bounds(bounds, obj$parameters)), class = "balkebound")
-    
-    
-}
-
 #' @export
 
 print.balkebound <- function(x, ...){
@@ -117,23 +10,23 @@ print.balkebound <- function(x, ...){
     
 }
 
-#' Run the optimizer
+#' Run the optimizer to obtain symbolic bounds
 #' 
 #' Given an object with the linear programming problem set up, compute the bounds
 #' using rcdd. Bounds are returned as text but can
 #' be converted to R functions using \link{interpret_bounds}, or latex code using
 #' \link{latex_bounds}.
 #' 
-#' @param obj Object as returned by \link{analyze_graph}
+#' @param obj Object as returned by \link{analyze_graph} or \link{create_linearcausalproblem}
 #' 
 #' @return An object of class "balkebound" that is a list that contains the bounds and logs as character strings, and a function to compute the bounds
-#' @seealso \link{optimize_effect} which is a legacy version
 #' @export
+#' @aliases optimize_effect
 #' @examples 
 #' b <- initialize_graph(graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 #' optimize_effect_2(obj)
-optimize_effect_2 <- function(obj) {
+optimize_effect_2 <- optimize_effect <- function(obj) {
     lower_bound <- opt_effect(opt = "min", obj = obj)
     upper_bound <- opt_effect(opt = "max", obj = obj)
     bounds <- c(lower = lower_bound$expr, upper = upper_bound$expr)
@@ -214,7 +107,7 @@ opt_effect <- function(opt, obj) {
 #' V(b)$nvals <- c(2,2,2)
 #' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
-#' bounds <- optimize_effect(obj)
+#' bounds <- optimize_effect_2(obj)
 #' bounds_func <- interpret_bounds(bounds$bounds, obj$parameters)
 #' bounds_func(.1, .1, .4, .3)
 #' # vectorized
@@ -242,9 +135,9 @@ interpret_bounds <- function(bounds, parameters) {
     names(args) <- parameters
     
     bod <- parse(text = paste0("lb <- ", bcalls[1], "\n", 
-                        "ub <- ", bcalls[2], "\n", 
-                        "if(any(ub < lb)) {\n warning('Invalid bounds! Data probably does not satisfy the assumptions in the DAG!')\n } \n",
-                        "data.frame(lower = lb, upper = ub) \n"))
+                               "ub <- ", bcalls[2], "\n", 
+                               "if(any(ub < lb)) {\n warning('Invalid bounds! Data probably does not satisfy the assumptions in the DAG!')\n } \n",
+                               "data.frame(lower = lb, upper = ub) \n"))
     
     f <- function() {}
     formals(f) <- as.pairlist(args)
@@ -286,7 +179,6 @@ shortentxt <- function(x) {
 
 
 
-#' @useDynLib causaloptim
-#' @import Rcpp methods
 #' @importFrom rcdd makeH scdd
+#' @importFrom stats rgamma
 NULL

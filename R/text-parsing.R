@@ -277,7 +277,7 @@ parse_constraints <- function(constraints, obsnames) {
 
 #' Latex bounds equations
 #' 
-#' @param bounds Vector of bounds as returned by \link{optimize_effect}
+#' @param bounds Vector of bounds as returned by \link{optimize_effect_2}
 #' @param parameters The parameters object as returned by \link{analyze_graph}
 #' @param prob.sym Symbol to use for probability statements in latex, usually "P" or "pr"
 #' @param brackets Length 2 vector with opening and closing bracket, usually \code{c("(", ")")}, or \code{c(" \{", "\}")}
@@ -290,7 +290,7 @@ parse_constraints <- function(constraints, obsnames) {
 #' V(b)$nvals <- c(2,2,2)
 #' E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
-#' bounds <- optimize_effect(obj)
+#' bounds <- optimize_effect_2(obj)
 #' latex_bounds(bounds$bounds, obj$parameters)
 #' latex_bounds(bounds$bounds, obj$parameters, "Pr")
 latex_bounds <- function(bounds, parameters, prob.sym = "P", brackets = c("(", ")")) {

@@ -9,11 +9,8 @@ create_response_function(graph)
 \arguments{
 \item{graph}{An \link[igraph]{aaa-igraph-package} object that represents a
 directed acyclic graph that contains certain edge attributes. 
- The shiny app returns a graph in this format and see examples.}
-
-\item{right.vars}{Vertices of graph on the right side}
-
-\item{cond.vars}{Vertices of graph on the left side}
+ The shiny app returns a graph in this format and \link{initialize_graph} 
+ will add them to a regular igraph object with sensible defaults.}
 }
 \value{
 A list of functions representing the response functions

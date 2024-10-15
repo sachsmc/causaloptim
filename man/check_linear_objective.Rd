@@ -7,7 +7,7 @@
 check_linear_objective(causal_model, effectt)
 }
 \arguments{
-\item{causal_model}{An object of class "causalmodel" as produce by \link{create_causal_model}}
+\item{causal_model}{An object of class "causalmodel" as produce by \link{create_causalmodel}}
 
 \item{effectt}{A character string that represents the causal effect of interest}
 }

@@ -19,7 +19,7 @@ check_parents(parent_lookup, from, to, prev = NULL)
 A list of paths or null if no path is found
 }
 \description{
-Internal function
+Check for paths from from to to
 }
 \examples{
 parent_lookup <- list(M = "Am", Y = c("M", "Ay"), A = NULL, Am = "A", Ay = "A")

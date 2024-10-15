@@ -7,7 +7,7 @@
 latex_bounds(bounds, parameters, prob.sym = "P", brackets = c("(", ")"))
 }
 \arguments{
-\item{bounds}{Vector of bounds as returned by \link{optimize_effect}}
+\item{bounds}{Vector of bounds as returned by \link{optimize_effect_2}}
 
 \item{parameters}{The parameters object as returned by \link{analyze_graph}}
 
@@ -28,7 +28,7 @@ V(b)$latent <- c(0,0,1)
 V(b)$nvals <- c(2,2,2)
 E(b)$rlconnect <- E(b)$edge.monotone <- c(0, 0, 0)
 obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
-bounds <- optimize_effect(obj)
+bounds <- optimize_effect_2(obj)
 latex_bounds(bounds$bounds, obj$parameters)
 latex_bounds(bounds$bounds, obj$parameters, "Pr")
 }

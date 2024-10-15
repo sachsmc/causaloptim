@@ -6,9 +6,6 @@ b <- igraph::graph_from_literal(X -+ Y, Ur -+ Y) |> initialize_graph()
 
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound <- optimize_effect(obj)
-
-expect_true(all(bound$bounds == c("\nMAX {\np0_0 - p0_1\n}\n\n", "\nMIN {\np0_0 - p0_1\n}\n\n")))
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
@@ -27,9 +24,6 @@ b <- igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y) |> initialize_graph()
     
 eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
 obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-bound <- optimize_effect(obj)
-
-expect_true(all(bound$bounds == c("\nMAX {\n- p10_ - p01_\n}\n\n", "\nMIN {\n- p10_ - p01_ + 1\n}\n\n")))
 
 # with new version of optimize_effect:
 new_version_bound <- optimize_effect_2(obj)
@@ -63,10 +57,7 @@ test_that("instrumental variable", {
     eff <- "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"
     
     obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-    bound <- optimize_effect(obj)
-    
-    expect_true(all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p10_0 - 2 p10_1 - 2 p01_1\n- p00_0 + p00_1 - p10_0 - p01_0\n- p00_0 + p00_1 - 2 p10_0 + p10_1 - 2 p01_0\np00_0 - p00_1 - p10_1 - p01_1\n- p10_0 - p01_0\n- p10_1 - p01_1\np00_0 - p00_1 - p10_0 - p10_1 - p01_0\n- p00_0 + p00_1 - p10_0 - p10_1 - p01_1\n}\n\n", "\nMIN {\n- p00_0 - p10_0 - p10_1 - 2 p01_1 + 2\n- p00_1 - p10_0 - p10_1 - 2 p01_0 + 2\n- p10_0 - p01_1 + 1\np00_1 - 2 p10_0 + p10_1 - p01_0 + 1\n- p10_0 - p01_0 + 1\n- p10_1 - p01_0 + 1\n- p10_1 - p01_1 + 1\np00_0 + p10_0 - 2 p10_1 - p01_1 + 1\n}\n\n" )))
-    
+  
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
     expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 - p10_0 - p10_1 - p01_0,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_1 - p01_1,\n  -p10_0 - p01_0,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1 - p01_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n",
@@ -75,29 +66,14 @@ test_that("instrumental variable", {
     #cat(bound$bounds) # old version output string
     #cat(new_version_bound$bounds) # new version output string
     
-    ## functional version
-    
-    f1 <- interpret_bounds(new_version_bound$bounds, obj$parameters)
-    f1.new <- interpret_bounds(bound$bounds, obj$parameters)
-    
-    set.seed(12354)
-    pr1 <- runif(length(obj$parameters))
-    pr1[seq(1, 7, by = 2)] <- pr1[seq(1, 7, by = 2)] / sum(pr1[seq(1, 7, by = 2)])
-    pr1[seq(2, 8, by = 2)] <- pr1[seq(2, 8, by = 2)] / sum(pr1[seq(2, 8, by = 2)])
-    
-    pr1 <- as.list(pr1)
-    names(pr1) <- obj$parameters
-    expect_equal(do.call(f1, pr1), do.call(f1.new, pr1))
+   
     
     ## with monotonocity
     
     mono <- list("X(Z = 1) >= X(Z = 0)")
     
     obj <- analyze_graph(b, constraints = mono, effectt = eff)
-    bound <- optimize_effect(obj)
-    
-    expect_true(all(bound$bounds == c("\nMAX {\np00_0 - p00_1 - p10_1 - p01_1\n}\n\n", "\nMIN {\n- p10_1 - p01_0 + 1\n}\n\n")))
-    
+   
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
     expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1\n}\n", 
@@ -110,10 +86,7 @@ test_that("instrumental variable", {
     
     eff <- "p{X(Z = 1) = 1; X(Z = 0) = 0} - p{X(Z = 1) = 0; X(Z = 0) = 1}"
     obj <- analyze_graph(b, constraints = NULL, effectt = eff)
-    bound <- optimize_effect(obj)
-    
-    expect_true(all(bound$bounds == c("\nMAX {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n", "\nMIN {\np00_0 - p00_1 + p01_0 - p01_1\n}\n\n")))
-    
+  
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
     expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p00_0 - p00_1 + p01_0 - p01_1\n}\n", 
@@ -322,7 +295,7 @@ test_that("Missing paths filling in works properly", {
     nofill <- "p{Y(X = 1, M1 = 1, M2(X = 1, M1 = 1)) = 1}"
     eff2 <- parse_effect(nofill)$vars[[1]][[1]]
     
-    thisintervene <- unlist(causaloptim:::list_to_path(eff2, "Y"))
+    thisintervene <- unlist(list_to_path(eff2, "Y"))
     basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
     ## check for missing paths from intervention sets to outcome
     outcome <- V(b2)[2]
@@ -332,7 +305,7 @@ test_that("Missing paths filling in works properly", {
     if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
                       names(eff2))) > 0) {
         
-        isets <- unique(causaloptim:::btm_var(eff2))
+        isets <- unique(btm_var(eff2))
         missingpaths <- lapply(isets, function(cc) {
             allpaths <- igraph::all_simple_paths(b2, from = cc, to = "Y", mode = "out")
             paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))
@@ -353,7 +326,7 @@ test_that("Missing paths filling in works properly", {
     fill <- "p{Y(X = 1) = 1}"
     eff1 <- parse_effect(fill)$vars[[1]][[1]]
     outcome <- V(b1)[3]
-    thisintervene <- unlist(causaloptim:::list_to_path(eff1, "Y"))
+    thisintervene <- unlist(list_to_path(eff1, "Y"))
     basevars <- sapply(strsplit(names(thisintervene), " -> "), "[", 1)
     ## check for missing paths from intervention sets to outcome
     ## only do this if any of the top level intervention sets doesn't contain all
@@ -365,7 +338,7 @@ test_that("Missing paths filling in works properly", {
     parents <- adjacent_vertices(b1, v = outcome, mode = "in")[[1]]
     if(length(setdiff(names(parents[which(names(parents) != "Ur")]), 
                       names(eff1))) > 0) {
-        isets <- unique(causaloptim:::btm_var(eff1))
+        isets <- unique(btm_var(eff1))
         missingpaths <- lapply(isets, function(cc) {
             allpaths <- igraph::all_simple_paths(b1, from = cc, to = "Y", mode = "out")
             paths2 <- unlist(lapply(allpaths, function(x) paste(names(x), collapse = " -> ")))

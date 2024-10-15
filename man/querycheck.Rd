@@ -30,5 +30,5 @@ V(graphres)$outcome <- c(0, 0, 0, 0, 0)
 E(graphres)$rlconnect <- c(0, 0, 0, 0, 0, 0)
 E(graphres)$edge.monotone <- c(0, 0, 0, 0, 0, 0)
 effecttext <- "p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}"
-causaloptim:::querycheck(effecttext = effecttext, graphres = graphres) # TRUE
+querycheck(effecttext = effecttext, graphres = graphres) # TRUE
 }

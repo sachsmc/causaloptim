@@ -178,7 +178,3 @@ shortentxt <- function(x) {
 }
 
 
-
-#' @importFrom rcdd makeH scdd
-#' @importFrom stats rgamma
-NULL

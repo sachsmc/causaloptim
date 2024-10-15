@@ -4,99 +4,71 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>How to use the causaloptim Shiny app to analyze graphs • causaloptim</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="How to use the causaloptim Shiny app to analyze graphs">
-<meta property="og:description" content="causaloptim">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How to use the causaloptim Shiny app to analyze graphs">
 </head>
-<body data-spy="scroll" data-target="#toc">
-    
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">causaloptim</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
-      </span>
-    </div>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/example-code.html">Code from examples in manuscript</a>
-    </li>
-    <li>
-      <a href="../articles/shinyapp.html">How to use the causaloptim Shiny app to analyze graphs</a>
-    </li>
-    <li>
-      <a href="../articles/vertexenum-speed.html">Improving the speed of computing causal bounds</a>
-    </li>
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
+    <a class="navbar-brand me-2" href="../index.html">causaloptim</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="active nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/example-code.html">Code from examples in manuscript</a></li>
+    <li><a class="dropdown-item" href="../articles/shinyapp.html">How to use the causaloptim Shiny app to analyze graphs</a></li>
+    <li><a class="dropdown-item" href="../articles/vertexenum-speed.html">Improving the speed of computing causal bounds</a></li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/sachsmc/causaloptim/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/sachsmc/causaloptim/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
+</nav><div class="container template-article">
 
-      
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>How to use the causaloptim Shiny app to analyze
-graphs</h1>
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+
+      <h1>How to use the causaloptim Shiny app to analyze graphs</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/sachsmc/causaloptim/blob/HEAD/vignettes/shinyapp.Rmd" class="external-link"><code>vignettes/shinyapp.Rmd</code></a></small>
-      <div class="hidden name"><code>shinyapp.Rmd</code></div>
-
+      <div class="d-none name"><code>shinyapp.Rmd</code></div>
     </div>
 
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sachsmc/causaloptim" class="external-link">causaloptim</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://sachsmc.github.io/causaloptim">causaloptim</a></span><span class="op">)</span></span></code></pre></div>
 <p>Run the Shiny application like so. The result is assigned to an
 objected called <code>results</code> so that you can save the results
 that are produced in the web interface.</p>
@@ -200,8 +172,9 @@ constraint interface.</p>
 potential outcomes, values of their parents, and operators that
 determine the constraint (equalities or inequalities). In our example,
 we can specify monotonicity of the instrument Z by defining the
-constraint X(Z = 1) <span class="math inline">\(\geq\)</span> X(Z =
-0):</p>
+constraint X(Z = 1)
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mo>≥</mo><annotation encoding="application/x-tex">\geq</annotation></semantics></math>
+X(Z = 0):</p>
 <pre><code><span><span class="fu">X</span><span class="op">(</span>Z <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fu">X</span><span class="op">(</span>Z <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre>
 <p>then click parse.</p>
 </div>
@@ -238,6 +211,8 @@ bounds:</p>
 <span><span class="co">#&gt; MIN {</span></span>
 <span><span class="co">#&gt;   1 - p10_1 - p01_0</span></span>
 <span><span class="co">#&gt; }</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A function to compute the bounds for a given set of probabilities is available in the x$bounds_function element.</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">boundsFunction</span><span class="op">)</span></span>
 <span><span class="co">#&gt; function (p00_0 = NULL, p00_1 = NULL, p10_0 = NULL, p10_1 = NULL, </span></span>
@@ -256,55 +231,44 @@ bounds. Try using the <code>simulate_bounds</code> function.</p>
 <code class="sourceCode R"><span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/simulate_bounds.html">simulate_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">obj</span>, <span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span>, nsim <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sim</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
-<span><span class="co">#&gt; 1  0.12041837  -0.1074550   0.5006213</span></span>
-<span><span class="co">#&gt; 2  0.12067895  -0.2635277   0.3617893</span></span>
-<span><span class="co">#&gt; 3  0.06320870  -0.3462978   0.3797830</span></span>
-<span><span class="co">#&gt; 4 -0.09857439  -0.2553938   0.3273650</span></span>
-<span><span class="co">#&gt; 5 -0.04301793  -0.3430274   0.2565260</span></span>
-<span><span class="co">#&gt; 6 -0.16399004  -0.4175398   0.1888496</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  0.11072239  -0.2765626   0.4145571</span></span>
+<span><span class="co">#&gt; 2  0.04677063  -0.3380446   0.4131181</span></span>
+<span><span class="co">#&gt; 3 -0.20689850  -0.4887614   0.1605880</span></span>
+<span><span class="co">#&gt; 4  0.14317449  -0.2369513   0.3885858</span></span>
+<span><span class="co">#&gt; 5  0.02464152  -0.3451034   0.3450640</span></span>
+<span><span class="co">#&gt; 6  0.09175714  -0.2020024   0.3795258</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex
 equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="../reference/latex_bounds.html">latex_bounds</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">bounds.obs</span><span class="op">$</span><span class="va">bounds</span>, <span class="va">results</span><span class="op">$</span><span class="va">obj</span><span class="op">$</span><span class="va">parameters</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><span class="math display">\[
-\mbox{Lower bound} =   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1)
-- P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1)
-\]</span> <span class="math display">\[
-\mbox{Upper bound} =   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z
-= 0)
-\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Lower bound</mtext><mo>=</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>0</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>0</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>0</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> 
+ \mbox{Lower bound} =   P(X = 0, Y = 0 | Z = 0) - P(X = 0, Y = 0 | Z = 1) - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 1) 
+ </annotation></semantics></math><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext mathvariant="normal">Upper bound</mtext><mo>=</mo><mn>1</mn><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>0</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mi>P</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>X</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>Y</mi><mo>=</mo><mn>1</mn><mo stretchy="false" form="prefix">|</mo><mi>Z</mi><mo>=</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex"> 
+ \mbox{Upper bound} =   1 - P(X = 1, Y = 0 | Z = 1) - P(X = 0, Y = 1 | Z = 0) 
+ </annotation></semantics></math></p>
 <p>Please sends any bugs or feedback to <a href="mailto:sachsmc@gmail.com" class="email">sachsmc@gmail.com</a> or
 file an issue on <a href="https://github.com/sachsmc/causaloptim" class="external-link uri">https://github.com/sachsmc/causaloptim</a> .</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Michael C Sachs, Erin E Gabriel, Arvid Sjölander, Gustav Jonzon.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p>Developed by Michael C Sachs, Erin E Gabriel, Arvid Sjölander, Gustav Jonzon.</p>
 </div>
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
-  
 
 
-  
+
 
   </body>
 </html>

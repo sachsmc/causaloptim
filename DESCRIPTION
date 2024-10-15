@@ -36,6 +36,6 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-URL: https://github.com/sachsmc/causaloptim
+URL: https://sachsmc.github.io/causaloptim
 BugReports: https://github.com/sachsmc/causaloptim/issues
 Config/testthat/edition: 3

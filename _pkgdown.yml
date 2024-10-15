@@ -1,4 +1,10 @@
 destination: docs
+template:
+  bootstrap: 5
+  bootswatch: lux
+  bslib:
+    pkgdown-nav-height: 100px
+url: https://sachsmc.github.io/causaloptim
 reference:
   - title: "Shiny interface"
     desc: >
@@ -10,23 +16,27 @@ reference:
     desc: "Functions for creating and interacting with the algorithm."
     contents:
       - analyze_graph
-      - optimize_effect
       - optimize_effect_2
-      - update_effect
-      - interpret_bounds
-      - simulate_bounds
+      - initialize_graph
+      - create_causalmodel
+      - create_response_function
+      - create_linearcausalproblem
       - latex_bounds
+      - sample_distribution
+      - rdirichlet
+      - check_constraints_violated
+      - check_linear_objective
       - plot.linearcausalproblem
       - print.linearcausalproblem
+      - print.causalmodel
   - title: "Utilities"
-    desc: "Internal functions"
+    desc: "Internal functions and deprecated"
     contents:
       - causalproblemcheck
       - constraintscheck
       - create_effect_vector
       - create_q_matrix
       - create_response_function
-      - create_R_matrix
       - graphrescheck
       - get_default_effect
       - opt_effect
@@ -34,4 +44,10 @@ reference:
       - parse_effect
       - plot_graphres
       - querycheck
-      
+      - simulate_bounds
+      - btm_var
+      - check_parents
+      - find_all_paths
+      - interpret_bounds
+      - list_to_path
+      - update_effect

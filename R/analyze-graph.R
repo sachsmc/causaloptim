@@ -1,6 +1,6 @@
 #' @import igraph shiny
 #' @importFrom graphics legend plot
-#' @importFrom stats runif
+#' @importFrom stats runif rgamma
 #' @importFrom rcdd makeH makeV scdd
 NULL
 
@@ -178,10 +178,14 @@ print.linearcausalproblem <- function(x, ...) {
     constrainttext <- sprintf("This following constraints have been specifed: \n %s", paste(x$user.constraints, collapse = "\n"))
   } else constrainttext <- "No constraints have been specified"
   
-  cat(effecttext, "\n Under the assumption encoded in the graph: ")
-  print(E(x$graph))
-  cat("Number of possible values of each variable:", "\n", print_nvals(x$graph), "\n")
-  cat(constrainttext, "\n", variabletext, "\n")
+  if(!is.null(x$graph)) {
+    cat(effecttext, "\n Under the assumption encoded in the graph: ")
+    print(E(x$graph))
+    cat("Number of possible values of each variable:", "\n", print_nvals(x$graph), "\n")
+  } else {
+      cat(effecttext, "\n Under the assumptions encoded in the response functions. \n")
+  }
+    cat(constrainttext, "\n", variabletext, "\n")
   
   cat("Additional information is available in the following list elements:")
   print(names(x))

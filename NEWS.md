@@ -3,9 +3,8 @@
 Major release with lots of changes: 
 
 - Balke's legacy C++ code is no longer supported. Vertex enumeration is now always done with rcdd
-- New interface to specify a causal model without an effect. Also derivation of observable constraints
+- New interface to specify a causal model without an effect. Also derivation of observable constraints and checking of linearity
 - Various bug fixes and improvements
-- New vignette to showcase new features
 
 # causaloptim 0.10.0
 

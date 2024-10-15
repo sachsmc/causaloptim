@@ -1,9 +1,11 @@
-pandoc: 3.1.1
-pkgdown: 2.0.7
+pandoc: '3.2'
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   example-code: example-code.html
   shinyapp: shinyapp.html
   vertexenum-speed: vertexenum-speed.html
-last_built: 2023-10-31T14:01Z
-
+last_built: 2024-10-15T11:19Z
+urls:
+  reference: https://sachsmc.github.io/causaloptim/reference
+  article: https://sachsmc.github.io/causaloptim/articles

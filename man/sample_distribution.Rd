@@ -14,10 +14,10 @@ sample_distribution(
 \arguments{
 \item{obj}{An object of class "causalmodel"}
 
-\item{simplex_sampler}{A function to generate a random sample from the simplex in k dimensions, where k is the number of variables (q parameters, obj$data$variables). By default this is uniform (dirichlet with parameter 1).}
+\item{simplex_sampler}{A function to generate a random sample from the simplex in k dimensions, where k is the number of variables (q parameters, obj$data$variables). By default this is uniform (symmetric dirichlet with parameter 1).}
 }
 \value{
-A vector of obserable probabilities that satisfy the causal model
+A vector of observable probabilities that satisfy the causal model
 }
 \description{
 Sample a distribution of observable probabilities that satisfy the causal model

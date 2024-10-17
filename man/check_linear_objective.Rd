@@ -32,35 +32,24 @@ where Vij are names of variables in the graph, a, b are numeric values from 0:(n
 
 \code{p{Y(M(X = 0), X = 1) = 1} - p{Y(M(X = 0), X = 0) = 1}}
 
-The effect must be fully specified, that is, all parents of a variable that is intervened upon need to be specified. The function cannot infer missin values or marginalize over some parents but not others.
+The effect must be fully specified, that is, all parents of a variable that is intervened upon need to be specified. The function cannot infer missing values or marginalize over some parents but not others.
 }
 \examples{
  ## regular IV case
 
-graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
-
-observed.variables <- V(graph)[V(graph)$latent == 0]
-p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
-
-respvars <- create_response_function(graph)
+ivgraph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
 prob.form <- list(out = c("Y", "X"), cond = "Z")
 
-effectt <- "p{Y(X = 1) = 1}"
-
-iv_model <- create_causalmodel(graph = NULL, respvars = respvars,
-                p.vals = p.vals, prob.form = prob.form)
-check_linear_objective(iv_model, effectt = effectt)
+iv_model <- create_causalmodel(graph = ivgraph,
+            prob.form = prob.form)
+check_linear_objective(iv_model, effectt = "p{Y(X = 1) = 1}")
 
 #'  ## contaminated IV case
 
-graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Z-+ Y, Ur -+ X, Ur -+ Y))
-p.vals <- expand.grid(Z = 0:1, X = 0:1, Y = 0:1)
+civgraph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Z-+ Y, Ur -+ X, Ur -+ Y))
 
-prob.form <- list(out = c("Y", "X"), cond = "Z")
+cont_iv <- create_causalmodel(graph = civgraph, prob.form = prob.form)
 
-cont_iv <- create_causalmodel(graph = graph, p.vals = p.vals, prob.form = prob.form)
-
-effectt <- "p{Y(X = 1) = 1}"
-check_linear_objective(cont_iv, effectt = effectt)
+check_linear_objective(cont_iv, effectt = "p{Y(X = 1) = 1}")
 
 }

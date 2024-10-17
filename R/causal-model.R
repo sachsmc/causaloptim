@@ -293,8 +293,8 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, prob.form,
 #' Sample a distribution of observable probabilities that satisfy the causal model
 #' 
 #' @param obj An object of class "causalmodel"
-#' @param simplex_sampler A function to generate a random sample from the simplex in k dimensions, where k is the number of variables (q parameters, obj$data$variables). By default this is uniform (dirichlet with parameter 1).
-#' @returns A vector of obserable probabilities that satisfy the causal model
+#' @param simplex_sampler A function to generate a random sample from the simplex in k dimensions, where k is the number of variables (q parameters, obj$data$variables). By default this is uniform (symmetric dirichlet with parameter 1).
+#' @returns A vector of observable probabilities that satisfy the causal model
 #' @export
 #' @examples
 #' 

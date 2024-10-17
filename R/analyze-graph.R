@@ -11,7 +11,7 @@ NULL
 #' in the Details below. The shiny app run by \link{specify_graph} will return a
 #' graph in this format. 
 #' 
-#' @param graph An \link[igraph]{aaa-igraph-package} object that represents a directed acyclic graph with certain attributes. See Details.
+#' @param graph An \link[igraph]{igraph-package} object that represents a directed acyclic graph with certain attributes. See Details.
 #' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
 #' @param effectt A character string that represents the causal effect of interest
 #' 

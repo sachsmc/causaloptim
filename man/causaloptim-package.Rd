@@ -12,7 +12,7 @@ Specify causal graphs using a visual interactive interface and then analyze them
 Run the shiny app by \code{results <- specify_graph()}. See detailed instructions in the vignette \code{browseVignettes("causaloptim")}.
 }
 \references{
-Sachs, M. C., Jonzon, G., Sjölander, A., & Gabriel, E. E. 2022, A general method for deriving tight symbolic bounds on causal effects. Journal of Computational and Graphical Statistics, In press. \url{https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905} .
+Sachs, M. C., Jonzon, G., Sjölander, A., & Gabriel, E. E. (2023). A general method for deriving tight symbolic bounds on causal effects. Journal of Computational and Graphical Statistics, 32(2), 567-576. \url{https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905} .
 }
 \seealso{
 \code{browseVignettes('causaloptim')} \link{specify_graph}

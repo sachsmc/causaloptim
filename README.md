@@ -31,7 +31,9 @@ results <- specify_graph()
 
 ## References
 
-M.C. Sachs, G. Jonzon, E.E. Gabriel, and A. Sjölander, "A General Method for Deriving Tight Symbolic Bounds on Causal Effects", 2022. Journal of Computational and Graphical Statistics, https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905 . 
+Sachs, M. C., Jonzon, G., Sjölander, A., & Gabriel, E. E. (2023). A general method for deriving tight symbolic bounds on causal effects. Journal of Computational and Graphical Statistics, 32(2), 567-576. https://www.tandfonline.com/doi/full/10.1080/10618600.2022.2071905/ 
+
+Jonzon, G., Sachs, M. C., & Gabriel, E. E. (2023). Accessible Computation of Tight Symbolic Bounds on Causal Effects using an Intuitive Graphical Interface. R Journal, 15(4). https://journal.r-project.org/articles/RJ-2023-083/
 
 A. Balke and J. Pearl, "Counterfactual Probabilities: Computational Methods,Bounds, and Applications"  UCLA Cognitive Systems Laboratory, Technical Report (R-213-B). 
 In R. Lopez de Mantaras and D. Poole (Eds.), Proceedings of the Conference on Uncertainty in Artificial Intelligence (UAI-94), Morgan Kaufmann, San Mateo, CA, 46-54, July 29-31, 1994. 

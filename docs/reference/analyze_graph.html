@@ -59,7 +59,7 @@ graph in this format.</p>
 
 
 <dl><dt id="arg-graph">graph<a class="anchor" aria-label="anchor" href="#arg-graph"></a></dt>
-<dd><p>An aaa-igraph-package object that represents a directed acyclic graph with certain attributes. See Details.</p></dd>
+<dd><p>An <a href="https://r.igraph.org/reference/aaa-igraph-package.html" class="external-link">igraph-package</a> object that represents a directed acyclic graph with certain attributes. See Details.</p></dd>
 
 
 <dt id="arg-constraints">constraints<a class="anchor" aria-label="anchor" href="#arg-constraints"></a></dt>
@@ -163,10 +163,10 @@ There are 2 important rules to follow: 1) Only variables on the right side can b
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">### confounded exposure and outcome</span></span></span>
-<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="initialize_graph.html">initialize_graph</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/igraph/man/graph_from_literal.html" class="external-link">graph_from_literal</a></span><span class="op">(</span><span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="initialize_graph.html">initialize_graph</a></span><span class="op">(</span><span class="fu">igraph</span><span class="fu">::</span><span class="fu"><a href="https://r.igraph.org/reference/graph_from_literal.html" class="external-link">graph_from_literal</a></span><span class="op">(</span><span class="va">X</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">X</span>, <span class="va">Ur</span> <span class="op">-</span><span class="op">+</span> <span class="va">Y</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">analyze_graph</span><span class="op">(</span><span class="va">b</span>, constraints <span class="op">=</span> <span class="cn">NULL</span>, effectt <span class="op">=</span> <span class="st">"p{Y(X = 1) = 1} - p{Y(X = 0) = 1}"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Ready to compute bounds for the effect p{Y(X = 1) = 1} - p{Y(X = 0) = 1} </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Under the assumption encoded in the graph: + 3/3 edges from e736fc7 (vertex names):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Under the assumption encoded in the graph: + 3/3 edges from d25d54e (vertex names):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] X -&gt;Y Ur-&gt;X Ur-&gt;Y</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of possible values of each variable: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  X: 2, Y: 2 </span>

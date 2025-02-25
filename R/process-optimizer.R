@@ -18,6 +18,7 @@ print.balkebound <- function(x, ...){
 #' \link{latex_bounds}.
 #' 
 #' @param obj Object as returned by \link{analyze_graph} or \link{create_linearcausalproblem}
+#' @param redundant If TRUE, removed redundant constraints as a preprocessing step. Can speed things up. 
 #' 
 #' @return An object of class "balkebound" that is a list that contains the bounds and logs as character strings, and a function to compute the bounds
 #' @export
@@ -26,12 +27,15 @@ print.balkebound <- function(x, ...){
 #' b <- initialize_graph(graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 #' obj <- analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 #' optimize_effect_2(obj)
-optimize_effect_2 <- optimize_effect <- function(obj) {
-    lower_bound <- opt_effect(opt = "min", obj = obj)
-    upper_bound <- opt_effect(opt = "max", obj = obj)
+optimize_effect_2 <- optimize_effect <- function(obj, redundant = FALSE) {
+    lower_bound <- opt_effect(opt = "min", obj = obj, redundant = redundant)
+    upper_bound <- opt_effect(opt = "max", obj = obj, redundant = redundant)
     bounds <- c(lower = lower_bound$expr, upper = upper_bound$expr)
     vreps_of_duals <- list(lower = lower_bound$dual_vrep, upper = upper_bound$dual_vrep)
-    structure(list(bounds = bounds, logs = vreps_of_duals, 
+    structure(list(bounds = bounds, 
+                   expressions = list(lower = lower_bound$expressions, 
+                                      upper = upper_bound$expressions),
+                   logs = vreps_of_duals, 
                    bounds_function = interpret_bounds(bounds, obj$parameters)), class = "balkebound")
 }
 
@@ -41,6 +45,7 @@ optimize_effect_2 <- optimize_effect <- function(obj) {
 #' For a given casual query, it computes either a lower or an upper bound on the corresponding causal effect.
 #' @param opt A string. Either \code{"min"} or \code{"max"} for a lower or an upper bound, respectively.
 #' @param obj An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.
+#' @param redundant If TRUE, removed redundant constraints as a preprocessing step. Can speed things up. 
 #' @return An object of class \code{optbound}; a list with the following named components: 
 #' \itemize{
 #'   \item \code{expr} is the \emph{main} output; an expression of the bound as a print-friendly string,
@@ -48,7 +53,7 @@ optimize_effect_2 <- optimize_effect <- function(obj) {
 #'   \item \code{dual_vertices} is a numeric matrix whose rows are the vertices of the convex polytope of the dual LP,
 #'   \item \code{dual_vrep} is a V-representation of the dual convex polytope, including some extra data.
 #' }
-opt_effect <- function(opt, obj) {
+opt_effect <- function(opt, obj, redundant) {
     # The Primal LP
     c0 <- obj$c0
     n <- nrow(c0)
@@ -74,7 +79,9 @@ opt_effect <- function(opt, obj) {
         b1 <- -b1
     }
     hrep <- makeH(a1 = a1, b1 = b1)
-    vrep <- scdd(input = hrep, adjacency = TRUE, inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE)
+    if(redundant) hrep <- rcdd::redundant(hrep)$output
+    vrep <- scdd(input = hrep, adjacency = TRUE, 
+                 inputadjacency = TRUE, incidence = TRUE, inputincidence = TRUE)
     matrix_of_vrep <- vrep$output
     indices_of_vertices <- matrix_of_vrep[ , 1] == 0 & matrix_of_vrep[ , 2] == 1
     vertices <- matrix_of_vrep[indices_of_vertices, -c(1, 2), drop = FALSE] # the rows of this matrix are the vertices of the convex polytope
@@ -86,7 +93,8 @@ opt_effect <- function(opt, obj) {
     opt_bound <- structure(list(expr = opt_bound,
                                 type = if (opt == "min") "lower" else "upper",
                                 dual_vertices = vertices,
-                                dual_vrep = vrep),
+                                dual_vrep = vrep, 
+                                expressions = expressions),
                            class = "optbound")
     return(opt_bound)
 }

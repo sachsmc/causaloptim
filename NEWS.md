@@ -1,3 +1,8 @@
+# causaloptim 1.0.1
+
+New features
+- Add option to use rcdd::redundant to speed up calculation of the bounds. Note results are equivalent but the terms may be in a different order. 
+
 # causaloptim 1.0.0
 
 Major release with lots of changes: 

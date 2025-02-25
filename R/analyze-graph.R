@@ -1,7 +1,7 @@
 #' @import igraph shiny
 #' @importFrom graphics legend plot
 #' @importFrom stats runif rgamma
-#' @importFrom rcdd makeH makeV scdd
+#' @importFrom rcdd makeH makeV scdd redundant
 NULL
 
 

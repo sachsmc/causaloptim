@@ -62,6 +62,16 @@ test_that("instrumental variable", {
     new_version_bound <- optimize_effect_2(obj)
     expect_equal(new_version_bound$bounds, c(lower = "\nMAX {\n  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 - p10_0 - p10_1 - p01_0,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_1 - p01_1,\n  -p10_0 - p01_0,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1 - p01_1,\n  -p00_0 + p00_1 - p10_0 - p01_0\n}\n",
                                              upper = "\nMIN {\n  1 - p10_1 - p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  2 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  2 - p00_0 - p10_0 - p10_1 - 2p01_1,\n  1 - p10_0 - p01_1\n}\n"))
+    
+    new_version_boundr <- optimize_effect_2(obj, redundant = TRUE)
+    terms_ivtest <- strsplit(c(lower = "  p00_0 - p00_1 - p10_1 - p01_1,\n  p00_0 - p00_1 - p10_0 - p10_1 - p01_0,\n  p00_0 - p00_1 + p10_0 - 2p10_1 - 2p01_1,\n  -p10_1 - p01_1,\n  -p10_0 - p01_0,\n  -p00_0 + p00_1 - 2p10_0 + p10_1 - 2p01_0,\n  -p00_0 + p00_1 - p10_0 - p10_1 - p01_1,\n  -p00_0 + p00_1 - p10_0 - p01_0",
+      upper = "  1 - p10_1 - p01_0,\n  1 + p00_0 + p10_0 - 2p10_1 - p01_1,\n  2 - p00_1 - p10_0 - p10_1 - 2p01_0,\n  1 - p10_1 - p01_1,\n  1 - p10_0 - p01_0,\n  1 + p00_1 - 2p10_0 + p10_1 - p01_0,\n  2 - p00_0 - p10_0 - p10_1 - 2p01_1,\n  1 - p10_0 - p01_1"), ",\n")
+    expect_true(setequal(new_version_boundr$expressions$lower, terms_ivtest$lower) & 
+        setequal(new_version_boundr$expressions$upper, terms_ivtest$upper))
+    expect_true(setequal(new_version_bound$expressions$lower, 
+                         new_version_boundr$expressions$lower) & 
+                  setequal(new_version_bound$expressions$upper, 
+                           new_version_boundr$expressions$upper))
     # visual comparison:
     #cat(bound$bounds) # old version output string
     #cat(new_version_bound$bounds) # new version output string
@@ -202,7 +212,10 @@ test_that("Mediator", {
     #bound <- optimize_effect(obj) # with old version
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
-    #all(new_version_bound$bounds == c("min-bound: MAX {\n  -p00_1 + p10_0 - p10_1 - p01_0 - p01_1,\n  -2 + 2p00_0 + p10_0 + p01_0 + p01_1,\n  -1 + p00_0 + p10_0\n}\n", "max-bound: MIN {\n  2p00_0 + p10_0 - p10_1 + p01_0,\n  p00_0 + p10_0,\n  1 - p00_1 + p10_0 - p01_0\n}\n"))
+    medterms <- strsplit(c(lower = "  -p00_1 + p10_0 - p10_1 - p01_0 - p01_1,\n  -2 + 2p00_0 + p10_0 + p01_0 + p01_1,\n  -1 + p00_0 + p10_0", upper = "  2p00_0 + p10_0 - p10_1 + p01_0,\n  p00_0 + p10_0,\n  1 - p00_1 + p10_0 - p01_0"), ",\n")
+    expect_true(setequal(new_version_bound$expressions$lower, medterms$lower) & 
+      setequal(new_version_bound$expressions$upper, medterms$upper))
+  
     # visual comparison:
     #cat(bound$bounds) # old version output string
     #cat(new_version_bound$bounds) # new version output string
@@ -211,7 +224,11 @@ test_that("Mediator", {
     #bound <- optimize_effect(obj) # with old version
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
-    #all(new_version_bound$bounds == c("min-bound: MAX {\n  p10_0 - p10_1 - p01_0 + p01_1,\n  p10_0 - p10_1,\n  -p01_0 + p01_1,\n  0\n}\n", "max-bound: MIN {\n  p00_0 - p00_1 + p10_0 - p10_1\n}\n"))
+    monoterms <-strsplit(c(lower = "  p10_0 - p10_1 - p01_0 + p01_1,\n  p10_0 - p10_1,\n  -p01_0 + p01_1,\n  0", 
+                  upper = "  p00_0 - p00_1 + p10_0 - p10_1"), ",\n")
+    
+    expect_true(setequal(new_version_bound$expressions$lower, monoterms$lower) & 
+      setequal(new_version_bound$expressions$upper, monoterms$upper))
     # visual comparison:
     #cat(bound$bounds) # old version output string
     #cat(new_version_bound$bounds) # new version output string
@@ -223,11 +240,11 @@ test_that("Mediator", {
     #bound <- optimize_effect(obj) # with old version
     # with new version of optimize_effect:
     new_version_bound <- optimize_effect_2(obj)
-    #all(new_version_bound$bounds == c("min-bound: MAX {\n  p10_0 - p10_1 - p01_0 + p01_1,\n  -1 + p00_0 + p10_0 + p01_1\n}\n", "max-bound: MIN {\n  p00_0 - p00_1 + p10_0,\n  2p00_0 - 2p00_1 + p10_0 - p10_1 + p01_0 - p01_1\n}\n"))
-    # visual comparison:
-    #cat(bound$bounds) # old version output string
-    #cat(new_version_bound$bounds) # new version output string
-    
+    mterms2 <- strsplit(c(lower = "  p10_0 - p10_1 - p01_0 + p01_1,\n  -1 + p00_0 + p10_0 + p01_1",
+                          upper = "  p00_0 - p00_1 + p10_0,\n  2p00_0 - 2p00_1 + p10_0 - p10_1 + p01_0 - p01_1"), ",\n")
+    expect_true(setequal(new_version_bound$expressions$lower, mterms2$lower) & 
+      setequal(new_version_bound$expressions$upper, mterms2$upper))
+
 })
 
 
@@ -274,7 +291,7 @@ test_that("Multiple IV numeric comparison", {
     names(params) <- obj$parameters
     
     
-    expect_equal(do.call(f2new, params),  do.call(f2old, params))
+    expect_equal(unlist(do.call(f2new, params)),  unlist(do.call(f2old, params)))
     
 })
 
@@ -375,8 +392,11 @@ test_that("IV with outcome dependent sampling", {
     bnds.ivcc <- create_linearcausalproblem(ivcc, "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}") |> optimize_effect_2()
     
     
-    expect_true(all(bnds.ivcc$bounds == c("\nMAX {\n  -1 - p011_0 - p111_0 + p001_1 + 2p111_1,\n  -1 - p001_0 - p101_0 - p011_0 - p111_0 + 2p001_1 + 2p111_1,\n  -1 + p001_0 + 2p111_0 - p011_1 - p111_1,\n  -1 + 2p001_0 + 2p111_0 - p001_1 - p101_1 - p011_1 - p111_1,\n  -1 + 2p001_0 + p111_0 - p001_1 - p101_1,\n  -1 + p001_0 + p111_0,\n  -1 + p001_1 + p111_1,\n  -1 + p001_0 + p111_1,\n  -1 + p111_0 + p001_1,\n  -1 - p001_0 - p101_0 + 2p001_1 + p111_1\n}\n",
-    "\nMIN {\n  1 - 2p101_0 - 2p011_0 + p001_1 + p101_1 + p011_1 + p111_1,\n  1 - p101_1 - p011_1,\n  1 - p101_0 - p011_0,\n  1 + p001_0 + p101_0 + p011_0 + p111_0 - 2p101_1 - 2p011_1,\n  1 + p001_0 + p101_0 - 2p101_1 - p011_1,\n  1 - p011_0 - p101_1,\n  1 - p101_0 - 2p011_0 + p011_1 + p111_1,\n  1 - p101_0 - p011_1,\n  1 + p011_0 + p111_0 - p101_1 - 2p011_1,\n  1 - 2p101_0 - p011_0 + p001_1 + p101_1\n}\n" )))
-    
+    ost <- strsplit(c(lower = "  -1 - p011_0 - p111_0 + p001_1 + 2p111_1,\n  -1 - p001_0 - p101_0 - p011_0 - p111_0 + 2p001_1 + 2p111_1,\n  -1 + p001_0 + 2p111_0 - p011_1 - p111_1,\n  -1 + 2p001_0 + 2p111_0 - p001_1 - p101_1 - p011_1 - p111_1,\n  -1 + 2p001_0 + p111_0 - p001_1 - p101_1,\n  -1 + p001_0 + p111_0,\n  -1 + p001_1 + p111_1,\n  -1 + p001_0 + p111_1,\n  -1 + p111_0 + p001_1,\n  -1 - p001_0 - p101_0 + 2p001_1 + p111_1",
+    upper = "  1 - 2p101_0 - 2p011_0 + p001_1 + p101_1 + p011_1 + p111_1,\n  1 - p101_1 - p011_1,\n  1 - p101_0 - p011_0,\n  1 + p001_0 + p101_0 + p011_0 + p111_0 - 2p101_1 - 2p011_1,\n  1 + p001_0 + p101_0 - 2p101_1 - p011_1,\n  1 - p011_0 - p101_1,\n  1 - p101_0 - 2p011_0 + p011_1 + p111_1,\n  1 - p101_0 - p011_1,\n  1 + p011_0 + p111_0 - p101_1 - 2p011_1,\n  1 - 2p101_0 - p011_0 + p001_1 + p101_1" ), ",\n")
+
+    expect_equal(setequal(bnds.ivcc$expressions$lower, ost$lower) & 
+      setequal(bnds.ivcc$expressions$upper, ost$upper))
+        
 })
 

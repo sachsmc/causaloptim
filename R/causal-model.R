@@ -8,6 +8,7 @@
 #' @param p.vals Data frame defining which probabilities are observable. The variable names of p.vals must all appear in prob.form. If missing, will assume that all combinations of the variables values are observed.
 #' @param constraints A vector of character strings that represent the constraints on counterfactual quantities
 #' @param right.vars A vector of character strings indicating which variables are on the right side of the graph. Only required when graph is NULL. See examples.
+#' @param redundant If TRUE, removes any redundant constraints before deriving the observable constraints. 
 #' 
 #' @details
 #' It is assumed that probabilities of the form p(out | cond) are observed, for each combination of values in p.vals. cond may be NULL in which case nothing is conditioned on.
@@ -43,7 +44,7 @@
 #' 
 create_causalmodel <- function(graph = NULL, respvars = NULL, prob.form,
                                p.vals, constraints = NULL, 
-                               right.vars = NULL) { 
+                               right.vars = NULL, redundant = FALSE) { 
     
    
     
@@ -211,6 +212,7 @@ create_causalmodel <- function(graph = NULL, respvars = NULL, prob.form,
     ## inequalities
     
     vrep <- rcdd::makeV(points = t(R[-1,]))
+    if(redundant) vrep <- rcdd::redundant(vrep)$output
     hrep2 <- rcdd::scdd(vrep, representation = "V")
     foo <- hrep2$output
     l <- foo[ , 1]

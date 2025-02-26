@@ -2,6 +2,7 @@
 
 New features
 - Add option to use rcdd::redundant to speed up calculation of the bounds. Note results are equivalent but the terms may be in a different order. 
+- Add redundant option also to create_causalmodel
 
 # causaloptim 1.0.0
 

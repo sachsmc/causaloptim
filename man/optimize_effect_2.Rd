@@ -5,10 +5,12 @@
 \alias{optimize_effect}
 \title{Run the optimizer to obtain symbolic bounds}
 \usage{
-optimize_effect_2(obj)
+optimize_effect_2(obj, redundant = FALSE)
 }
 \arguments{
 \item{obj}{Object as returned by \link{analyze_graph} or \link{create_linearcausalproblem}}
+
+\item{redundant}{If TRUE, removed redundant constraints as a preprocessing step. Can speed things up.}
 }
 \value{
 An object of class "balkebound" that is a list that contains the bounds and logs as character strings, and a function to compute the bounds

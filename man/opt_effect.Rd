@@ -4,12 +4,14 @@
 \alias{opt_effect}
 \title{Compute a bound on the average causal effect}
 \usage{
-opt_effect(opt, obj)
+opt_effect(opt, obj, redundant)
 }
 \arguments{
 \item{opt}{A string. Either \code{"min"} or \code{"max"} for a lower or an upper bound, respectively.}
 
 \item{obj}{An object as returned by the function \code{\link{analyze_graph}}. Contains the casual query to be estimated.}
+
+\item{redundant}{If TRUE, removed redundant constraints as a preprocessing step. Can speed things up.}
 }
 \value{
 An object of class \code{optbound}; a list with the following named components: 

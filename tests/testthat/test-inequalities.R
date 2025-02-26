@@ -6,7 +6,9 @@ test_that("## iv inequalities and confounded", {
     prob.form <- list(out = c("X", "Y"), cond = "Z")
     
     iv_mod <- create_causalmodel(graph = graph, p.vals = p.vals, prob.form = prob.form)
-    
+    iv_modr <- create_causalmodel(graph = graph, p.vals = p.vals, prob.form = prob.form, 
+                                  redundant = TRUE)
+  
     expect_true(length(iv_mod$observable_constraints$character) == 4)
     
     graph <- initialize_graph(graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))

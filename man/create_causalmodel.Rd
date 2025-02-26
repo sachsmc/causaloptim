@@ -10,7 +10,8 @@ create_causalmodel(
   prob.form,
   p.vals,
   constraints = NULL,
-  right.vars = NULL
+  right.vars = NULL,
+  redundant = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ create_causalmodel(
 \item{constraints}{A vector of character strings that represent the constraints on counterfactual quantities}
 
 \item{right.vars}{A vector of character strings indicating which variables are on the right side of the graph. Only required when graph is NULL. See examples.}
+
+\item{redundant}{If TRUE, removes any redundant constraints before deriving the observable constraints.}
 }
 \value{
 An object of class "causalmodel"

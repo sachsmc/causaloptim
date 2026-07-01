@@ -22,6 +22,7 @@ major changes at this time. New features may be added over time.
 ## Installation
 
 ``` r
+
 install.packages("causaloptim")
 # or
 remotes::install_github("sachsmc/causaloptim")
@@ -36,6 +37,7 @@ Launch the shiny app to get started, results are saved in the `results`
 object:
 
 ``` r
+
 results <- specify_graph()
 ```
 
@@ -159,6 +161,8 @@ Internal functions and deprecated
 
 - [Code from examples in
   manuscript](https://sachsmc.github.io/causaloptim/articles/example-code.md):
+- [Direct enumeration of the hyperarc
+  encoding](https://sachsmc.github.io/causaloptim/articles/hyperarc-example.md):
 - [How to use the causaloptim Shiny app to analyze
   graphs](https://sachsmc.github.io/causaloptim/articles/shinyapp.md):
 - [Improving the speed of computing causal

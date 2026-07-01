@@ -4,6 +4,7 @@
 
 - Bugfix: fixed addition/subtraction of complex queries. Thanks
   [@SinaAkbarii](https://github.com/SinaAkbarii)
+- Fix typo in speed vignette
 
 ## causaloptim 1.0.1
 

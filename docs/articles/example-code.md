@@ -1,6 +1,7 @@
 # Code from examples in manuscript
 
 ``` r
+
 library(causaloptim)
 #> Loading required package: igraph
 #> 
@@ -16,6 +17,7 @@ library(causaloptim)
 ## confounded exposure and outcome
 
 ``` r
+
 b <- initialize_graph(graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 V(b)$nvals <- c(3,2,2)
 
@@ -69,6 +71,7 @@ optimize_effect_2(obj3)
 Not run, this takes a few minutes to compute.
 
 ``` r
+
 b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2,
                         X -+ Y, Ur -+ X, Ur -+ Y)
 V(b)$leftside <- c(1, 0, 1, 1, 0, 0)
@@ -278,6 +281,7 @@ all(round(x = bounds.comparison$bound.lower, digits = 12) ==
 ## measurement error in the outcome
 
 ``` r
+
 b <- graph_from_literal(Ul -+ X -+ Y -+ Y2, Ur -+ Y, Ur -+ Y2)
 V(b)$leftside <- c(1, 1, 0, 0, 0)
 V(b)$latent <- c(1, 0, 1, 0, 1)

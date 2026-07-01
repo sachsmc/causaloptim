@@ -502,13 +502,13 @@ bounds:</p>
 bounds. Try using the <code>simulate_bounds</code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">simulate_bounds</span>(results<span class="sc">$</span>obj, results<span class="sc">$</span>bounds.obs, <span class="at">nsim =</span> <span class="dv">100</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">head</span>(sim)</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;     objective bound.lower bound.upper</span></span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 1  0.07544538  -0.2901438   0.3423813</span></span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; 2  0.03770549  -0.3396581   0.2841109</span></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 3 -0.03889972  -0.2924516   0.3250875</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 4  0.09415542  -0.3095480   0.4648374</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 5 -0.08053998  -0.3697298   0.2040977</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; 6  0.02099059  -0.3298279   0.4101031</span></span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="co">#&gt;      objective bound.lower bound.upper</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co">#&gt; 1 -0.004315446  -0.4092411   0.3837942</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="co">#&gt; 2 -0.096653766  -0.4544191   0.1455109</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; 3 -0.123485673  -0.3710687   0.2604856</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a><span class="co">#&gt; 4 -0.147917838  -0.4677391   0.2195753</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co">#&gt; 5 -0.203602035  -0.5502119   0.2035397</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a><span class="co">#&gt; 6  0.030168689  -0.3530989   0.3715884</span></span></code></pre></div>
 <p>We also provide a helper function to print the bounds as latex
 equations. Use the <code>latex_bounds</code> function.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">latex_bounds</span>(results<span class="sc">$</span>bounds.obs<span class="sc">$</span>bounds, results<span class="sc">$</span>obj<span class="sc">$</span>parameters))</span></code></pre></div>

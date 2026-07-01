@@ -16,6 +16,9 @@
 - **Colorado Reed**. Contributor.  
   (graph-creator.js)
 
+- **Markham Alex**. Contributor.  
+  Pruning vignette
+
 ## Citation
 
 Source:
@@ -23,14 +26,14 @@ Source:
 
 Sachs M, Gabriel E, Sjölander A, Jonzon G (2026). *causaloptim: An
 Interface to Specify Causal Graphs and Compute Bounds on Causal
-Effects*. R package version 1.0.2,
+Effects*. R package version 1.0.3,
 <https://sachsmc.github.io/causaloptim/>.
 
     @Manual{,
       title = {causaloptim: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects},
       author = {Michael C Sachs and Erin E Gabriel and Arvid Sjölander and Gustav Jonzon},
       year = {2026},
-      note = {R package version 1.0.2},
+      note = {R package version 1.0.3},
       url = {https://sachsmc.github.io/causaloptim/},
     }
 

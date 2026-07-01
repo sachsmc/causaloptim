@@ -1,6 +1,7 @@
 # How to use the causaloptim Shiny app to analyze graphs
 
 ``` r
+
 library(causaloptim)
 ```
 
@@ -9,6 +10,7 @@ called `results` so that you can save the results that are produced in
 the web interface.
 
 ``` r
+
 results <- specify_graph()
 ```
 
@@ -152,6 +154,7 @@ the bounds and log information about the optimization procedure, and an
 R function that implements the bounds:
 
 ``` r
+
 names(results)
 #> [1] "graphres"       "obj"            "bounds.obs"     "constraints"   
 #> [5] "effect"         "boundsFunction"
@@ -186,6 +189,7 @@ The results object can also be used to numerically simulate the bounds.
 Try using the `simulate_bounds` function.
 
 ``` r
+
 sim <- simulate_bounds(results$obj, results$bounds.obs, nsim = 100)
 head(sim)
 #>     objective bound.lower bound.upper
@@ -201,6 +205,7 @@ We also provide a helper function to print the bounds as latex
 equations. Use the `latex_bounds` function.
 
 ``` r
+
 cat(latex_bounds(results$bounds.obs$bounds, results$obj$parameters))
 ```
 

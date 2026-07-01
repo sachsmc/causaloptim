@@ -22,6 +22,7 @@ major changes at this time. New features may be added over time.
 ## Installation
 
 ``` r
+
 install.packages("causaloptim")
 # or
 remotes::install_github("sachsmc/causaloptim")
@@ -36,6 +37,7 @@ Launch the shiny app to get started, results are saved in the `results`
 object:
 
 ``` r
+
 results <- specify_graph()
 ```
 

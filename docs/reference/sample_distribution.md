@@ -34,6 +34,7 @@ A vector of observable probabilities that satisfy the causal model
 ## Examples
 
 ``` r
+
 graph <- initialize_graph(graph_from_literal(Z -+ X, X -+ Y, Ur -+ X, Ur -+ Y))
 prob.form <- list(out = c("X", "Y"), cond = "Z")
 

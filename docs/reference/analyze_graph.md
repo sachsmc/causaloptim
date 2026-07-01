@@ -181,7 +181,7 @@ inequalities). For example, `X(Z = 1) >= X(Z = 0)`
 b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 analyze_graph(b, constraints = NULL, effectt = "p{Y(X = 1) = 1} - p{Y(X = 0) = 1}")
 #> Ready to compute bounds for the effect p{Y(X = 1) = 1} - p{Y(X = 0) = 1} 
-#>  Under the assumption encoded in the graph: + 3/3 edges from 8f89238 (vertex names):
+#>  Under the assumption encoded in the graph: + 3/3 edges from 4514554 (vertex names):
 #> [1] X ->Y Ur->X Ur->Y
 #> Number of possible values of each variable: 
 #>  X: 2, Y: 2 

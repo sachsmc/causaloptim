@@ -2,15 +2,16 @@ Package: causaloptim
 Encoding: UTF-8
 Type: Package
 Title: An Interface to Specify Causal Graphs and Compute Bounds on Causal Effects
-Version: 1.0.2
-Date: 2026-04-27
+Version: 1.0.3
+Date: 2026-07-01
 Authors@R: c(
     person("Michael C", "Sachs", role = c("aut", "cre"), email = "sachsmc@gmail.com"), 
     person("Erin E", "Gabriel", role = "aut"), 
     person("Arvid", "Sjölander", role = "aut"), 
     person("Gustav", "Jonzon", role = "aut"),
     person("Alexander A", "Balke", role = "ctb",comment ="(C++ code)"), 
-    person("Colorado", "Reed", role = "ctb", comment = "(graph-creator.js)")
+    person("Colorado", "Reed", role = "ctb", comment = "(graph-creator.js)"), 
+    person("Markham", "Alex", role = "ctb", comment = "Pruning vignette")
     )
 Maintainer: Michael C Sachs <sachsmc@gmail.com>
 Description: When causal quantities are not identifiable from the observed data, it still may be possible 

@@ -1,6 +1,7 @@
 # Improving the speed of computing causal bounds
 
 ``` r
+
 library(causaloptim)
 #> Loading required package: igraph
 #> 
@@ -74,6 +75,7 @@ problem.
 Benchmark Example. Multiple Instruments.
 
 ``` r
+
 library(causaloptim)
 library(igraph)
 b <- graph_from_literal(Z1 -+ X, Z2 -+ X, Z2 -+ Z1, Ul -+ Z1, Ul -+ Z2, X -+ Y, Ur -+ X, Ur -+ Y)
@@ -90,6 +92,7 @@ $`\text{ACE}(X\rightarrow Y)`$ we got (with a 3.3 GHz Quad-Core Intel
 Core i5; your mileage may vary)
 
 ``` r
+
 system.time(oldbnds <- optimize_effect(obj))
 #>     user  system  elapsed 
 #> 31093.57   47.02 61368.22
@@ -101,6 +104,7 @@ is not enough; having to wait until the next day is a bad user
 experience. Using `causaloptim` version `0.8.0` however, we get
 
 ``` r
+
 system.time(newbnds <- optimize_effect_2(obj))
 #>  user  system  elapsed 
 #> 0.139   0.001    0.140
@@ -115,6 +119,7 @@ and compare the results. First, we create the R functions that compute
 the bounds:
 
 ``` r
+
 eval_newbnds <- interpret_bounds(newbnds$bounds, obj$parameters)
 eval_oldbnds <- interpret_bounds(oldbnds$bounds, obj$parameters)
 ```
@@ -125,6 +130,7 @@ probabilities by using the constraints implied by the DAG (which live in
 the `constraints` element of `obj`).
 
 ``` r
+
 sim.qs <- rbeta(length(obj$variables), .05, 1)
 sim.qs <- sim.qs / sum(sim.qs)
 
@@ -149,6 +155,7 @@ names(params) <- obj$parameters
 Then we pass the probabilities to the bounds functions and compare:
 
 ``` r
+
 do.call(eval_newbnds, params) 
 #>           lower       upper
 #> q0_0 -0.3148649 -0.08804175
@@ -307,6 +314,7 @@ The coefficient matrix and right hand side vector of the dual polytope
 are constructed in the few lines of code below (where $`c_0:=c`$).
 
 ``` r
+
 a1 <- rbind(cbind(t(A_l), t(A_e)),
             cbind(diag(x = 1, nrow = m_l, ncol = m_l), matrix(data = 0, nrow = m_l, ncol = m_e)))
 b1 <- rbind(c0,
@@ -333,6 +341,7 @@ following lines of code extract the vertices of the dual polytope and
 store them as rows of a matrix.
 
 ``` r
+
 library(rcdd)
 hrep <- makeH(a1 = a1, b1 = b1)
 vrep <- scdd(input = hrep)
@@ -350,6 +359,7 @@ it to do (here
 the dual objective gradient into its numeric and symbolic parts).
 
 ``` r
+
 expressions <- apply(vertices, 1, function(y) evaluate_objective(c1_num = c1_num, p = p, y = y))
 ```
 

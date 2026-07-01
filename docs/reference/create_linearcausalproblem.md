@@ -129,7 +129,7 @@ b <- initialize_graph(igraph::graph_from_literal(X -+ Y, Ur -+ X, Ur -+ Y))
 confmod <- create_causalmodel(graph = b, prob.form =  list(out = c("X", "Y"), cond = NULL))
 create_linearcausalproblem(confmod, effectt = "p{Y(X = 1) = 1}")
 #> Ready to compute bounds for the effect p{Y(X = 1) = 1} 
-#>  Under the assumption encoded in the graph: + 3/3 edges from 479cffd (vertex names):
+#>  Under the assumption encoded in the graph: + 3/3 edges from 08a197f (vertex names):
 #> [1] X ->Y Ur->X Ur->Y
 #> Number of possible values of each variable: 
 #>  X: 2, Y: 2 
